@@ -1,96 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Luxury Bright Theme - Warm Cream Base */
+    --background: 40 33% 97%;
+    --foreground: 25 25% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 40 40% 98%;
+    --card-foreground: 25 25% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 40 40% 98%;
+    --popover-foreground: 25 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Champagne Gold */
+    --primary: 38 60% 55%;
+    --primary-foreground: 40 33% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Soft Beige */
+    --secondary: 35 30% 92%;
+    --secondary-foreground: 25 25% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Pearl/Muted */
+    --muted: 35 20% 90%;
+    --muted-foreground: 25 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Wine Red Accent */
+    --accent: 350 45% 45%;
+    --accent-foreground: 40 33% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 35 25% 88%;
+    --input: 35 25% 88%;
+    --ring: 38 60% 55%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Custom Veloria Colors */
+    --cream: 40 33% 97%;
+    --ivory: 40 40% 95%;
+    --champagne: 38 60% 55%;
+    --champagne-light: 38 55% 75%;
+    --champagne-dark: 38 65% 40%;
+    --wine: 350 45% 45%;
+    --wine-light: 350 40% 65%;
+    --wine-dark: 350 50% 30%;
+    --pearl: 35 25% 90%;
+    --charcoal: 25 25% 15%;
+    --warm-gray: 25 15% 45%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(38 60% 55%), hsl(38 55% 75%), hsl(38 60% 55%));
+    --gradient-wine: linear-gradient(135deg, hsl(350 45% 45%), hsl(350 40% 55%));
+    --gradient-shimmer: linear-gradient(90deg, transparent, hsl(38 60% 75% / 0.4), transparent);
+    --gradient-hero: linear-gradient(180deg, hsl(40 33% 97% / 0.1) 0%, hsl(40 33% 97% / 0.95) 100%);
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(25 25% 15% / 0.08);
+    --shadow-medium: 0 8px 30px -8px hsl(25 25% 15% / 0.12);
+    --shadow-gold: 0 4px 20px -4px hsl(38 60% 55% / 0.25);
+    --shadow-lift: 0 12px 40px -12px hsl(25 25% 15% / 0.15);
 
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar (keeping for compatibility) */
+    --sidebar-background: 40 33% 97%;
+    --sidebar-foreground: 25 25% 15%;
+    --sidebar-primary: 38 60% 55%;
+    --sidebar-primary-foreground: 40 33% 98%;
+    --sidebar-accent: 35 30% 92%;
+    --sidebar-accent-foreground: 25 25% 20%;
+    --sidebar-border: 35 25% 88%;
+    --sidebar-ring: 38 60% 55%;
   }
 }
 
@@ -99,7 +83,271 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  html {
+    scroll-behavior: smooth;
   }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+    background-size: 150px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium tracking-tight;
+  }
+
+  p, span, a, button, input, textarea, select, label {
+    @apply font-sans;
+  }
+}
+
+@layer components {
+  /* Gold shimmer animation for buttons */
+  .btn-gold {
+    @apply relative overflow-hidden bg-primary text-primary-foreground px-8 py-3 rounded-full font-medium transition-all duration-300;
+    box-shadow: var(--shadow-gold);
+  }
+
+  .btn-gold::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: var(--gradient-shimmer);
+    animation: shimmer 2s infinite;
+  }
+
+  .btn-gold:hover::before {
+    @apply opacity-100;
+  }
+
+  .btn-gold:hover {
+    @apply scale-105;
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* Wine accent button */
+  .btn-wine {
+    @apply relative overflow-hidden bg-accent text-accent-foreground px-8 py-3 rounded-full font-medium transition-all duration-300;
+  }
+
+  .btn-wine:hover {
+    @apply scale-105 brightness-110;
+  }
+
+  /* Outline button */
+  .btn-outline-gold {
+    @apply relative overflow-hidden border-2 border-primary text-primary px-8 py-3 rounded-full font-medium transition-all duration-300 bg-transparent;
+  }
+
+  .btn-outline-gold:hover {
+    @apply bg-primary text-primary-foreground scale-105;
+  }
+
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md rounded-2xl border border-border/50;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .glass-card:hover {
+    box-shadow: var(--shadow-medium);
+    @apply border-primary/20;
+  }
+
+  /* Menu item card */
+  .menu-card {
+    @apply glass-card p-4 transition-all duration-500;
+  }
+
+  .menu-card:hover {
+    @apply -translate-y-2;
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* Gold underline animation */
+  .gold-underline {
+    @apply relative inline-block;
+  }
+
+  .gold-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500;
+  }
+
+  .gold-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* Section container */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Luxury input */
+  .luxury-input {
+    @apply w-full px-4 py-3 bg-ivory rounded-xl border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 outline-none;
+  }
+
+  /* Category tab */
+  .category-tab {
+    @apply px-6 py-3 font-medium transition-all duration-300 relative;
+  }
+
+  .category-tab.active {
+    @apply text-primary;
+  }
+
+  .category-tab.active::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary;
+    animation: slideIn 0.3s ease-out;
+  }
+}
+
+@layer utilities {
+  /* Font utilities */
+  .font-serif {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .font-sans {
+    font-family: 'Nunito Sans', sans-serif;
+  }
+
+  /* Color utilities */
+  .text-champagne {
+    color: hsl(var(--champagne));
+  }
+
+  .bg-champagne {
+    background-color: hsl(var(--champagne));
+  }
+
+  .text-wine {
+    color: hsl(var(--wine));
+  }
+
+  .bg-wine {
+    background-color: hsl(var(--wine));
+  }
+
+  .bg-ivory {
+    background-color: hsl(var(--ivory));
+  }
+
+  .bg-cream {
+    background-color: hsl(var(--cream));
+  }
+
+  .bg-pearl {
+    background-color: hsl(var(--pearl));
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
+    background-size: 200% 100%;
+    animation: gradientShift 3s ease infinite;
+  }
+
+  .bg-gradient-wine {
+    background: var(--gradient-wine);
+  }
+
+  /* Text gradient */
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease infinite;
+  }
+}
+
+/* Keyframe animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-gold {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(38 60% 55% / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 15px hsl(38 60% 55% / 0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 2s ease-in-out infinite;
+}
+
+/* Smooth scroll behavior */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but allow scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
