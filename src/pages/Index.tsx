@@ -1,12 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState } from 'react';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import HeroSection from '@/components/home/HeroSection';
+import AboutSection from '@/components/home/AboutSection';
+import PopularDishes from '@/components/home/PopularDishes';
+import ReservationCTA from '@/components/home/ReservationCTA';
+import TestimonialsSection from '@/components/home/TestimonialsSection';
+import LocationSection from '@/components/home/LocationSection';
+import FAQSection from '@/components/home/FAQSection';
+import CartModal from '@/components/cart/CartModal';
+import FloatingCart from '@/components/cart/FloatingCart';
 
-const Index = () => {
+const Index: React.FC = () => {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navbar onCartClick={() => setIsCartOpen(true)} />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <PopularDishes />
+        <ReservationCTA />
+        <TestimonialsSection />
+        <LocationSection />
+        <FAQSection />
+      </main>
+      <Footer />
+      <FloatingCart onClick={() => setIsCartOpen(true)} />
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 };
