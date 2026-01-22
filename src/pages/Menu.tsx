@@ -131,11 +131,11 @@ const Menu: React.FC = () => {
           </div>
         </main>
   {/* FOOTER (NO BACKGROUND BEHIND IT) */}
-<section className="relative z-30 bg-gradient-to-b from-background to-muted/40">
-  <div className="absolute inset-0 bg-[url('/grain.png')] opacity-[0.04] pointer-events-none" />
+<section className="relative z-30 bg-background">
+  <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-black/10 to-transparent" />
   <Footer />
 </section>
-</div>
+      </div>
     </div>
   );
 };
