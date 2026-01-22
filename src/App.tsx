@@ -20,6 +20,8 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import ReservationSuccess from "@/components/ReservationSuccess";
+
 
 const queryClient = new QueryClient();
 
