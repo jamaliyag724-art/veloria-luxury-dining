@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
         viewport={{ once: true }}
         className="section-container py-16"
       >
-       <div className="w-16 h-[2px] bg-primary mx-auto mb-12 rounded-full" /><div>
+       <div className="w-10 h-[2px] bg-primary mx-auto mb-12 rounded-full" /><div>
           {/* Brand Column */}
           <motion.div variants={itemVariants} className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
