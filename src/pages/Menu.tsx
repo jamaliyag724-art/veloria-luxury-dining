@@ -17,7 +17,7 @@ const CATEGORY_BACKGROUNDS: Record<string, string> = {
   brunch: "/brunch.webp",
   lunch: "/lunch.webp",
   "main-course": "/main.webp",
-  desserts: "/desserts.webp",
+  desserts: "/desert.webp",
   "wine-beverages": "/wine.webp",
 };
 
