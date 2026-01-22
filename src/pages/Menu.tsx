@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
@@ -8,51 +9,66 @@ import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
 import { menuCategories, getItemsByCategory } from "@/data/menuData";
 
-// 🔁 Background images (loop)
-const BACKGROUNDS = [
-  "/foo1.jpg",
-  "/foo2.jpg",
-  "/foo3.jpg",
-];
+/* -----------------------------------------
+   CATEGORY → BACKGROUND (WebP optimized)
+------------------------------------------ */
+const CATEGORY_BACKGROUNDS: Record<string, string> = {
+  starters: "/starters.webp",
+  brunch: "/brunch.webp",
+  lunch: "/lunch.webp",
+  "main-course": "/main.webp",
+  desserts: "/desserts.webp",
+  "wine-beverages": "/wine.webp",
+};
 
 const Menu: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
-  const [bgIndex, setBgIndex] = useState(0);
 
   const items = getItemsByCategory(activeCategory);
   const currentCategory = menuCategories.find(
     (c) => c.id === activeCategory
   );
 
-  // 🔁 Auto background loop
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBgIndex((prev) => (prev + 1) % BACKGROUNDS.length);
-    }, 7000); // ⏱️ slow luxury pace
+  /* -----------------------------------------
+     PARALLAX SCROLL
+  ------------------------------------------ */
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
-    return () => clearInterval(interval);
-  }, []);
+  /* -----------------------------------------
+     ACTIVE BACKGROUND (SAFE)
+  ------------------------------------------ */
+  const background = useMemo(() => {
+    return (
+      CATEGORY_BACKGROUNDS[activeCategory] ||
+      CATEGORY_BACKGROUNDS["starters"]
+    );
+  }, [activeCategory]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-   {/* 🔁 Background loop */}
-<AnimatePresence mode="wait">
-  <motion.div
-    key={bgIndex}
-    initial={{ opacity: 0, scale: 1 }}
-    animate={{ opacity: 1, scale: 1.08 }} // 👈 slow zoom
-    exit={{ opacity: 0 }}
-    transition={{
-      opacity: { duration: 1.5 },
-      scale: { duration: 12, ease: "linear" }, // 👈 Ken Burns
-    }}
-    className="fixed inset-0 bg-cover bg-center -z-10"
-    style={{ backgroundImage: `url(${BACKGROUNDS[bgIndex]})` }}
-  />
-</AnimatePresence>
-{/* 🎥 Luxury overlay */}
-<div className="fixed inset-0 bg-black/10 backdrop-blur-[1px] -z-5" />
+      {/* 🔁 BACKGROUND WITH KEN BURNS + PARALLAX */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeCategory}
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1.08 }} // 🎥 Ken Burns
+          exit={{ opacity: 0 }}
+          transition={{
+            opacity: { duration: 1.5 },
+            scale: { duration: 14, ease: "linear" },
+          }}
+          style={{
+            backgroundImage: `url(${background})`,
+            y, // 🧭 parallax
+          }}
+          className="fixed inset-0 bg-cover bg-center -z-10"
+        />
+      </AnimatePresence>
+
+      {/* 🌑 LUXURY READABILITY OVERLAY */}
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-[1px] -z-10" />
 
       {/* 🌟 CONTENT */}
       <div className="relative z-10">
@@ -69,11 +85,12 @@ const Menu: React.FC = () => {
               <span className="text-primary font-medium tracking-wider text-sm uppercase">
                 Culinary Excellence
               </span>
-              <h1 className="font-serif text-4xl md:text-5xl font-medium text-foreground mt-4 mb-4">
+              <h1 className="font-serif text-4xl md:text-5xl font-medium mt-4 mb-4">
                 Our Menu
               </h1>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Discover our carefully curated selection of dishes, each crafted with the finest ingredients.
+                Discover our carefully curated selection of dishes, each crafted
+                with the finest ingredients.
               </p>
             </motion.div>
 
