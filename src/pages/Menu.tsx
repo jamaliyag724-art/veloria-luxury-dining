@@ -80,7 +80,7 @@ const Menu: React.FC = () => {
         <Navbar onCartClick={() => setIsCartOpen(true)} />
 
         <main className="pt-32 pb-24">
-          <div className="section-container">
+         <div className="section-container bg-background/90 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
