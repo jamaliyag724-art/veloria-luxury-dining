@@ -66,8 +66,8 @@ const Menu: React.FC = () => {
           }}
           style={{
             backgroundImage: `url(${background})`,
-            y,
-          }}
+            y,}}
+            className="fixed insert-0 bg-cover bg-center z-0"
         />
       </AnimatePresence>
 
