@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import HeroSection from '@/components/home/HeroSection';
 import AboutSection from '@/components/home/AboutSection';
+import ChefRecommendations from '@/components/home/ChefRecommendations';
 import PopularDishes from '@/components/home/PopularDishes';
 import ReservationCTA from '@/components/home/ReservationCTA';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
@@ -19,6 +20,7 @@ const Index: React.FC = () => {
       <Navbar onCartClick={() => setIsCartOpen(true)} />
       <main>
         <HeroSection />
+        <ChefRecommendations />
         <AboutSection />
         <PopularDishes />
         <ReservationCTA />
