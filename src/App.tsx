@@ -16,6 +16,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,14 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/admin/login" element={<AdminLogin />} />
+                 <Route
+    path="/admin"
+    element={
+      <ProtectedAdminRoute>
+        <Admin />
+      </ProtectedAdminRoute>
+    }
+  />
                 <Route path="/" element={<Index />} />
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/reservations" element={<Reservations />} />
