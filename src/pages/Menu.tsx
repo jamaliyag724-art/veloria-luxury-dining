@@ -130,14 +130,11 @@ const Menu: React.FC = () => {
             </motion.div>
           </div>
         </main>
-
-        <Footer />
-        <FloatingCart onClick={() => setIsCartOpen(true)} />
-        <CartModal
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-        />
-      </div>
+  {/* FOOTER (NO BACKGROUND BEHIND IT) */}
+  <section className="relative z-30 bg-background">
+    <Footer />
+  </section>
+</div>
     </div>
   );
 };
