@@ -1,8 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Check } from 'lucide-react';
-import { useCart } from '@/context/CartContext';
-import { MenuItem } from '@/data/menuData';
+import React from "react";
+import { motion } from "framer-motion";
+import { Plus, Check } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { MenuItem } from "@/data/menuData";
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -32,51 +32,49 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -6 }}
       transition={{ duration: 0.3 }}
-      className="menu-card group"
+      className="menu-card group rounded-2xl bg-background shadow-sm hover:shadow-lg transition-shadow"
     >
-      {/* Image */}
-      <div className="relative w-full overflow-hidden rounded-xl aspect-[4/3]">
-  <img
-    src={item.image}
-    alt={item.name}
-    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-    loading="lazy"
-  />
-</div>
+      {/* IMAGE */}
+      <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
+        />
+
+        {/* Featured badge */}
         {item.featured && (
-          <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
-            Chef's Pick
+          <span className="absolute top-3 left-3 z-10 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+            Chef’s Pick
           </span>
         )}
+
+        {/* Dietary */}
         {item.dietary && (
-          <div className="absolute top-3 right-3 flex gap-1">
+          <div className="absolute top-3 right-3 z-10 flex gap-1">
             {item.dietary.map((diet) => (
               <span
                 key={diet}
-                className="bg-secondary/90 text-foreground text-xs px-2 py-1 rounded-full capitalize"
+                className="bg-background/80 backdrop-blur text-foreground text-xs px-2 py-1 rounded-full capitalize"
               >
                 {diet}
               </span>
             ))}
           </div>
         )}
-        
-        {/* Overlay on hover */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent flex items-end justify-center pb-4"
-        >
+
+        {/* Hover overlay (desktop only) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
           <motion.button
-            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleAdd}
-            className={`flex items-center gap-2 px-6 py-2 rounded-full font-medium text-sm transition-all ${
+            className={`flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium ${
               added || isInCart
-                ? 'bg-accent text-accent-foreground'
-                : 'bg-primary text-primary-foreground'
+                ? "bg-accent text-accent-foreground"
+                : "bg-primary text-primary-foreground"
             }`}
           >
             {added || isInCart ? (
@@ -91,12 +89,12 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
               </>
             )}
           </motion.button>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="space-y-2">
-        <div className="flex items-start justify-between gap-2">
+      {/* CONTENT */}
+      <div className="p-5 space-y-2">
+        <div className="flex justify-between items-start gap-2">
           <h3 className="font-serif text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
             {item.name}
           </h3>
@@ -104,24 +102,24 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             ${item.price}
           </span>
         </div>
+
         <p className="text-sm text-muted-foreground line-clamp-2">
           {item.description}
         </p>
-      </div>
 
-      {/* Mobile Add Button */}
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={handleAdd}
-        className={`mt-4 w-full py-2.5 rounded-lg font-medium text-sm transition-all md:hidden ${
-          added || isInCart
-            ? 'bg-accent/20 text-accent border border-accent'
-            : 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground'
-        }`}
-      >
-        {added || isInCart ? 'Added to Order' : 'Add to Order'}
-      </motion.button>
+        {/* Mobile Add Button */}
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleAdd}
+          className={`mt-4 w-full py-2.5 rounded-lg font-medium text-sm md:hidden ${
+            added || isInCart
+              ? "bg-accent/20 text-accent border border-accent"
+              : "bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground"
+          }`}
+        >
+          {added || isInCart ? "Added to Order" : "Add to Order"}
+        </motion.button>
+      </div>
     </motion.div>
   );
 };
