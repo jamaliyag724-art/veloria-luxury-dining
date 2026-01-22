@@ -1,33 +1,23 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { CalendarDays, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  CalendarDays,
-  Clock,
-  Users,
-  CheckCircle,
-} from "lucide-react";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CartModal from "@/components/cart/CartModal";
 import ReservationCTA from "@/components/home/ReservationCTA";
 import { useReservations } from "@/context/ReservationContext";
 
 const Reservations: React.FC = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [orderId, setOrderId] = useState("");
-
-  const { addReservation } = useReservations();
   const navigate = useNavigate();
+  const { addReservation } = useReservations();
 
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     mobile: "",
+    city: "",
     address: "",
-    location: "",
     pincode: "",
     guests: 2,
     date: "",
@@ -44,176 +34,98 @@ const Reservations: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const id = addReservation(formData);
-    setOrderId(id);
-    setIsSubmitted(true);
+    navigate(`/reservation-success/${id}`);
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🌌 CINEMATIC BACKGROUND */}
+      {/* Background */}
       <div
-        className="fixed inset-0 bg-cover bg-center scale-110"
-        style={{ backgroundImage: "url(/reservations-bg.webp)" }}
+        className="fixed inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url(/reservation-bg.webp)" }}
       />
+      <div className="fixed inset-0 bg-black/55 backdrop-blur-sm" />
 
-      {/* Vignette */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
+      <Navbar />
 
-      {/* Fog overlay */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_70%)]" />
+      <main className="relative z-10 pt-36 pb-32">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl mx-auto bg-background/90 backdrop-blur-xl rounded-[32px] shadow-2xl p-10"
+        >
+          <div className="text-center mb-10">
+            <span className="text-primary uppercase tracking-widest text-sm">
+              Book a Table
+            </span>
+            <h1 className="font-serif text-4xl mt-4 mb-2">
+              Make a Reservation
+            </h1>
+            <p className="text-muted-foreground">
+              Reserve your seat for an unforgettable dining experience.
+            </p>
+          </div>
 
-      <Navbar onCartClick={() => setIsCartOpen(true)} />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <input name="fullName" placeholder="Full Name" required className="luxury-input" onChange={handleChange} />
+              <input name="email" type="email" placeholder="Email" required className="luxury-input" onChange={handleChange} />
+              <input name="mobile" placeholder="Mobile Number" required className="luxury-input" onChange={handleChange} />
+              <input name="city" placeholder="City" required className="luxury-input" onChange={handleChange} />
+              <input name="address" placeholder="Address" required className="luxury-input" onChange={handleChange} />
+              <input name="pincode" placeholder="Pincode" required className="luxury-input" onChange={handleChange} />
+            </div>
 
-      <main className="relative z-10 pt-32 pb-32">
-        <AnimatePresence mode="wait">
-          {!isSubmitted ? (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="section-container max-w-3xl mx-auto"
-            >
-              {/* Header */}
-              <div className="text-center mb-12">
-                <span className="text-primary tracking-widest text-xs uppercase">
-                  Book a Table
-                </span>
-                <h1 className="font-serif text-4xl md:text-5xl text-white mt-3">
-                  Make a Reservation
-                </h1>
-                <p className="text-white/70 mt-4">
-                  Reserve your seat for an unforgettable dining experience.
-                </p>
-              </div>
-
-              {/* FORM CARD */}
-              <motion.form
-                onSubmit={handleSubmit}
-                className="backdrop-blur-xl bg-white/90 rounded-[32px] p-10 md:p-12 shadow-[0_30px_120px_rgba(0,0,0,0.35)] space-y-6"
-              >
-                <div className="grid md:grid-cols-2 gap-4">
-                  {[
-                    ["fullName", "Full Name"],
-                    ["email", "Email"],
-                    ["mobile", "Mobile Number"],
-                    ["location", "City"],
-                    ["address", "Address"],
-                    ["pincode", "Pincode"],
-                  ].map(([name, label]) => (
-                    <input
-                      key={name}
-                      name={name}
-                      placeholder={label}
-                      required
-                      className="luxury-input"
-                      onChange={handleChange}
-                    />
-                  ))}
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="relative">
-                    <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <select
-                      name="guests"
-                      className="luxury-input pl-12"
-                      onChange={handleChange}
-                      defaultValue={2}
-                    >
-                      {[1,2,3,4,5,6,7,8].map(n => (
-                        <option key={n} value={n}>
-                          {n} Guest{n > 1 && "s"}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="relative">
-                    <CalendarDays className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      type="date"
-                      name="date"
-                      required
-                      className="luxury-input pl-12"
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      type="time"
-                      name="time"
-                      required
-                      className="luxury-input pl-12"
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <textarea
-                  name="specialRequest"
-                  placeholder="Special requests (optional)"
-                  rows={3}
-                  className="luxury-input"
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <select
+                  name="guests"
+                  className="luxury-input pl-10"
                   onChange={handleChange}
-                />
-
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="submit"
-                  className="btn-gold w-full py-4 text-lg"
+                  defaultValue={2}
                 >
-                  Confirm Reservation
-                </motion.button>
-              </motion.form>
-            </motion.div>
-          ) : (
-            /* ✅ SUCCESS UX */
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="section-container max-w-xl mx-auto text-center"
-            >
-              <div className="backdrop-blur-xl bg-white/90 rounded-[32px] p-12 shadow-[0_30px_120px_rgba(0,0,0,0.35)]">
-                <CheckCircle className="w-16 h-16 text-primary mx-auto mb-6" />
-                <h2 className="font-serif text-3xl mb-3">
-                  Reservation Confirmed
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  We look forward to welcoming you.
-                </p>
-                <div className="glass-card p-6 mb-6">
-                  <p className="text-sm text-muted-foreground">
-                    Reservation ID
-                  </p>
-                  <p className="font-serif text-2xl text-primary">
-                    {orderId}
-                  </p>
-                </div>
-                <button
-                  onClick={() => navigate("/")}
-                  className="btn-gold px-10"
-                >
-                  Back to Home
-                </button>
+                  {[1,2,3,4,5,6,7,8].map(n => (
+                    <option key={n} value={n}>{n} Guest{n > 1 && "s"}</option>
+                  ))}
+                </select>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+              <div className="relative">
+                <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <input type="date" name="date" required className="luxury-input pl-10" onChange={handleChange} />
+              </div>
+
+              <div className="relative">
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <input type="time" name="time" required className="luxury-input pl-10" onChange={handleChange} />
+              </div>
+            </div>
+
+            <textarea
+              name="specialRequest"
+              rows={3}
+              placeholder="Special requests (optional)"
+              className="luxury-input"
+              onChange={handleChange}
+            />
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              className="btn-gold w-full py-4"
+            >
+              Confirm Reservation
+            </motion.button>
+          </form>
+        </motion.div>
       </main>
 
       {/* CTA */}
       <ReservationCTA />
 
       <Footer />
-      <CartModal
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-      />
     </div>
   );
 };
