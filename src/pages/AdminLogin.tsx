@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ADMIN_EMAIL = "admin@veloria.com";
-const ADMIN_PASSWORD = "veloria123";
+const ADMIN_PASSWORD = "admin123";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
