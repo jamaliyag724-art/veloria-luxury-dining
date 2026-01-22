@@ -37,14 +37,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       className="menu-card group"
     >
       {/* Image */}
-      <div className="relative overflow-hidden rounded-xl mb-4">
-        <motion.img
-          src={item.image}
-          alt={item.name}
-          className="w-full h-48 object-cover"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.5 }}
-        />
+      <div className="relative w-full overflow-hidden rounded-xl aspect-[4/3]">
+  <img
+    src={item.image}
+    alt={item.name}
+    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+    loading="lazy"
+  />
+</div>
         {item.featured && (
           <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
             Chef's Pick
