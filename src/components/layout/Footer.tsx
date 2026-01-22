@@ -33,24 +33,39 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="text-white/90 py-20">
+    <footer className="relative overflow-hidden text-white">
+      {/* Background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url(/footer-bg.webp)" }}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage: "url(/grain.png)",
+          backgroundRepeat: "repeat",
+        }}
+      />
+      <div className="absolute inset-0 bg-black/45" />
+
+      {/* Content */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="section-container"
+        className="relative z-10 section-container py-20"
       >
         {/* Gold Divider */}
         <div className="w-16 h-[2px] bg-primary mx-auto mb-16 rounded-full" />
 
-        {/* Grid */}
+        {/* GRID */}
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <motion.div variants={itemVariants} className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
               <Utensils className="w-8 h-8 text-primary" />
-              <span className="font-serif text-2xl font-semibold text-white">
+              <span className="font-serif text-2xl font-semibold">
                 Veloria
               </span>
             </Link>
@@ -63,7 +78,7 @@ const Footer: React.FC = () => {
                   key={i}
                   whileHover={{ scale: 1.1, y: -2 }}
                   href="#"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-primary-foreground transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   <Icon className="w-5 h-5" />
                 </motion.a>
@@ -71,12 +86,10 @@ const Footer: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Quick Links */}
+          {/* Links */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <h4 className="font-serif text-lg font-semibold text-white">
-              Quick Links
-            </h4>
-            <nav className="space-y-3">
+            <h4 className="font-serif text-lg font-semibold">Quick Links</h4>
+            <nav className="space-y-3 text-sm">
               {[
                 { name: "Home", path: "/" },
                 { name: "Our Menu", path: "/menu" },
@@ -87,7 +100,7 @@ const Footer: React.FC = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="block text-white/70 hover:text-primary transition-colors text-sm"
+                  className="block text-white/70 hover:text-primary transition-colors"
                 >
                   {link.name}
                 </Link>
@@ -97,9 +110,7 @@ const Footer: React.FC = () => {
 
           {/* Hours */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <h4 className="font-serif text-lg font-semibold text-white">
-              Hours
-            </h4>
+            <h4 className="font-serif text-lg font-semibold">Hours</h4>
             <div className="space-y-4 text-sm">
               {[
                 { label: "Lunch", value: restaurantInfo.hours.lunch },
@@ -109,7 +120,7 @@ const Footer: React.FC = () => {
                 <div key={h.label} className="flex gap-3">
                   <Clock className="w-5 h-5 text-primary" />
                   <div>
-                    <p className="font-medium text-white">{h.label}</p>
+                    <p className="font-medium">{h.label}</p>
                     <p className="text-white/70">{h.value}</p>
                   </div>
                 </div>
@@ -119,9 +130,7 @@ const Footer: React.FC = () => {
 
           {/* Contact */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <h4 className="font-serif text-lg font-semibold text-white">
-              Contact
-            </h4>
+            <h4 className="font-serif text-lg font-semibold">Contact</h4>
             <div className="space-y-4 text-sm">
               <div className="flex gap-3">
                 <MapPin className="w-5 h-5 text-primary" />
@@ -134,7 +143,7 @@ const Footer: React.FC = () => {
                 <Phone className="w-5 h-5 text-primary" />
                 <a
                   href={`tel:${restaurantInfo.phone}`}
-                  className="text-white/70 hover:text-primary transition-colors"
+                  className="text-white/70 hover:text-primary"
                 >
                   {restaurantInfo.phone}
                 </a>
@@ -143,7 +152,7 @@ const Footer: React.FC = () => {
                 <Mail className="w-5 h-5 text-primary" />
                 <a
                   href={`mailto:${restaurantInfo.email}`}
-                  className="text-white/70 hover:text-primary transition-colors"
+                  className="text-white/70 hover:text-primary"
                 >
                   {restaurantInfo.email}
                 </a>
@@ -161,12 +170,8 @@ const Footer: React.FC = () => {
             © {currentYear} Veloria. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-white/60">
-            <a href="#" className="hover:text-primary transition-colors">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
-              Terms of Service
-            </a>
+            <a href="#" className="hover:text-primary">Privacy Policy</a>
+            <a href="#" className="hover:text-primary">Terms of Service</a>
           </div>
         </motion.div>
       </motion.div>
