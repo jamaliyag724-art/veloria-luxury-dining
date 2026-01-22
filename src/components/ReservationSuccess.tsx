@@ -1,50 +1,56 @@
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
-interface Props {
-  reservationId: string;
-}
+const ReservationSuccess = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-const ReservationSuccess: React.FC<Props> = ({ reservationId }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="bg-background/90 backdrop-blur-xl rounded-3xl p-12 text-center shadow-[0_40px_120px_rgba(0,0,0,0.35)]"
-    >
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.2, type: "spring" }}
-        className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6"
-      >
-        <CheckCircle className="w-10 h-10 text-green-500" />
-      </motion.div>
+    <div className="relative min-h-screen bg-black text-white">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-30"
+        style={{ backgroundImage: "url(/success-bg.webp)" }}
+      />
+      <div className="absolute inset-0 bg-black/70" />
 
-      <h2 className="font-serif text-3xl mb-3">
-        Reservation Confirmed
-      </h2>
+      <Navbar />
 
-      <p className="text-muted-foreground mb-6">
-        We look forward to welcoming you at Veloria.
-      </p>
+      <main className="relative z-10 pt-40 pb-32">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-lg mx-auto bg-white/10 backdrop-blur-xl rounded-3xl p-10 text-center"
+        >
+          <CheckCircle className="w-20 h-20 text-primary mx-auto mb-6" />
 
-      <div className="border border-border rounded-xl p-4 mb-6">
-        <p className="text-sm text-muted-foreground">Reservation ID</p>
-        <p className="font-serif text-2xl text-primary font-semibold">
-          {reservationId}
-        </p>
-      </div>
+          <h1 className="font-serif text-4xl mb-4">
+            Reservation Confirmed
+          </h1>
 
-      <Link
-        to="/"
-        className="btn-gold inline-block px-10 py-3"
-      >
-        Back to Home
-      </Link>
-    </motion.div>
+          <p className="text-white/70 mb-8">
+            Your table is reserved. We look forward to welcoming you.
+          </p>
+
+          <div className="mb-8">
+            <p className="text-sm text-white/50">Reservation ID</p>
+            <p className="font-serif text-2xl text-primary">{id}</p>
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/")}
+            className="btn-gold px-10 py-3"
+          >
+            Back to Home
+          </motion.button>
+        </motion.div>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 
