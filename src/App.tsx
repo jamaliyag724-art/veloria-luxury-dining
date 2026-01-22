@@ -56,6 +56,8 @@ const App = () => {
                   <Route path="/order-success" element={<OrderSuccess />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/reservations" element={<Reservations />} />
+<Route path="/reservation-success/:id" element={<ReservationSuccess />} />
 
                   {/* ❌ 404 */}
                   <Route path="*" element={<NotFound />} />
