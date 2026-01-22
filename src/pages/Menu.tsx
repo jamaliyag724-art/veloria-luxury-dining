@@ -36,27 +36,27 @@ const Menu: React.FC = () => {
   );
 
   /* ---------------------------------------
-     PARALLAX SCROLL (NUMERIC ONLY)
+     PARALLAX SCROLL
   ---------------------------------------- */
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 600], [0, 80]); // ✅ px only
+  const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
   /* ---------------------------------------
      ACTIVE BACKGROUND (SAFE)
   ---------------------------------------- */
   const background = useMemo(() => {
     return (
-      CATEGORY_BACKGROUNDS[activeCategory] ??
-      CATEGORY_BACKGROUNDS.starters
+      CATEGORY_BACKGROUNDS[activeCategory] ||
+      CATEGORY_BACKGROUNDS["starters"]
     );
   }, [activeCategory]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🌄 BACKGROUND (MENU ONLY) */}
+      {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={background}
+          key={activeCategory}
           initial={{ opacity: 0, scale: 1 }}
           animate={{ opacity: 1, scale: 1.08 }}
           exit={{ opacity: 0 }}
@@ -72,15 +72,56 @@ const Menu: React.FC = () => {
         />
       </AnimatePresence>
 
-      {/* 🌑 OVERLAY (ENDS BEFORE FOOTER) */}
-      <div className="fixed inset-0 bg-black/20 z-10 pointer-events-none" />
+      {/* 🌑 BASE DARK OVERLAY */}
+      <div className="fixed inset-0 bg-black/25 z-[5] pointer-events-none" />
 
-      {/* 🌟 MENU CONTENT */}
+      {/* 🌫️ AMBIENT FOG OVERLAY (STEP 5) */}
+      <div className="pointer-events-none fixed inset-0 z-[8] overflow-hidden">
+        {/* Fog layer 1 */}
+        <motion.div
+          className="absolute -top-1/3 -left-1/4 w-[140%] h-[140%]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(255,255,255,0.08), transparent 70%)",
+            filter: "blur(80px)",
+          }}
+          animate={{
+            x: ["-5%", "5%", "-5%"],
+            y: ["-3%", "3%", "-3%"],
+          }}
+          transition={{
+            duration: 90,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+
+        {/* Fog layer 2 */}
+        <motion.div
+          className="absolute -bottom-1/3 -right-1/4 w-[140%] h-[140%]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(212,162,76,0.06), transparent 70%)",
+            filter: "blur(100px)",
+          }}
+          animate={{
+            x: ["4%", "-4%", "4%"],
+            y: ["2%", "-2%", "2%"],
+          }}
+          transition={{
+            duration: 120,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+
+      {/* 🌟 CONTENT */}
       <div className="relative z-20">
         <Navbar onCartClick={() => setIsCartOpen(true)} />
 
         <main className="pt-32 pb-32">
-          <div className="section-container bg-background/90 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl">
+          <div className="section-container bg-background/90 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-2xl">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -112,7 +153,7 @@ const Menu: React.FC = () => {
               key={activeCategory}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center text-muted-foreground mb-8"
+              className="text-center text-muted-foreground mb-10"
             >
               {currentCategory?.description}
             </motion.p>
@@ -132,38 +173,13 @@ const Menu: React.FC = () => {
         </main>
       </div>
 
-    {/* 🌅 FOOTER — LUXURY CHAPTER */}
-<section className="relative z-30 overflow-hidden">
-  {/* Background image */}
-  <div
-    className="absolute inset-0 bg-cover bg-center"
-    style={{
-      backgroundImage: "url('/footer-bg.webp')",
-    }}
-  />
+      {/* 🌅 FOOTER — SEPARATE VISUAL CHAPTER */}
+      <section className="relative z-30 bg-gradient-to-b from-background via-background to-muted/40">
+        <div className="w-24 h-[2px] bg-primary mx-auto mb-12 rounded-full" />
+        <Footer />
+      </section>
 
-  {/* Dark luxury overlay */}
-  <div className="absolute inset-0 bg-black/55" />
-
-  {/* Grain texture */}
-  <div
-    className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
-    style={{
-      backgroundImage: "url('/grain.png')",
-    }}
-  />
-
-  {/* Soft top fade */}
-  <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-background to-transparent" />
-
-  {/* Content */}
-  <div className="relative">
-    <div className="w-24 h-[2px] bg-primary mx-auto mt-10 mb-12 rounded-full" />
-    <Footer />
-  </div>
-</section>
-
-      {/* Cart UI */}
+      {/* 🛒 CART UI */}
       <FloatingCart onClick={() => setIsCartOpen(true)} />
       <CartModal
         isOpen={isCartOpen}
