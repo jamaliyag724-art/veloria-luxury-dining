@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -9,9 +14,9 @@ import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
 import { menuCategories, getItemsByCategory } from "@/data/menuData";
 
-/* -----------------------------------------
-   CATEGORY → BACKGROUND (WebP optimized)
------------------------------------------- */
+/* ---------------------------------------
+   CATEGORY → BACKGROUND MAP (WebP)
+---------------------------------------- */
 const CATEGORY_BACKGROUNDS: Record<string, string> = {
   starters: "/starters.webp",
   brunch: "/brunch.webp",
@@ -30,15 +35,15 @@ const Menu: React.FC = () => {
     (c) => c.id === activeCategory
   );
 
-  /* -----------------------------------------
+  /* ---------------------------------------
      PARALLAX SCROLL
-  ------------------------------------------ */
+  ---------------------------------------- */
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
-  /* -----------------------------------------
+  /* ---------------------------------------
      ACTIVE BACKGROUND (SAFE)
-  ------------------------------------------ */
+  ---------------------------------------- */
   const background = useMemo(() => {
     return (
       CATEGORY_BACKGROUNDS[activeCategory] ||
@@ -48,33 +53,34 @@ const Menu: React.FC = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-     {/* 🎥 Background */}
-<AnimatePresence mode="wait">
-  <motion.div
-    key={activeCategory}
-    initial={{ opacity: 0, scale: 1 }}
-    animate={{ opacity: 1, scale: 1.08 }}
-    exit={{ opacity: 0 }}
-    transition={{
-      opacity: { duration: 1.5 },
-      scale: { duration: 14, ease: "linear" },
-    }}
-    style={{
-      backgroundImage: `url(${background})`,
-      y,
-    }}
-    className="fixed inset-0 bg-cover bg-center z-0"
-  />
-</AnimatePresence>
+      {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${activeCategory}-${background}`}
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1.08 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            opacity: { duration: 1.5 },
+            scale: { duration: 14, ease: "linear" },
+          }}
+          style={{
+            backgroundImage: `url(${background})`,
+            y,
+          }}
+          className="fixed inset-0 bg-cover bg-center z-0"
+        />
+      </AnimatePresence>
 
-{/* 🌑 Overlay */}
-<div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-10 pointer-events-none" />
+      {/* 🌑 OVERLAY */}
+      <div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-10 pointer-events-none" />
 
-{/* 🌟 Content */}
-<div className="relative z-20">
-  {/* Navbar, Menu, Cards, Footer */}
-</div>
+      {/* 🌟 CONTENT */}
+      <div className="relative z-20">
+        <Navbar onCartClick={() => setIsCartOpen(true)} />
 
+        <main className="pt-32 pb-24">
+          <div className="section-container">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
