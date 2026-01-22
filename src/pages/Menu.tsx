@@ -52,7 +52,7 @@ const Menu: React.FC = () => {
   }, [activeCategory]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative">
       {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}
       <AnimatePresence mode="wait">
         <motion.div
