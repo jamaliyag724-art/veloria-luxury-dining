@@ -22,7 +22,7 @@ const ReservationSuccess = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg mx-auto bg-white/10 backdrop-blur-xl rounded-3xl p-10 text-center"
+          className="max-w-lg mx-auto bg-white/10 backdrop-blur-2xl rounded-3xl p-10 text-center"
         >
           <CheckCircle className="w-20 h-20 text-primary mx-auto mb-6" />
 
@@ -31,7 +31,7 @@ const ReservationSuccess = () => {
           </h1>
 
           <p className="text-white/70 mb-8">
-            Your table is reserved. We look forward to welcoming you.
+            We look forward to welcoming you at Veloria.
           </p>
 
           <div className="mb-8">
