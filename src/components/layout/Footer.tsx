@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-   <footer className="bg-transparent py-20 border-t border-border/60">
+   <footer className="text-background/90"  py-20 border-t border-border/60">
       <motion.div
         variants={containerVariants}
         initial="hidden"
