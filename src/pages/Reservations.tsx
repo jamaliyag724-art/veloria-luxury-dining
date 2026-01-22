@@ -112,7 +112,9 @@ const Reservations: React.FC = () => {
         }}
       />
       <div className="absolute inset-0 bg-black/45" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+      {/* Ambient vignette */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50 z-0" />
+
 
       {/* 🌟 CONTENT */}
       <div className="relative z-10">
