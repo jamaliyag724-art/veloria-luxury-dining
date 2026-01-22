@@ -1,17 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { 
-  Utensils, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Instagram, 
-  Facebook, 
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Utensils,
+  MapPin,
+  Phone,
+  Mail,
+  Instagram,
+  Facebook,
   Twitter,
-  Clock
-} from 'lucide-react';
-import { restaurantInfo } from '@/data/restaurantData';
+  Clock,
+} from "lucide-react";
+import { restaurantInfo } from "@/data/restaurantData";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.12,
         delayChildren: 0.2,
       },
     },
@@ -33,68 +33,61 @@ const Footer: React.FC = () => {
   };
 
   return (
-   <footer className="text-background/90"  py-20 border-t border-border/60">
+    <footer className="text-white/90 py-20">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="section-container py-16"
+        className="section-container"
       >
-       <div className="w-10 h-[2px] bg-primary mx-auto mb-12 rounded-full" /><div>
-          {/* Brand Column */}
+        {/* Gold Divider */}
+        <div className="w-16 h-[2px] bg-primary mx-auto mb-16 rounded-full" />
+
+        {/* Grid */}
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
           <motion.div variants={itemVariants} className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
               <Utensils className="w-8 h-8 text-primary" />
-              <span className="font-serif text-2xl font-semibold text-foreground">
+              <span className="font-serif text-2xl font-semibold text-white">
                 Veloria
               </span>
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-white/70 text-sm leading-relaxed">
               {restaurantInfo.tagline}
             </p>
             <div className="flex gap-4">
-              <motion.a
-                whileHover={{ scale: 1.1, y: -2 }}
-                href="#"
-                className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Instagram className="w-5 h-5" />
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.1, y: -2 }}
-                href="#"
-                className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Facebook className="w-5 h-5" />
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.1, y: -2 }}
-                href="#"
-                className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </motion.a>
+              {[Instagram, Facebook, Twitter].map((Icon, i) => (
+                <motion.a
+                  key={i}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  <Icon className="w-5 h-5" />
+                </motion.a>
+              ))}
             </div>
           </motion.div>
 
           {/* Quick Links */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <h4 className="font-serif text-lg font-semibold text-foreground">
+            <h4 className="font-serif text-lg font-semibold text-white">
               Quick Links
             </h4>
             <nav className="space-y-3">
               {[
-                { name: 'Home', path: '/' },
-                { name: 'Our Menu', path: '/menu' },
-                { name: 'Reservations', path: '/reservations' },
-                { name: 'Private Events', path: '/#contact' },
-                { name: 'Gift Cards', path: '/#contact' },
+                { name: "Home", path: "/" },
+                { name: "Our Menu", path: "/menu" },
+                { name: "Reservations", path: "/reservations" },
+                { name: "Private Events", path: "/#contact" },
+                { name: "Gift Cards", path: "/#contact" },
               ].map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="block text-muted-foreground hover:text-primary transition-colors text-sm"
+                  className="block text-white/70 hover:text-primary transition-colors text-sm"
                 >
                   {link.name}
                 </Link>
@@ -104,61 +97,53 @@ const Footer: React.FC = () => {
 
           {/* Hours */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <h4 className="font-serif text-lg font-semibold text-foreground">
+            <h4 className="font-serif text-lg font-semibold text-white">
               Hours
             </h4>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-primary mt-0.5" />
-                <div className="text-sm">
-                  <p className="text-foreground font-medium">Lunch</p>
-                  <p className="text-muted-foreground">{restaurantInfo.hours.lunch}</p>
+            <div className="space-y-4 text-sm">
+              {[
+                { label: "Lunch", value: restaurantInfo.hours.lunch },
+                { label: "Dinner", value: restaurantInfo.hours.dinner },
+                { label: "Brunch", value: restaurantInfo.hours.brunch },
+              ].map((h) => (
+                <div key={h.label} className="flex gap-3">
+                  <Clock className="w-5 h-5 text-primary" />
+                  <div>
+                    <p className="font-medium text-white">{h.label}</p>
+                    <p className="text-white/70">{h.value}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-primary mt-0.5" />
-                <div className="text-sm">
-                  <p className="text-foreground font-medium">Dinner</p>
-                  <p className="text-muted-foreground">{restaurantInfo.hours.dinner}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-primary mt-0.5" />
-                <div className="text-sm">
-                  <p className="text-foreground font-medium">Brunch</p>
-                  <p className="text-muted-foreground">{restaurantInfo.hours.brunch}</p>
-                </div>
-              </div>
+              ))}
             </div>
           </motion.div>
 
           {/* Contact */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <h4 className="font-serif text-lg font-semibold text-foreground">
+            <h4 className="font-serif text-lg font-semibold text-white">
               Contact
             </h4>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primary mt-0.5" />
-                <div className="text-sm text-muted-foreground">
+            <div className="space-y-4 text-sm">
+              <div className="flex gap-3">
+                <MapPin className="w-5 h-5 text-primary" />
+                <div className="text-white/70">
                   <p>{restaurantInfo.address}</p>
                   <p>{restaurantInfo.city}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex gap-3">
                 <Phone className="w-5 h-5 text-primary" />
                 <a
                   href={`tel:${restaurantInfo.phone}`}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-white/70 hover:text-primary transition-colors"
                 >
                   {restaurantInfo.phone}
                 </a>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex gap-3">
                 <Mail className="w-5 h-5 text-primary" />
                 <a
                   href={`mailto:${restaurantInfo.email}`}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-white/70 hover:text-primary transition-colors"
                 >
                   {restaurantInfo.email}
                 </a>
@@ -170,12 +155,12 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <motion.div
           variants={itemVariants}
-          className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4"
+          className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4"
         >
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-white/60">
             © {currentYear} Veloria. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm text-muted-foreground">
+          <div className="flex gap-6 text-sm text-white/60">
             <a href="#" className="hover:text-primary transition-colors">
               Privacy Policy
             </a>
