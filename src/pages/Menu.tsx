@@ -132,11 +132,36 @@ const Menu: React.FC = () => {
         </main>
       </div>
 
-      {/* 🌅 FOOTER — CLEAN, SEPARATE CHAPTER */}
-      <section className="relative z-30 bg-gradient-to-b from-background via-background to-muted/40">
-        <div className="w-24 h-[2px] bg-primary mx-auto mt-10 mb-12 rounded-full" />
-        <Footer />
-      </section>
+    {/* 🌅 FOOTER — LUXURY CHAPTER */}
+<section className="relative z-30 overflow-hidden">
+  {/* Background image */}
+  <div
+    className="absolute inset-0 bg-cover bg-center"
+    style={{
+      backgroundImage: "url('/footer-bg.webp')",
+    }}
+  />
+
+  {/* Dark luxury overlay */}
+  <div className="absolute inset-0 bg-black/55" />
+
+  {/* Grain texture */}
+  <div
+    className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
+    style={{
+      backgroundImage: "url('/grain.png')",
+    }}
+  />
+
+  {/* Soft top fade */}
+  <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-background to-transparent" />
+
+  {/* Content */}
+  <div className="relative">
+    <div className="w-24 h-[2px] bg-primary mx-auto mt-10 mb-12 rounded-full" />
+    <Footer />
+  </div>
+</section>
 
       {/* Cart UI */}
       <FloatingCart onClick={() => setIsCartOpen(true)} />
