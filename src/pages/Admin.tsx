@@ -1,85 +1,61 @@
-import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, Users, LogOut } from "lucide-react";
 
-export default function Admin() {
-  const isAdmin = localStorage.getItem("veloria_admin");
+const ADMIN_EMAIL = "admin@veloria.com";
+const ADMIN_PASSWORD = "admin123";
 
-  if (!isAdmin) {
-    return <Navigate to="/admin/login" replace />;
-  }
+export default function AdminLogin() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const login = () => {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      localStorage.setItem("veloria_admin", "true");
+      navigate("/admin");
+    } else {
+      setError("Invalid credentials");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] p-10">
+    <div className="min-h-screen flex items-center justify-center bg-[#faf7f2]">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-8"
+        className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md"
       >
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-serif font-semibold">
-            Admin Dashboard
-          </h1>
+        <h1 className="text-2xl font-serif text-center mb-6">
+          Admin Login
+        </h1>
 
-          <button
-            onClick={() => {
-              localStorage.removeItem("veloria_admin");
-              window.location.href = "/";
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-white"
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </button>
-        </div>
+        <input
+          className="w-full mb-4 px-4 py-3 border rounded-lg"
+          placeholder="admin@veloria.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { label: "Total Reservations", value: 12, icon: Calendar },
-            { label: "Today", value: 3, icon: Calendar },
-            { label: "Guests", value: 28, icon: Users },
-            { label: "Upcoming", value: 6, icon: Calendar },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="p-5 rounded-xl bg-[#faf7f2] flex justify-between items-center"
-            >
-              <div>
-                <p className="text-sm text-gray-500">{s.label}</p>
-                <p className="text-2xl font-bold">{s.value}</p>
-              </div>
-              <s.icon className="w-6 h-6 text-[#d4a24c]" />
-            </div>
-          ))}
-        </div>
+        <input
+          type="password"
+          className="w-full mb-4 px-4 py-3 border rounded-lg"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b">
-                <th className="py-3 text-left">Order ID</th>
-                <th className="py-3 text-left">Name</th>
-                <th className="py-3 text-left">Email</th>
-                <th className="py-3 text-left">Guests</th>
-                <th className="py-3 text-left">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b">
-                <td className="py-3 text-[#d4a24c] font-medium">
-                  VLR-001
-                </td>
-                <td>James Anderson</td>
-                <td>james@email.com</td>
-                <td>4</td>
-                <td>25 Jan, 7:30 PM</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {error && (
+          <p className="text-red-500 text-sm mb-3">{error}</p>
+        )}
+
+        <button
+          onClick={login}
+          className="w-full py-3 rounded-lg bg-[#d4a24c] text-white font-medium"
+        >
+          Sign In
+        </button>
       </motion.div>
     </div>
   );
