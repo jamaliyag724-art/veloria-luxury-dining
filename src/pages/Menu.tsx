@@ -10,9 +10,9 @@ import { menuCategories, getItemsByCategory } from "@/data/menuData";
 
 // 🔁 Background images (loop)
 const BACKGROUNDS = [
-  "foo1.jpg",
-  "foo2.jpg",
-  "foo3.jpg",
+  "./foo1.jpg",
+  "./foo2.jpg",
+  "./foo3.jpg",
 ];
 
 const Menu: React.FC = () => {
