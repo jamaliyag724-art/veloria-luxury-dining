@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   motion,
   AnimatePresence,
@@ -36,116 +36,116 @@ const Menu: React.FC = () => {
   );
 
   /* ---------------------------------------
-     PARALLAX SCROLL
+     PARALLAX SCROLL (NUMERIC ONLY)
   ---------------------------------------- */
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
+  const y = useTransform(scrollY, [0, 600], [0, 80]); // ✅ px only
 
   /* ---------------------------------------
      ACTIVE BACKGROUND (SAFE)
   ---------------------------------------- */
   const background = useMemo(() => {
     return (
-      CATEGORY_BACKGROUNDS[activeCategory] ||
-      CATEGORY_BACKGROUNDS["starters"]
+      CATEGORY_BACKGROUNDS[activeCategory] ??
+      CATEGORY_BACKGROUNDS.starters
     );
   }, [activeCategory]);
 
-return (
-  <div className="relative min-h-screen overflow-hidden">
-    {/* 🌄 BACKGROUND (ONLY FOR MENU AREA) */}
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={`${activeCategory}-${background}`}
-        initial={{ opacity: 0, scale: 1 }}
-        animate={{ opacity: 1, scale: 1.08 }}
-        exit={{ opacity: 0 }}
-        transition={{
-          opacity: { duration: 1.5 },
-          scale: { duration: 14, ease: "linear" },
-        }}
-        style={{
-          backgroundImage: `url(${background})`,
-          y,
-        }}
-        className="fixed inset-0 bg-cover bg-center z-0"
-      />
-    </AnimatePresence>
+  return (
+    <div className="relative min-h-screen overflow-hidden">
+      {/* 🌄 BACKGROUND (MENU ONLY) */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={background}
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1.08 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            opacity: { duration: 1.5 },
+            scale: { duration: 14, ease: "linear" },
+          }}
+          style={{
+            backgroundImage: `url(${background})`,
+            y,
+          }}
+          className="fixed inset-0 bg-cover bg-center z-0"
+        />
+      </AnimatePresence>
 
-    {/* 🌑 OVERLAY (ENDS WITH MENU) */}
-    <div className="fixed inset-0 bg-black/20 z-10 pointer-events-none" />
+      {/* 🌑 OVERLAY (ENDS BEFORE FOOTER) */}
+      <div className="fixed inset-0 bg-black/20 z-10 pointer-events-none" />
 
-    {/* 🌟 MENU CONTENT */}
-    <div className="relative z-20">
-      <Navbar onCartClick={() => setIsCartOpen(true)} />
+      {/* 🌟 MENU CONTENT */}
+      <div className="relative z-20">
+        <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-      <main className="pt-32 pb-32">
-        <div className="section-container bg-background/90 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <span className="text-primary font-medium tracking-wider text-sm uppercase">
-              Culinary Excellence
-            </span>
-            <h1 className="font-serif text-4xl md:text-5xl font-medium mt-4 mb-4">
-              Our Menu
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover our carefully curated selection of dishes, each crafted
-              with the finest ingredients.
-            </p>
-          </motion.div>
+        <main className="pt-32 pb-32">
+          <div className="section-container bg-background/90 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl">
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
+            >
+              <span className="text-primary font-medium tracking-wider text-sm uppercase">
+                Culinary Excellence
+              </span>
+              <h1 className="font-serif text-4xl md:text-5xl font-medium mt-4 mb-4">
+                Our Menu
+              </h1>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Discover our carefully curated selection of dishes, each crafted
+                with the finest ingredients.
+              </p>
+            </motion.div>
 
-          {/* Category Tabs */}
-          <div className="mb-8">
-            <CategoryTabs
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-            />
+            {/* Category Tabs */}
+            <div className="mb-8">
+              <CategoryTabs
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+              />
+            </div>
+
+            {/* Category Description */}
+            <motion.p
+              key={activeCategory}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center text-muted-foreground mb-8"
+            >
+              {currentCategory?.description}
+            </motion.p>
+
+            {/* Menu Grid */}
+            <motion.div
+              layout
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence mode="popLayout">
+                {items.map((item) => (
+                  <MenuItemCard key={item.id} item={item} />
+                ))}
+              </AnimatePresence>
+            </motion.div>
           </div>
+        </main>
+      </div>
 
-          {/* Category Description */}
-          <motion.p
-            key={activeCategory}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center text-muted-foreground mb-8"
-          >
-            {currentCategory?.description}
-          </motion.p>
+      {/* 🌅 FOOTER — CLEAN, SEPARATE CHAPTER */}
+      <section className="relative z-30 bg-gradient-to-b from-background via-background to-muted/40">
+        <div className="w-24 h-[2px] bg-primary mx-auto mt-10 mb-12 rounded-full" />
+        <Footer />
+      </section>
 
-          {/* Menu Grid */}
-          <motion.div
-            layout
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            <AnimatePresence mode="popLayout">
-              {items.map((item) => (
-                <MenuItemCard key={item.id} item={item} />
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-      </main>
+      {/* Cart UI */}
+      <FloatingCart onClick={() => setIsCartOpen(true)} />
+      <CartModal
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
     </div>
-
-    {/* 🌅 FOOTER — NEW VISUAL CHAPTER */}
-    <section className="relative z-30 bg-gradient-to-b from-background via-background to-muted/40">
-      {/* subtle gold divider */}
-      <div className="w-24 h-[2px] bg-primary mx-auto mt-8 mb-12 rounded-full" />
-      <Footer />
-    </section>
-
-    {/* Cart UI */}
-    <FloatingCart onClick={() => setIsCartOpen(true)} />
-    <CartModal
-      isOpen={isCartOpen}
-      onClose={() => setIsCartOpen(false)}
-    />
-  </div>
-);
+  );
+};
 
 export default Menu;
