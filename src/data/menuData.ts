@@ -232,7 +232,7 @@ export const menuItems: MenuItem[] = [
   image: "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=800",
   category: "wine-beverages",
 },
-
+];
 
 export const getFeaturedItems = () => menuItems.filter((item) => item.featured);
 export const getItemsByCategory = (category: string) => menuItems.filter((item) => item.category === category);
