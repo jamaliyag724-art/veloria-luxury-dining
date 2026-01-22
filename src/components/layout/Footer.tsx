@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-secondary/50 border-t border-border">
+    <footer className="bg-background border-t border-border shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
       <motion.div
         variants={containerVariants}
         initial="hidden"
