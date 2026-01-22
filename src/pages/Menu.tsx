@@ -131,7 +131,7 @@ const Menu: React.FC = () => {
           </div>
         </main>
   {/* FOOTER (NO BACKGROUND BEHIND IT) */}
-  <section className="relative z-30 bg-background">
+  <section className="relative z-90 bg-background">
     <Footer />
   </section>
 </div>
