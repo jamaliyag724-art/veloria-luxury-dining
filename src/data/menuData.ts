@@ -21,7 +21,7 @@ export const menuCategories: MenuCategory[] = [
   { id: 'lunch', name: 'Lunch', description: 'Midday elegance' },
   { id: 'main-course', name: 'Main Course', description: 'Signature creations' },
   { id: 'desserts', name: 'Desserts', description: 'Sweet finales' },
-  { id: 'beverages', name: 'Wine & Beverages', description: 'Curated selections' },
+  { id: "wine-beverages", name: 'Wine & Beverages', description: 'Curated selections' },
 ];
 
 export const menuItems: MenuItem[] = [
