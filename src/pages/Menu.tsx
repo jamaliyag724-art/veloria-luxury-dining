@@ -53,25 +53,28 @@ const Menu: React.FC = () => {
 
   return (
     <div className="relative">
-      {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1.08 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            opacity: { duration: 1.5 },
-            scale: { duration: 14, ease: "linear" },
-          }}
-          style={{
-            backgroundImage: `url(${background})`,
-            y,
-          }}
-            className="fixed inset-0 bg-cover bg-center z-0"
-        />
-      </AnimatePresence>
-
+      {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}     
+<AnimatePresence mode="wait">
+  <motion.div
+    key={`${activeCategory}-${background}`}
+    initial={{ opacity: 0, scale: 1 }}
+    animate={{ opacity: 1, scale: 1.06 }}
+    exit={{ opacity: 0 }}
+    transition={{
+      opacity: { duration: 1.2 },
+      scale: { duration: 18, ease: "linear" },
+    }}
+    style={{
+      backgroundImage: `url(${background})`,
+      ...(isMobile ? {} : { y }), // ❗ disable parallax on mobile
+    }}
+    className={`
+      inset-0 bg-cover bg-center
+      ${isMobile ? "absolute h-[420px]" : "fixed"}
+      z-0
+    `}
+  />
+</AnimatePresence>
       {/* 🌑 BASE DARK OVERLAY */}
       <div className="fixed inset-0 bg-black/25 z-[5] pointer-events-none" />
 
