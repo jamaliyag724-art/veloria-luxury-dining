@@ -40,15 +40,17 @@ const Menu: React.FC = () => {
 <AnimatePresence mode="wait">
   <motion.div
     key={bgIndex}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
+    initial={{ opacity: 0, scale: 1 }}
+    animate={{ opacity: 1, scale: 1.08 }} // 👈 slow zoom
     exit={{ opacity: 0 }}
-    transition={{ duration: 1, ease: "easeInOut" }}
-    className="fixed inset-0 bg-cover bg-center -z-5"
+    transition={{
+      opacity: { duration: 1.5 },
+      scale: { duration: 12, ease: "linear" }, // 👈 Ken Burns
+    }}
+    className="fixed inset-0 bg-cover bg-center -z-10"
     style={{ backgroundImage: `url(${BACKGROUNDS[bgIndex]})` }}
   />
 </AnimatePresence>
-
 {/* 🎥 Luxury overlay */}
 <div className="fixed inset-0 bg-black/10 backdrop-blur-[1px] -z-5" />
 
