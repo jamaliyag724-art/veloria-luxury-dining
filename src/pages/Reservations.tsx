@@ -4,7 +4,7 @@ import { CalendarDays, Clock, Users, CheckCircle } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
-import ReservationCTA from "@/components/reservations/ReservationCTA";
+import ReservationCTA from "@/components/home/ReservationCTA";
 import { useReservations } from "@/context/ReservationContext";
 import ReservationSuccess from "@/components/ReservationSuccess";
 
