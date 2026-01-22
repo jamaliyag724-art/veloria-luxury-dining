@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-background border-t border-border shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+   <footer className="bg-transparent py-20 border-t border-border/60">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
         viewport={{ once: true }}
         className="section-container py-16"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+       <div className="w-16 h-[2px] bg-primary mx-auto mb-12 rounded-full" />
           {/* Brand Column */}
           <motion.div variants={itemVariants} className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
