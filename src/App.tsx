@@ -15,6 +15,7 @@ import Admin from "./pages/Admin";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Sonner position="top-center" />
             <BrowserRouter>
               <Routes>
+                <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/" element={<Index />} />
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/reservations" element={<Reservations />} />
