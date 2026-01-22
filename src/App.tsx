@@ -5,12 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { CartProvider } from "@/context/CartContext";
-import { ReservationProvider } from "@/context/ReservationContext";
 import { AdminProvider } from "@/context/AdminContext";
 
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
-import Reservations from "./pages/Reservations";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Admin from "./pages/Admin";
@@ -20,7 +18,10 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
-import ReservationSuccess from "@/components/ReservationSuccess";
+import { Routes, Route } from "react-router-dom";
+import Reservations from "@/pages/Reservations";
+import ReservationSuccess from "@/pages/ReservationSuccess";
+import { ReservationProvider } from "@/context/ReservationContext";
 
 
 const queryClient = new QueryClient();
@@ -29,8 +30,8 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+         <ReservationProvider>
         <CartProvider>
-          <ReservationProvider>
             <AdminProvider>
               <Toaster />
               <Sonner position="top-center" />
@@ -59,8 +60,7 @@ const App = () => {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/reservations" element={<Reservations />} />
-<Route path="/reservation-success/:id" element={<ReservationSuccess />} />
-
+                 <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
                   {/* ❌ 404 */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
