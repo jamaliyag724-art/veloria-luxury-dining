@@ -6,6 +6,8 @@ import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import ReservationCTA from "@/components/reservations/ReservationCTA";
 import { useReservations } from "@/context/ReservationContext";
+import ReservationSuccess from "@/components/ReservationSuccess";
+
 
 const Reservations: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
