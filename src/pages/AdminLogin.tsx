@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ADMIN_EMAIL = "admin@veloria.com";
@@ -6,14 +6,23 @@ const ADMIN_PASSWORD = "admin123";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // ✅ If already logged in, redirect to /admin
+  useEffect(() => {
+    const isAdmin = localStorage.getItem("veloria_admin") === "true";
+    if (isAdmin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [navigate]);
+
   const handleLogin = () => {
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       localStorage.setItem("veloria_admin", "true");
-      navigate("/admin");
+      navigate("/admin", { replace: true });
     } else {
       setError("Invalid admin credentials");
     }
@@ -28,7 +37,7 @@ export default function AdminLogin() {
 
         <input
           className="w-full mb-4 px-4 py-3 rounded-lg border"
-          placeholder="Admin Email"
+          placeholder="admin@veloria.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -36,7 +45,7 @@ export default function AdminLogin() {
         <input
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-lg border"
-          placeholder="Password"
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
