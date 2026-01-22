@@ -36,21 +36,21 @@ const Menu: React.FC = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🔥 Background loop */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={bgIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${BACKGROUNDS[bgIndex]})` }}
-        />
-      </AnimatePresence>
+   {/* 🔁 Background loop */}
+<AnimatePresence mode="wait">
+  <motion.div
+    key={bgIndex}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 1.5, ease: "easeInOut" }}
+    className="fixed inset-0 bg-cover bg-center -z-10"
+    style={{ backgroundImage: `url(${BACKGROUNDS[bgIndex]})` }}
+  />
+</AnimatePresence>
 
-      {/* 🕊️ Light overlay for readability */}
-      <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
+{/* 🎥 Luxury overlay */}
+<div className="fixed inset-0 bg-black/25 backdrop-blur-[1px] -z-10" />
 
       {/* 🌟 CONTENT */}
       <div className="relative z-10">
