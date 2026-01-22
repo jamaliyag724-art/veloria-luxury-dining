@@ -34,8 +34,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.3 }}
-      className="menu-card group rounded-2xl bg-background shadow-sm hover:shadow-lg transition-shadow"
-    >
+     className="group rounded-2xl bg-background/90 backdrop-blur-sm shadow-xl p-4 transition-transform"
+>
       {/* IMAGE */}
       <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
         <img
