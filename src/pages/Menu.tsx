@@ -48,34 +48,33 @@ const Menu: React.FC = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🔁 BACKGROUND WITH KEN BURNS + PARALLAX */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1.08 }} // 🎥 Ken Burns
-          exit={{ opacity: 0 }}
-          transition={{
-            opacity: { duration: 1.5 },
-            scale: { duration: 14, ease: "linear" },
-          }}
-          style={{
-            backgroundImage: `url(${background})`,
-            y, // 🧭 parallax
-          }}
-          className="fixed inset-0 bg-cover bg-center -z-10"
-        />
-      </AnimatePresence>
+     {/* 🎥 Background */}
+<AnimatePresence mode="wait">
+  <motion.div
+    key={activeCategory}
+    initial={{ opacity: 0, scale: 1 }}
+    animate={{ opacity: 1, scale: 1.08 }}
+    exit={{ opacity: 0 }}
+    transition={{
+      opacity: { duration: 1.5 },
+      scale: { duration: 14, ease: "linear" },
+    }}
+    style={{
+      backgroundImage: `url(${background})`,
+      y,
+    }}
+    className="fixed inset-0 bg-cover bg-center z-0"
+  />
+</AnimatePresence>
 
-      {/* 🌑 LUXURY READABILITY OVERLAY */}
-      <div className="fixed inset-0 bg-black/20 backdrop-blur-[1px] -z-10" />
+{/* 🌑 Overlay */}
+<div className="fixed inset-0 bg-black/15 backdrop-blur-[1px] z-10 pointer-events-none" />
 
-      {/* 🌟 CONTENT */}
-      <div className="relative z-10">
-        <Navbar onCartClick={() => setIsCartOpen(true)} />
+{/* 🌟 Content */}
+<div className="relative z-20">
+  {/* Navbar, Menu, Cards, Footer */}
+</div>
 
-        <main className="pt-32 pb-24">
-          <div className="section-container">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
