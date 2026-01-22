@@ -43,14 +43,14 @@ const Menu: React.FC = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    transition={{ duration: 2, ease: "easeInOut" }}
-    className="fixed inset-0 bg-cover bg-center -z-10"
+    transition={{ duration: 1, ease: "easeInOut" }}
+    className="fixed inset-0 bg-cover bg-center -z-5"
     style={{ backgroundImage: `url(${BACKGROUNDS[bgIndex]})` }}
   />
 </AnimatePresence>
 
 {/* 🎥 Luxury overlay */}
-<div className="fixed inset-0 bg-black/10 backdrop-blur-[3px] -z-20" />
+<div className="fixed inset-0 bg-black/10 backdrop-blur-[1px] -z-5" />
 
       {/* 🌟 CONTENT */}
       <div className="relative z-10">
