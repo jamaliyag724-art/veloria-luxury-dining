@@ -177,22 +177,36 @@ const OrderSuccess: React.FC = () => {
               onClick={() => navigate('/menu')}
               className="btn-gold"
             >
-              Order More
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/')}
-              className="btn-outline-gold"
-            >
-              <Link to="/track-order">
-  <button className="btn-outline-gold mt-4">
-    Track Your Order
-  </button>
-</Link>
-              Back to Home
-            </motion.button>
-          </div>
+          {/* Action Buttons */}
+<div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={() => navigate('/menu')}
+    className="btn-gold"
+  >
+    Order More
+  </motion.button>
+
+  <Link to={`/track-order?orderId=${order.orderId}`}>
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="btn-outline-gold w-full"
+    >
+      Track Your Order
+    </motion.button>
+  </Link>
+
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={() => navigate('/')}
+    className="btn-outline-gold"
+  >
+    Back to Home
+  </motion.button>
+</div>
         </motion.div>
       </main>
       <Footer />
