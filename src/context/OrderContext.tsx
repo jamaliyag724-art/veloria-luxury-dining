@@ -72,14 +72,20 @@ export const OrderProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setOrders(prev => [newOrder, ...prev]);
     return orderId;
   };
-
-  const updateOrderStatus = (orderId: string, status: OrderStatus) => {
-    setOrders(prev =>
-      prev.map(order =>
-        order.orderId === orderId ? { ...order, orderStatus: status } : order
-      )
+const updateOrderStatus = (orderId: string, status: OrderStatus) => {
+  setOrders((prev) => {
+    const updated = prev.map((order) =>
+      order.orderId === orderId
+        ? { ...order, orderStatus: status }
+        : order
     );
-  };
+
+    // 🔑 THIS IS THE KEY
+    localStorage.setItem("orders", JSON.stringify(updated));
+
+    return updated;
+  });
+};
 
   const getOrderById = (orderId: string): Order | undefined => {
     return orders.find(order => order.orderId === orderId);
