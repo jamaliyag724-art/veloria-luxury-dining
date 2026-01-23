@@ -180,13 +180,16 @@ const OrderSuccess: React.FC = () => {
             <button onClick={() => navigate("/menu")} className="btn-gold">
               Order More
             </button>
+<Link to={`/track-order?orderId=${order.orderId}`}>
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="btn-outline-gold"
+  >
+    Track Your Order
+  </motion.button>
+</Link>
 
-            <Link
-              to={`/track-order?orderId=${order.orderId}`}
-              className="btn-outline-gold text-center"
-            >
-              Track Your Order
-            </Link>
           </div>
         </motion.div>
       </main>
