@@ -185,6 +185,11 @@ const OrderSuccess: React.FC = () => {
               onClick={() => navigate('/')}
               className="btn-outline-gold"
             >
+              <Link to="/track-order">
+  <button className="btn-outline-gold mt-4">
+    Track Your Order
+  </button>
+</Link>
               Back to Home
             </motion.button>
           </div>
