@@ -44,7 +44,6 @@ const Contact: React.FC = () => {
     }, 3000);
   };
 
-  /* 🔥 EMAIL REMOVED HERE */
   const contactDetails = [
     {
       icon: MapPin,
@@ -55,12 +54,15 @@ const Contact: React.FC = () => {
       icon: Phone,
       title: 'Call Us',
       lines: [restaurantInfo.phone],
-      href: `tel:${restaurantInfo.phone}`,
     },
     {
       icon: Clock,
       title: 'Hours',
-      lines: [restaurantInfo.hours.lunch, restaurantInfo.hours.dinner],
+      lines: [
+        restaurantInfo.hours.lunch,
+        restaurantInfo.hours.dinner,
+        restaurantInfo.hours.brunch,
+      ],
     },
   ];
 
@@ -89,10 +91,7 @@ const Contact: React.FC = () => {
 
           <div className="grid lg:grid-cols-2 gap-14">
             {/* ================= FORM ================= */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
               <div className="glass-card p-8">
                 <h2 className="font-serif text-2xl mb-6">Send Us a Message</h2>
 
@@ -202,11 +201,7 @@ const Contact: React.FC = () => {
             </motion.div>
 
             {/* ================= INFO + MAP ================= */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-8"
-            >
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
               {/* INFO CARDS */}
               <div className="grid sm:grid-cols-2 gap-4">
                 {contactDetails.map((item) => (
@@ -228,26 +223,15 @@ const Contact: React.FC = () => {
                 ))}
               </div>
 
-              {/* 🔥 WIDE MAP */}
-                     <div className="glass-card h-[420px] w-full overflow-hidden">
-                    <iframe
-                    title="Veloria Ahmedabad Location"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515!5m2!1sen!2sin"
-                    className="w-full h-full border-0"
-                    loading="lazy"
-                     referrerPolicy="no-referrer-when-downgrade"
-                              />
-                    </div>
-                      <MapPin className="w-6 h-6 text-primary-foreground" />
-                    </div>
-                    <div className="mt-4 glass-card px-4 py-2">
-                      <p className="font-serif text-sm font-semibold">Veloria</p>
-                      <p className="text-xs text-muted-foreground">
-                        {restaurantInfo.address}, {restaurantInfo.city}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              {/* 🔥 REAL GOOGLE MAP – EXTRA POLISH */}
+              <div className="glass-card h-[440px] w-full overflow-hidden rounded-3xl shadow-2xl">
+                <iframe
+                  title="Veloria Ahmedabad Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515!5m2!1sen!2sin"
+                  className="w-full h-full border-0 rounded-3xl"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
 
               {/* EVENTS */}
