@@ -11,6 +11,8 @@ import LocationSection from '@/components/home/LocationSection';
 import FAQSection from '@/components/home/FAQSection';
 import CartModal from '@/components/cart/CartModal';
 import FloatingCart from '@/components/cart/FloatingCart';
+import WelcomePopup from "@/components/home/WelcomePopup";
+
 
 const Index: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -18,6 +20,7 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar onCartClick={() => setIsCartOpen(true)} />
+      <WelcomePopup />
       <main>
         <HeroSection />
         <ChefRecommendations />
