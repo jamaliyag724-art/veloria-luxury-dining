@@ -1,33 +1,57 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
-import heroBg from '@/assets/hero-bg.jpg';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ChevronDown } from "lucide-react";
+
+/* 🔁 BACKGROUND IMAGES */
+const HERO_IMAGES = [
+  "/home-1.webp",
+  "/home-2.webp",
+  "/home-3.webp",
+];
 
 const HeroSection: React.FC = () => {
+  const [bgIndex, setBgIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 6000); // 6 sec per image
+
+    return () => clearInterval(interval);
+  }, []);
+
   const scrollToAbout = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Parallax Effect */}
-      <motion.div
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
-        className="absolute inset-0 z-0"
-      >
-        <div 
-          className="absolute inset-0 bg-cover bg-center animate-slow-zoom"
-          style={{ backgroundImage: `url(${heroBg})` }}
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
-      </motion.div>
+      {/* 🌄 BACKGROUND LOOP */}
+      <AnimatePresence>
+        <motion.div
+          key={bgIndex}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.6, ease: "easeInOut" }}
+          className="absolute inset-0 z-0"
+        >
+          <img
+            src={HERO_IMAGES[bgIndex]}
+            alt=""
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
 
-      {/* Content */}
+          {/* Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* 🌟 CONTENT */}
       <div className="relative z-10 section-container text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -86,6 +110,7 @@ const HeroSection: React.FC = () => {
                 <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </Link>
+
             <Link to="/reservations">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -104,20 +129,16 @@ const HeroSection: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.5 }}
           onClick={scrollToAbout}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-primary/60 hover:text-primary transition-colors"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-primary/60 hover:text-primary"
         >
           <motion.div
             animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 1.5, repeat: Infinity }}
           >
             <ChevronDown className="w-8 h-8" />
           </motion.div>
         </motion.button>
       </div>
-
-      {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
     </section>
   );
 };
