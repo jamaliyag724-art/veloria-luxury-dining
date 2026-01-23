@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { formatINR } from "@/lib/currency";
+
 
 interface FloatingCartProps {
   onClick: () => void;
@@ -29,7 +31,7 @@ const FloatingCart: React.FC<FloatingCartProps> = ({ onClick }) => {
         </span>
       </div>
       <span className="font-medium">
-        ${totalPrice.toFixed(2)}
+       {formatINR(totalPrice)}
       </span>
     </motion.button>
   );
