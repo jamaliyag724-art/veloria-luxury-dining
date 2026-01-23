@@ -6,7 +6,7 @@ import {
   X,
   ShoppingBag,
   Utensils,
-  Search
+  Search,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
                 </Link>
               ))}
 
-              {/* 🔥 Track Order (Premium) */}
+              {/* Track Order */}
               <Link
                 to="/track-order"
                 className="flex items-center gap-2 px-4 py-2 rounded-full
@@ -112,7 +112,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={onCartClick}
-                className="relative p-2.5 rounded-full bg-secondary/50"
+                className="relative p-3 rounded-full bg-secondary/60 active:scale-95"
               >
                 <ShoppingBag className="w-5 h-5" />
                 <AnimatePresence>
@@ -129,7 +129,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
                 </AnimatePresence>
               </motion.button>
 
-              {/* Reserve Button */}
+              {/* Desktop Reserve */}
               <Link to="/reservations" className="hidden md:block">
                 <button className="btn-gold px-6 py-2.5 text-sm">
                   Reserve Now
@@ -139,7 +139,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
               {/* Mobile Toggle */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-2 rounded-lg bg-secondary/50"
+                className="md:hidden p-3 rounded-xl bg-secondary/60 active:scale-95"
               >
                 {isOpen ? <X /> : <Menu />}
               </button>
@@ -165,7 +165,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-80 bg-card z-50"
+              className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-sm bg-card z-50"
             >
               <div className="p-6 flex flex-col h-full">
 
@@ -175,17 +175,17 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
                     <button
                       key={link.name}
                       onClick={() => handleNavClick(link.path)}
-                      className="w-full text-left px-4 py-3 rounded-xl hover:bg-secondary"
+                      className="w-full text-left px-4 py-4 rounded-2xl hover:bg-secondary text-base"
                     >
                       {link.name}
                     </button>
                   ))}
 
-                  {/* 🔥 Mobile Track Order */}
+                  {/* Mobile Track Order */}
                   <button
                     onClick={() => handleNavClick("/track-order")}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl
-                               bg-primary/10 text-primary font-medium"
+                    className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl
+                               bg-primary/10 text-primary font-medium text-base"
                   >
                     <Search className="w-5 h-5" />
                     Track Order
@@ -195,7 +195,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
                 {/* Bottom CTA */}
                 <button
                   onClick={() => handleNavClick("/reservations")}
-                  className="btn-gold w-full mt-4"
+                  className="btn-gold w-full mt-6 py-4 text-lg rounded-2xl"
                 >
                   Reserve a Table
                 </button>
