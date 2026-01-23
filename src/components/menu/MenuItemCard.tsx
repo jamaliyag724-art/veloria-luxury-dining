@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Plus, Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { MenuItem } from "@/data/menuData";
+import { formatINR } from "@/utils/currency";
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -98,9 +99,9 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
           <h3 className="font-serif text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
             {item.name}
           </h3>
-          <span className="font-serif text-lg font-bold text-primary whitespace-nowrap">
-            ${item.price}
-          </span>
+         <span className="font-serif font-semibold text-primary">
+  {formatINR(item.price)}
+</span>
         </div>
 
         <p className="text-sm text-muted-foreground line-clamp-2">
