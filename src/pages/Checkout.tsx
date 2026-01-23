@@ -57,10 +57,10 @@ const Checkout: React.FC = () => {
     Partial<Record<keyof CheckoutFormData, boolean>>
   >({});
 
-  /* -------------------- PRICE CALCULATION (NUMBER ONLY) -------------------- */
-  const subtotal = totalPrice;                 // number
-  const taxAmount = subtotal * TAX_RATE;       // number
-  const totalAmount = subtotal + taxAmount;    // number
+  /* -------------------- PRICE (NUMBER ONLY) -------------------- */
+  const subtotal = totalPrice;
+  const taxAmount = subtotal * TAX_RATE;
+  const totalAmount = subtotal + taxAmount;
 
   /* -------------------- FORM -------------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,26 +76,13 @@ const Checkout: React.FC = () => {
 
   /* -------------------- PAYMENT -------------------- */
   const handlePayment = () => {
-    const validation = checkoutSchema.safeParse(formData);
-    if (!validation.success) {
-      const fieldErrors: any = {};
-      validation.error.errors.forEach((e) => {
-        fieldErrors[e.path[0]] = e.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
+    if (!isFormValid()) return;
 
     setStep("processing");
 
     setTimeout(() => {
       const orderId = addOrder({
-        fullName: formData.fullName,
-        email: formData.email,
-        mobile: formData.mobile,
-        address: formData.address,
-        city: formData.city,
-        pincode: formData.pincode,
+        ...formData,
         items,
         subtotal,
         tax: taxAmount,
@@ -107,22 +94,6 @@ const Checkout: React.FC = () => {
       navigate(`/order-success/${orderId}`);
     }, 2000);
   };
-
-  /* -------------------- EMPTY CART -------------------- */
-  if (items.length === 0 && step === "payment") {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar onCartClick={() => setCartOpen(true)} />
-        <main className="pt-32 text-center">
-          <h1 className="font-serif text-3xl mb-4">Your cart is empty</h1>
-          <button onClick={() => navigate("/menu")} className="btn-gold">
-            Browse Menu
-          </button>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   /* -------------------- PROCESSING -------------------- */
   if (step === "processing") {
@@ -155,9 +126,54 @@ const Checkout: React.FC = () => {
           <h1 className="font-serif text-4xl text-center mb-10">Checkout</h1>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* SUMMARY */}
+            {/* DELIVERY FORM */}
             <div className="lg:col-span-2 glass-card p-6">
-              <h2 className="font-serif text-xl mb-6">Order Summary</h2>
+              <h2 className="font-serif text-xl mb-6">Delivery Details</h2>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                {[
+                  ["fullName", "Full Name"],
+                  ["email", "Email"],
+                  ["mobile", "Mobile"],
+                  ["city", "City"],
+                ].map(([key, label]) => (
+                  <div key={key}>
+                    <label className="text-sm">{label}</label>
+                    <input
+                      name={key}
+                      value={(formData as any)[key]}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className="luxury-input"
+                    />
+                  </div>
+                ))}
+
+                <div className="md:col-span-2">
+                  <label className="text-sm">Address</label>
+                  <input
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className="luxury-input"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm">Pincode</label>
+                  <input
+                    name="pincode"
+                    value={formData.pincode}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className="luxury-input"
+                  />
+                </div>
+              </div>
+
+              {/* SUMMARY */}
+              <h2 className="font-serif text-xl mt-8 mb-4">Order Summary</h2>
 
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between text-sm mb-2">
@@ -209,7 +225,7 @@ const Checkout: React.FC = () => {
               <button
                 disabled={!isFormValid()}
                 onClick={handlePayment}
-                className="btn-gold w-full mt-6"
+                className="btn-gold w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Pay {formatINR(totalAmount)}
               </button>
