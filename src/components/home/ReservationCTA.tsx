@@ -1,16 +1,19 @@
-import { motion } from "framer-motion";
-import { Calendar, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Calendar, Clock, Users } from "lucide-react";
 
 const ReservationCTA = () => {
   const navigate = useNavigate();
 
   return (
-     <section className="relative py-32 bg-[#FBF7F2] text-foreground">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-black/80 to-black" />
+    <section className="relative py-32 bg-[#FBF7F2] text-[#1c1917] overflow-hidden">
+      
+      {/* Subtle Luxury Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fbf7f2] via-[#f5efe7] to-[#efe6db]" />
 
-      <div className="relative z-10 max-w-6xl mx-auto text-center px-6">
-        <span className="text-primary uppercase tracking-widest text-sm">
+      {/* Content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+        
+        <span className="text-[#c9a24d] uppercase tracking-[0.3em] text-xs">
           Reserve Your Experience
         </span>
 
@@ -18,36 +21,48 @@ const ReservationCTA = () => {
           Create Unforgettable Moments
         </h2>
 
-        <p className="text-white/70 max-w-2xl mx-auto mb-16">
+        <p className="max-w-2xl mx-auto text-stone-600 text-lg mb-16">
           Whether it’s an intimate dinner or a grand celebration, we curate
           experiences tailored to your every need.
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {[
-            { icon: Calendar, title: "Easy Booking", desc: "Reserve in seconds" },
-            { icon: Clock, title: "Flexible Timing", desc: "Lunch & dinner slots" },
-            { icon: Users, title: "Private Events", desc: "Up to 50 guests" },
-          ].map((f, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -6 }}
-              className="bg-white/10 backdrop-blur-lg rounded-2xl p-8"
-            >
-              <f.icon className="w-8 h-8 text-primary mx-auto mb-4" />
-              <h4 className="font-serif text-xl mb-1">{f.title}</h4>
-              <p className="text-white/70 text-sm">{f.desc}</p>
-            </motion.div>
-          ))}
+        {/* Feature Cards */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          
+          <div className="rounded-3xl bg-white shadow-md p-8">
+            <Calendar className="mx-auto text-[#c9a24d] mb-4" />
+            <h4 className="font-serif text-xl mb-2">Easy Booking</h4>
+            <p className="text-stone-500 text-sm">
+              Reserve your table in seconds
+            </p>
+          </div>
+
+          <div className="rounded-3xl bg-white shadow-md p-8">
+            <Clock className="mx-auto text-[#c9a24d] mb-4" />
+            <h4 className="font-serif text-xl mb-2">Flexible Timing</h4>
+            <p className="text-stone-500 text-sm">
+              Lunch & dinner slots available
+            </p>
+          </div>
+
+          <div className="rounded-3xl bg-white shadow-md p-8">
+            <Users className="mx-auto text-[#c9a24d] mb-4" />
+            <h4 className="font-serif text-xl mb-2">Private Events</h4>
+            <p className="text-stone-500 text-sm">
+              Perfect for celebrations & gatherings
+            </p>
+          </div>
+
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
+        {/* CTA Button */}
+        <button
           onClick={() => navigate("/reservations")}
-          className="btn-gold px-12 py-4 text-lg"
+          className="px-10 py-4 rounded-full bg-[#c9a24d] text-white font-medium hover:bg-[#b8923e] transition"
         >
           Book Your Table
-        </motion.button>
+        </button>
+
       </div>
     </section>
   );
