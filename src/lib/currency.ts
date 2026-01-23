@@ -5,3 +5,7 @@ export const formatINR = (amount: number) => {
     maximumFractionDigits: 2,
   }).format(amount);
 };
+
+export const convertToINR = (amount: number) => {
+  return formatINR(amount);
+};
