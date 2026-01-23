@@ -1,86 +1,76 @@
-import { useState } from "react";
-import { useOrders } from "@/context/AdminContext";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Search } from "lucide-react";
 
-const TrackOrder = () => {
-  const { orders } = useOrders();
+const TrackOrder: React.FC = () => {
   const [orderId, setOrderId] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [order, setOrder] = useState<any>(null);
   const [error, setError] = useState("");
 
   const handleTrack = () => {
-    const found = orders.find(
-      (o) =>
-        o.id === orderId.trim() &&
-        o.mobile === mobile.trim()
-    );
+    setError("");
+    setOrder(null);
+
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const found = orders.find((o: any) => o.id === orderId);
 
     if (!found) {
-      setError("Order not found. Please check details.");
-      setResult(null);
+      setError("❌ Order not found. Please check your Order ID.");
       return;
     }
 
-    setResult(found);
-    setError("");
+    setOrder(found);
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-
-      <main className="pt-32 pb-24 section-container max-w-xl mx-auto">
-        <h1 className="font-serif text-4xl mb-6 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-lg w-full bg-white rounded-3xl shadow-xl p-8"
+      >
+        <h1 className="font-serif text-3xl mb-2 text-center">
           Track Your Order
         </h1>
+        <p className="text-muted-foreground text-center mb-6">
+          Enter your Order ID to check live status
+        </p>
 
-        <div className="bg-white rounded-3xl shadow-lg p-6 space-y-4">
+        <div className="flex gap-2 mb-4">
           <input
-            placeholder="Order ID (e.g. ORD-M6YYD1)"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
-            className="w-full input"
+            placeholder="ORD-XXXXXX"
+            className="luxury-input flex-1"
           />
-          <input
-            placeholder="Mobile Number"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
-            className="w-full input"
-          />
-
           <button
             onClick={handleTrack}
-            className="btn-gold w-full"
+            className="btn-gold px-5 flex items-center gap-2"
           >
-            Track Order
+            <Search size={18} />
+            Track
           </button>
-
-          {error && (
-            <p className="text-red-500 text-sm text-center">
-              {error}
-            </p>
-          )}
         </div>
 
-        {result && (
-          <div className="mt-8 bg-white rounded-3xl shadow-lg p-6 space-y-2">
-            <p><b>Order ID:</b> {result.id}</p>
-            <p><b>Name:</b> {result.customer}</p>
-            <p><b>Total:</b> ₹{result.total}</p>
-            <p><b>Payment:</b> {result.payment}</p>
-            <p className="font-semibold">
-              Status:{" "}
-              <span className="text-primary">
-                {result.status}
+        {error && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        )}
+
+        {order && (
+          <div className="mt-6 border-t pt-6 space-y-2 text-sm">
+            <p><b>Order ID:</b> {order.id}</p>
+            <p><b>Name:</b> {order.fullName}</p>
+            <p><b>Mobile:</b> {order.mobile}</p>
+            <p><b>Total:</b> ₹{order.total}</p>
+            <p>
+              <b>Status:</b>{" "}
+              <span className="text-primary font-medium">
+                {order.status}
               </span>
             </p>
           </div>
         )}
-      </main>
-
-      <Footer />
+      </motion.div>
     </div>
   );
 };
