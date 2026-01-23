@@ -78,15 +78,18 @@ export const faqs = [
 ];
 
 export const restaurantInfo = {
-  name: 'Veloria',
-  tagline: 'Where Every Dish Becomes a Timeless Story',
-  address: 'Platinum-Blue Sky, Behind Orbit',
-  city: 'Ahmedabad , India,382405',
-  phone: '+91 9537248835',
+  tagline: "Where Every Dish Becomes a Timeless Story",
+
+  address: "Platinum Blue Sky, Near Khajuri Bus Stop",
+  city: "Ahmedabad, Gujarat 382405",
+
+  phone: "+91 9537248835",
+
+  // ❌ email remove kar rahe hain
   hours: {
-    lunch: 'Mon-Fri: 12:00 PM - 3:00 PM',
-    dinner: 'Daily: 6:00 PM - 11:00 PM',
-    brunch: 'Sat-Sun: 11:00 AM - 3:00 PM',
+    lunch: "Mon-Fri: 12:00 PM - 3:00 PM",
+    dinner: "Daily: 6:00 PM - 11:00 PM",
+    brunch: "Sat-Sun: 11:00 AM - 3:00 PM",
   },
   social: {
     instagram: '@veloria.nyc',
