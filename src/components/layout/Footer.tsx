@@ -148,13 +148,6 @@ const Footer: React.FC = () => {
                   {restaurantInfo.phone}
                 </a>
               </div>
-              <div className="flex gap-3">
-                <Mail className="w-5 h-5 text-primary" />
-                <a
-                  href={`mailto:${restaurantInfo.email}`}
-                  className="text-white/70 hover:text-primary"
-                >
-                  {restaurantInfo.email}
                 </a>
               </div>
             </div>
