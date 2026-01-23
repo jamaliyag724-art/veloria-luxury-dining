@@ -23,6 +23,7 @@ import AdminLogin from "./pages/AdminLogin";
 import Reservations from "./pages/Reservations";
 import ReservationSuccess from "./pages/ReservationSuccess";
 import ReservationStatus from "./pages/ReservationStatus";
+import TrackOrder from "@/pages/TrackOrder";
 
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 
@@ -80,7 +81,7 @@ const App = () => {
                     <Route path="/order-success/:orderId" element={<OrderSuccess />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
-
+                    <Route path="/track-order" element={<TrackOrder />} />
                     {/* 404 */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
