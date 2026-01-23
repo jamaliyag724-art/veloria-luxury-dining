@@ -121,10 +121,7 @@ const Reservations = () => {
   decoding="async"
   className="absolute inset-0 w-full h-full object-cover scale-105"
 />
-
-<div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
-
-      <Navbar onCartClick={() => setCartOpen(true)} />
+    <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       <main className="relative z-10 pt-36 pb-32">
