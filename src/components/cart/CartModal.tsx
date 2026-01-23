@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
-import { formatINR } from "@/lib/utils/currency";
+import { formatINR } from "@/lib/currency";
 
 interface CartModalProps {
   isOpen: boolean;
