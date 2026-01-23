@@ -53,7 +53,6 @@ const AdminOrders: React.FC = () => {
       default: return 'bg-blue-100 text-blue-700';
     }
   };
-
   return (
     <div className="min-h-screen bg-ivory">
       {/* Header */}
