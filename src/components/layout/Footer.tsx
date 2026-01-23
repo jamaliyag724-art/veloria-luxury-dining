@@ -5,7 +5,6 @@ import {
   Utensils,
   MapPin,
   Phone,
-  Mail,
   Instagram,
   Facebook,
   Twitter,
@@ -20,10 +19,7 @@ const Footer: React.FC = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.12, delayChildren: 0.2 },
     },
   };
 
@@ -41,10 +37,7 @@ const Footer: React.FC = () => {
       />
       <div
         className="absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage: "url(/grain.png)",
-          backgroundRepeat: "repeat",
-        }}
+        style={{ backgroundImage: "url(/grain.png)", backgroundRepeat: "repeat" }}
       />
       <div className="absolute inset-0 bg-black/45" />
 
@@ -56,10 +49,9 @@ const Footer: React.FC = () => {
         viewport={{ once: true }}
         className="relative z-10 section-container py-20"
       >
-        {/* Gold Divider */}
+        {/* Divider */}
         <div className="w-16 h-[2px] bg-primary mx-auto mb-16 rounded-full" />
 
-        {/* GRID */}
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <motion.div variants={itemVariants} className="space-y-6">
@@ -69,9 +61,11 @@ const Footer: React.FC = () => {
                 Veloria
               </span>
             </Link>
+
             <p className="text-white/70 text-sm leading-relaxed">
               {restaurantInfo.tagline}
             </p>
+
             <div className="flex gap-4">
               {[Instagram, Facebook, Twitter].map((Icon, i) => (
                 <motion.a
@@ -86,7 +80,7 @@ const Footer: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Links */}
+          {/* Quick Links */}
           <motion.div variants={itemVariants} className="space-y-6">
             <h4 className="font-serif text-lg font-semibold">Quick Links</h4>
             <nav className="space-y-3 text-sm">
@@ -94,8 +88,6 @@ const Footer: React.FC = () => {
                 { name: "Home", path: "/" },
                 { name: "Our Menu", path: "/menu" },
                 { name: "Reservations", path: "/reservations" },
-                { name: "Private Events", path: "/#contact" },
-                { name: "Gift Cards", path: "/#contact" },
               ].map((link) => (
                 <Link
                   key={link.name}
@@ -131,6 +123,7 @@ const Footer: React.FC = () => {
           {/* Contact */}
           <motion.div variants={itemVariants} className="space-y-6">
             <h4 className="font-serif text-lg font-semibold">Contact</h4>
+
             <div className="space-y-4 text-sm">
               <div className="flex gap-3">
                 <MapPin className="w-5 h-5 text-primary" />
@@ -139,6 +132,7 @@ const Footer: React.FC = () => {
                   <p>{restaurantInfo.city}</p>
                 </div>
               </div>
+
               <div className="flex gap-3">
                 <Phone className="w-5 h-5 text-primary" />
                 <a
@@ -148,13 +142,11 @@ const Footer: React.FC = () => {
                   {restaurantInfo.phone}
                 </a>
               </div>
-                </a>
-              </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom */}
         <motion.div
           variants={itemVariants}
           className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4"
