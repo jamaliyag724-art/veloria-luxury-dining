@@ -6,10 +6,9 @@ import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { formatINR } from "@/lib/currency";
 
-const AUTOPLAY_DELAY = 4000;
+const AUTOPLAY_DELAY = 4500;
 
 const ChefRecommendations: React.FC = () => {
-  // ✅ MEMOIZE DATA (CRITICAL FIX)
   const featuredItems = useMemo(() => getFeaturedItems(), []);
   const { addItem } = useCart();
 
@@ -18,7 +17,6 @@ const ChefRecommendations: React.FC = () => {
 
   const itemsCount = featuredItems.length;
 
-  // ✅ SAFETY GUARD
   const nextSlide = useCallback(() => {
     if (itemsCount < 2) return;
     setCurrentIndex((prev) => (prev + 1) % itemsCount);
@@ -29,12 +27,9 @@ const ChefRecommendations: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + itemsCount) % itemsCount);
   }, [itemsCount]);
 
-  // ✅ BULLETPROOF AUTOPLAY
   useEffect(() => {
     if (isPaused || itemsCount < 2) return;
-
     const interval = setInterval(nextSlide, AUTOPLAY_DELAY);
-
     return () => clearInterval(interval);
   }, [isPaused, itemsCount, nextSlide]);
 
@@ -47,16 +42,14 @@ const ChefRecommendations: React.FC = () => {
       category: item.category,
     });
 
-    toast.success(`${item.name} added to order!`, {
+    toast.success(`${item.name} added to order`, {
       duration: 2000,
       icon: "🍽️",
     });
   };
 
-  // ✅ VISIBLE ITEMS (CENTERED)
   const visibleItems = useMemo(() => {
     if (itemsCount === 0) return [];
-
     return [-1, 0, 1].map((offset) => {
       const index = (currentIndex + offset + itemsCount) % itemsCount;
       return { ...featuredItems[index], offset };
@@ -64,100 +57,110 @@ const ChefRecommendations: React.FC = () => {
   }, [currentIndex, featuredItems, itemsCount]);
 
   return (
-    <section className="py-24 bg-secondary/30 overflow-hidden">
+    <section className="py-28 bg-secondary/30 overflow-hidden">
       <div className="section-container">
-        {/* Header */}
+        {/* HEADER */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
         >
-          <span className="text-primary font-medium tracking-wider text-sm uppercase">
-            Chef&apos;s Selection
+          <span className="text-primary text-sm tracking-[0.25em] uppercase">
+            Curated by Our Executive Chef
           </span>
-          <h2 className="font-serif text-4xl md:text-5xl font-medium mt-4 mb-4">
-            Recommended for You
+          <h2 className="font-serif text-4xl md:text-5xl mt-4 mb-4">
+            Signature Creations
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Handpicked favorites from our executive chef, featuring the finest seasonal ingredients.
+            A refined selection of dishes that define Veloria’s culinary
+            philosophy and seasonal inspiration.
           </p>
         </motion.div>
 
-        {/* Carousel */}
+        {/* CAROUSEL */}
         <div
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Navigation */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          {/* NAV */}
+          <button
+            aria-label="Previous dish"
             onClick={prevSlide}
-            className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-card/90 rounded-full shadow-medium flex items-center justify-center hover:bg-primary hover:text-primary-foreground"
+            className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-card/90 rounded-full shadow-soft flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition"
           >
             <ChevronLeft />
-          </motion.button>
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          <button
+            aria-label="Next dish"
             onClick={nextSlide}
-            className="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-card/90 rounded-full shadow-medium flex items-center justify-center hover:bg-primary hover:text-primary-foreground"
+            className="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-card/90 rounded-full shadow-soft flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition"
           >
             <ChevronRight />
-          </motion.button>
+          </button>
 
-          {/* Cards */}
-          <div className="flex justify-center items-center gap-6 px-16 md:px-20">
+          {/* CARDS */}
+          <div className="flex justify-center items-center gap-8 px-16 md:px-24">
             <AnimatePresence mode="popLayout">
               {visibleItems.map((item) => (
                 <motion.div
                   key={`${item.id}-${item.offset}`}
                   layout
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.85 }}
                   animate={{
-                    opacity: item.offset === 0 ? 1 : 0.6,
-                    scale: item.offset === 0 ? 1 : 0.85,
-                    zIndex: item.offset === 0 ? 10 : 0,
+                    opacity: item.offset === 0 ? 1 : 0.5,
+                    scale: item.offset === 0 ? 1.05 : 0.85,
+                    zIndex: item.offset === 0 ? 20 : 0,
                   }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  exit={{ opacity: 0, scale: 0.85 }}
+                  transition={{ duration: 0.7, ease: "easeOut" }}
                   className={`glass-card overflow-hidden ${
-                    item.offset === 0 ? "w-80 md:w-96" : "hidden md:block w-72"
+                    item.offset === 0
+                      ? "w-80 md:w-[420px]"
+                      : "hidden md:block w-72"
                   }`}
                 >
-                  {/* Image */}
-                  <div className="relative h-56 overflow-hidden">
+                  {/* IMAGE */}
+                  <div className="relative h-60 overflow-hidden">
                     <img
                       src={item.image}
                       alt={item.name}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
-                    <span className="absolute top-4 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full flex items-center gap-1">
+
+                    {/* BADGE */}
+                    <span className="absolute top-4 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full flex items-center gap-1 shadow">
                       <Star className="w-3 h-3 fill-current" />
-                      Chef&apos;s Pick
+                      Chef’s Signature
                     </span>
-                   <span className="font-serif text-primary">
-  {formatINR(item.price)}
-</span>
+
+                    {/* PRICE */}
+                    {item.offset === 0 && (
+                      <span className="absolute bottom-4 right-4 bg-background/90 backdrop-blur px-4 py-2 rounded-xl font-serif text-primary shadow">
+                        {formatINR(item.price)}
+                      </span>
+                    )}
                   </div>
-                  {/* Content */}
-                  <div className="p-6">
+
+                  {/* CONTENT */}
+                  <div className="p-6 text-center">
                     <h3 className="font-serif text-xl mb-2">{item.name}</h3>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                    <p className="text-muted-foreground text-sm mb-5 line-clamp-2">
                       {item.description}
                     </p>
 
                     {item.offset === 0 && (
                       <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
                         onClick={() => handleAddToOrder(item)}
-                        className="w-full py-3 bg-primary text-primary-foreground rounded-xl"
+                        className="w-full py-3 rounded-xl bg-primary text-primary-foreground shadow-gold"
                       >
-                        Add to Order
+                        Add to Order →
                       </motion.button>
                     )}
                   </div>
@@ -166,11 +169,12 @@ const ChefRecommendations: React.FC = () => {
             </AnimatePresence>
           </div>
 
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-8">
+          {/* DOTS */}
+          <div className="flex justify-center gap-2 mt-10">
             {featuredItems.map((_, idx) => (
               <button
                 key={idx}
+                aria-label={`Go to dish ${idx + 1}`}
                 onClick={() => setCurrentIndex(idx)}
                 className={`rounded-full transition-all ${
                   idx === currentIndex
