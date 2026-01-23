@@ -6,7 +6,6 @@ import {
   Smartphone,
   Wallet,
   ArrowLeft,
-  AlertCircle,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { z } from "zod";
@@ -17,21 +16,21 @@ import CartModal from "@/components/cart/CartModal";
 
 import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrderContext";
-import { formatINR, convertToINR } from "@/lib/currency";
+import { formatINR } from "@/lib/currency";
 
 /* -------------------- VALIDATION -------------------- */
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  mobile: z
-    .string()
-    .regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
+  mobile: z.string().regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
   address: z.string().min(5, "Address too short"),
   city: z.string().min(2, "City too short"),
   pincode: z.string().regex(/^\d{6}$/, "Invalid pincode"),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
+
+const TAX_RATE = 0.1;
 
 const Checkout: React.FC = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -58,10 +57,10 @@ const Checkout: React.FC = () => {
     Partial<Record<keyof CheckoutFormData, boolean>>
   >({});
 
-  /* -------------------- CURRENCY -------------------- */
-  const subtotalINR = convertToINR(totalPrice);
-  const taxINR = Math.round(subtotalINR * 0.1);
-  const totalINR = subtotalINR + taxINR;
+  /* -------------------- PRICE CALCULATION (NUMBER ONLY) -------------------- */
+  const subtotal = totalPrice;                 // number
+  const taxAmount = subtotal * TAX_RATE;       // number
+  const totalAmount = subtotal + taxAmount;    // number
 
   /* -------------------- FORM -------------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,16 +97,15 @@ const Checkout: React.FC = () => {
         city: formData.city,
         pincode: formData.pincode,
         items,
-        subtotal: totalPrice,
-        tax: totalPrice * 0.1,
-        totalAmount: totalPrice + totalPrice * 0.1,
+        subtotal,
+        tax: taxAmount,
+        totalAmount,
       });
 
       confetti({ particleCount: 120, spread: 80 });
-
       clearCart();
       navigate(`/order-success/${orderId}`);
-    }, 2200);
+    }, 2000);
   };
 
   /* -------------------- EMPTY CART -------------------- */
@@ -139,13 +137,6 @@ const Checkout: React.FC = () => {
     );
   }
 
-  const inputClass = (field: keyof CheckoutFormData) =>
-    `luxury-input ${
-      touched[field] && errors[field]
-        ? "border-destructive ring-2 ring-destructive/20"
-        : ""
-    }`;
-
   /* -------------------- UI -------------------- */
   return (
     <div className="min-h-screen bg-background">
@@ -164,68 +155,13 @@ const Checkout: React.FC = () => {
           <h1 className="font-serif text-4xl text-center mb-10">Checkout</h1>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* FORM */}
+            {/* SUMMARY */}
             <div className="lg:col-span-2 glass-card p-6">
-              <h2 className="font-serif text-xl mb-6">Delivery Details</h2>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  ["fullName", "Full Name"],
-                  ["email", "Email"],
-                  ["mobile", "Mobile"],
-                  ["city", "City"],
-                ].map(([key, label]) => (
-                  <div key={key}>
-                    <label className="text-sm">{label}</label>
-                    <input
-                      name={key}
-                      value={(formData as any)[key]}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={inputClass(key as any)}
-                    />
-                    {errors[key as any] && (
-                      <p className="text-destructive text-xs mt-1">
-                        {errors[key as any]}
-                      </p>
-                    )}
-                  </div>
-                ))}
-
-                <div className="md:col-span-2">
-                  <label className="text-sm">Address</label>
-                  <input
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={inputClass("address")}
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm">Pincode</label>
-                  <input
-                    name="pincode"
-                    value={formData.pincode}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={inputClass("pincode")}
-                  />
-                </div>
-              </div>
-
-              {/* SUMMARY */}
-              <h2 className="font-serif text-xl mt-8 mb-4">Order Summary</h2>
+              <h2 className="font-serif text-xl mb-6">Order Summary</h2>
 
               {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between text-sm mb-2"
-                >
-                  <span>
-                    {item.name} × {item.quantity}
-                  </span>
+                <div key={item.id} className="flex justify-between text-sm mb-2">
+                  <span>{item.name} × {item.quantity}</span>
                   <span>{formatINR(item.price * item.quantity)}</span>
                 </div>
               ))}
@@ -233,16 +169,16 @@ const Checkout: React.FC = () => {
               <div className="border-t mt-4 pt-4 space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>₹{subtotalINR.toLocaleString("en-IN")}</span>
+                  <span>{formatINR(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax (10%)</span>
-                  <span>₹{taxINR.toLocaleString("en-IN")}</span>
+                  <span>{formatINR(taxAmount)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
                   <span className="text-primary">
-                    ₹{totalINR.toLocaleString("en-IN")}
+                    {formatINR(totalAmount)}
                   </span>
                 </div>
               </div>
@@ -275,7 +211,7 @@ const Checkout: React.FC = () => {
                 onClick={handlePayment}
                 className="btn-gold w-full mt-6"
               >
-                Pay ₹{totalINR.toLocaleString("en-IN")}
+                Pay {formatINR(totalAmount)}
               </button>
             </div>
           </div>
