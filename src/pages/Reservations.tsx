@@ -7,6 +7,8 @@ import Footer from "@/components/layout/Footer";
 import { useReservations } from "@/context/ReservationContext";
 import CartModal from "@/components/cart/CartModal";
 import { z } from "zod";
+import ReservationUrgency from "./ReservationUrgency";
+
 
 // Validation schema
 const reservationSchema = z.object({
@@ -137,6 +139,8 @@ const Reservations = () => {
             <h1 className="font-serif text-4xl mt-3 text-foreground">
               Make a Reservation
             </h1>
+            {/* 🔥 Reservation Urgency */}
+  <ReservationUrgency />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
