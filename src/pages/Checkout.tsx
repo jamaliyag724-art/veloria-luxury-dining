@@ -17,7 +17,7 @@ import CartModal from "@/components/cart/CartModal";
 
 import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrderContext";
-import { formatINR, convertToINR } from "src/lib/currency";
+import { formatINR, convertToINR } from "@/lib/currency";
 
 /* -------------------- VALIDATION -------------------- */
 const checkoutSchema = z.object({
