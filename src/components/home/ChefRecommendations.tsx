@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { getFeaturedItems } from "@/data/menuData";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
+import { formatINR } from "@/lib/currency";
 
 const AUTOPLAY_DELAY = 4000;
 
@@ -138,11 +139,10 @@ const ChefRecommendations: React.FC = () => {
                       <Star className="w-3 h-3 fill-current" />
                       Chef&apos;s Pick
                     </span>
-                    <span className="absolute bottom-4 right-4 font-serif text-2xl text-white">
-                      ${item.price}
-                    </span>
+                   <span className="font-serif text-primary">
+  {formatINR(item.price)}
+</span>
                   </div>
-
                   {/* Content */}
                   <div className="p-6">
                     <h3 className="font-serif text-xl mb-2">{item.name}</h3>
