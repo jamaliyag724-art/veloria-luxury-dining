@@ -12,9 +12,14 @@ const ReservationUrgency: React.FC<ReservationUrgencyProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="mx-auto mt-6 max-w-fit px-5 py-2 rounded-full
-                 bg-primary/10 text-primary text-sm
-                 border border-primary/20 backdrop-blur"
+      className="mx-auto mt-4
+        max-w-fit px-5 py-2
+        rounded-full
+        bg-white/80 text-primary text-sm
+        border border-primary/20
+        backdrop-blur
+        shadow-sm
+      "
     >
       {message}
     </motion.div>
