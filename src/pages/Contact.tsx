@@ -229,10 +229,15 @@ const Contact: React.FC = () => {
               </div>
 
               {/* 🔥 WIDE MAP */}
-              <div className="glass-card h-[420px] w-full overflow-hidden">
-                <div className="relative w-full h-full flex items-center justify-center bg-secondary/40">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto shadow-gold">
+                     <div className="glass-card h-[420px] w-full overflow-hidden">
+                    <iframe
+                    title="Veloria Ahmedabad Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515!5m2!1sen!2sin"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                     referrerPolicy="no-referrer-when-downgrade"
+                              />
+                    </div>
                       <MapPin className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div className="mt-4 glass-card px-4 py-2">
