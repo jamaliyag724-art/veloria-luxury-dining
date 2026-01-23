@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingBag, Utensils } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
+
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -10,6 +13,16 @@ const navLinks = [
   { name: 'Reservations', path: '/reservations' },
   { name: 'About', path: '/about' },
   { name: 'Contact', path: '/contact' },
+  <Link
+  to="/track-order"
+  className="flex items-center gap-2 px-4 py-2 rounded-full
+             text-sm font-medium text-foreground
+             hover:bg-secondary transition-all"
+>
+  <Search className="w-4 h-4 text-primary" />
+  <span>Track Order</span>
+</Link>
+
 ];
 
 interface NavbarProps {
