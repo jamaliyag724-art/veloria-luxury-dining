@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Plus, Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { MenuItem } from "@/data/menuData";
-import { formatINR } from "@/lib/utils/currency";
+import { formatINR } from "@/lib/currency";
 
 interface MenuItemCardProps {
   item: MenuItem;
