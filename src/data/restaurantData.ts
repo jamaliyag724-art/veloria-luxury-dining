@@ -80,10 +80,9 @@ export const faqs = [
 export const restaurantInfo = {
   name: 'Veloria',
   tagline: 'Where Every Dish Becomes a Timeless Story',
-  address: '421 Madison Avenue',
-  city: 'New York, NY 10022',
-  phone: '+1 (212) 555-0100',
-  email: 'reservations@veloria.com',
+  address: 'Platinum-Blue Sky, Behind Orbit',
+  city: 'Ahmedabad , India,382405',
+  phone: '+91 9537248835',
   hours: {
     lunch: 'Mon-Fri: 12:00 PM - 3:00 PM',
     dinner: 'Daily: 6:00 PM - 11:00 PM',
