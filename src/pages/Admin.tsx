@@ -175,7 +175,10 @@ const Admin: React.FC = () => {
           <div className="bg-white rounded-2xl p-6 shadow-soft border border-border/50">
             <div className="flex justify-between mb-4">
               <h2 className="font-serif text-lg font-semibold">Recent Orders</h2>
-              <Link to="/admin/orders" className="text-primary text-sm font-medium">
+              <Link
+                to="/admin/orders"
+                className="text-primary text-sm font-medium"
+              >
                 View All
               </Link>
             </div>
