@@ -54,29 +54,33 @@ const Menu: React.FC = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1.08 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            opacity: { duration: 1.5 },
-            scale: { duration: 14, ease: "linear" },
-          }}
-          <img
-    src={background}
-    alt=""
-    loading="eager"
-    decoding="async"
-    fetchPriority="high"
-    className="w-full h-full object-cover scale-105"
-  />
+     <AnimatePresence mode="wait">
+  <motion.div
+    key={activeCategory}
+    initial={{ opacity: 0, scale: 1 }}
+    animate={{ opacity: 1, scale: 1.08 }}
+    exit={{ opacity: 0 }}
+    transition={{
+      opacity: { duration: 1.5 },
+      scale: { duration: 14, ease: "linear" },
+    }}
+    style={{ y }}
+    className="fixed inset-0 z-0 overflow-hidden"
+  >
+    {/* ✅ REAL IMAGE (PERFORMANCE FIX) */}
+    <img
+      src={background}
+      alt=""
+      loading="eager"
+      decoding="async"
+      fetchPriority="high"
+      className="w-full h-full object-cover scale-105"
+    />
 
-  {/* Overlay (same as before) */}
-  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-[1]" />
-        />
-      </AnimatePresence>
+    {/* Overlay */}
+    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+  </motion.div>
+</AnimatePresence>
 
       {/* 🌑 BASE DARK OVERLAY */}
       <div className="fixed inset-0 bg-black/25 z-[5] pointer-events-none" />
