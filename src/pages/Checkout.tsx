@@ -201,23 +201,6 @@ const Checkout: React.FC = () => {
 
   const inputClass = (field: keyof CheckoutFormData) => 
     `luxury-input ${touched[field] && errors[field] ? 'border-destructive ring-2 ring-destructive/20' : ''}`;
-  const existing = JSON.parse(localStorage.getItem("orders") || "[]");
-
-existing.push({
-  id: orderId,
-  fullName,
-  mobile,
-  email,
-  address,
-  pincode,
-  items: cartItems,
-  total,
-  status: "Preparing",
-  createdAt: new Date().toISOString(),
-});
-
-localStorage.setItem("orders", JSON.stringify(existing));
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar onCartClick={() => setCartOpen(true)} />
