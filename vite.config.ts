@@ -17,5 +17,8 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    build: {
+    assetsInlineLimit: 0, // images inline nahi hongi
+  },
   },
 }));
