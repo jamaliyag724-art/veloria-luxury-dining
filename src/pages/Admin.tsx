@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  CalendarDays, 
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  CalendarDays,
   UtensilsCrossed,
   TrendingUp,
-  Users,
-  DollarSign,
   Clock,
-  LogOut
+  LogOut,
+  IndianRupee,
 } from 'lucide-react';
+
 import { useAdmin } from '@/context/AdminContext';
 import { useOrders } from '@/context/OrderContext';
 import { useReservations } from '@/context/ReservationContext';
+import { formatPrice } from '@/utils/currency';
 
 const Admin: React.FC = () => {
   const navigate = useNavigate();
@@ -31,16 +32,24 @@ const Admin: React.FC = () => {
   const reservationStats = getReservationsCount();
   const totalRevenue = getTotalRevenue();
 
-  // Calculate today's orders
   const today = new Date().toDateString();
-  const todayOrders = orders.filter(o => new Date(o.createdAt).toDateString() === today).length;
-  const todayReservations = reservations.filter(r => new Date(r.createdAt).toDateString() === today).length;
+
+  const todayOrders = orders.filter(
+    o => new Date(o.createdAt).toDateString() === today
+  ).length;
+
+  const todayReservations = reservations.filter(
+    r => new Date(r.createdAt).toDateString() === today
+  ).length;
+
+  const recentOrders = orders.slice(0, 5);
+  const recentReservations = reservations.slice(0, 5);
 
   const statsCards = [
     {
       title: 'Total Revenue',
-      value: `₹${totalRevenue.toFixed(0)}`,
-      icon: DollarSign,
+      value: formatPrice(totalRevenue),
+      icon: IndianRupee,
       color: 'bg-green-100 text-green-600',
       trend: '+12%',
     },
@@ -56,7 +65,7 @@ const Admin: React.FC = () => {
       value: (orderStats.pending + orderStats.preparing).toString(),
       icon: Clock,
       color: 'bg-amber-100 text-amber-600',
-      subtext: 'Pending/Preparing',
+      subtext: 'Pending / Preparing',
     },
     {
       title: 'Reservations',
@@ -84,11 +93,15 @@ const Admin: React.FC = () => {
               <UtensilsCrossed className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-serif text-xl font-semibold text-foreground">Veloria Admin</h1>
-              <p className="text-xs text-muted-foreground">Restaurant Management</p>
+              <h1 className="font-serif text-xl font-semibold text-foreground">
+                Veloria Admin
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                Restaurant Management
+              </p>
             </div>
           </div>
-          
+
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -102,12 +115,13 @@ const Admin: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Navigation Tabs */}
+        {/* Navigation */}
         <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <Link
               key={item.name}
               to={item.disabled ? '#' : item.path}
+              onClick={e => item.disabled && e.preventDefault()}
               className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all whitespace-nowrap ${
                 item.active
                   ? 'bg-primary text-primary-foreground shadow-gold'
@@ -115,7 +129,6 @@ const Admin: React.FC = () => {
                   ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
                   : 'bg-white text-foreground hover:bg-secondary border border-border'
               }`}
-              onClick={(e) => item.disabled && e.preventDefault()}
             >
               <item.icon className="w-4 h-4" />
               {item.name}
@@ -123,7 +136,7 @@ const Admin: React.FC = () => {
           ))}
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {statsCards.map((stat, index) => (
             <motion.div
@@ -144,7 +157,10 @@ const Admin: React.FC = () => {
                   </span>
                 )}
               </div>
-              <h3 className="text-2xl font-serif font-bold text-foreground mb-1">{stat.value}</h3>
+
+              <h3 className="text-2xl font-serif font-bold text-foreground mb-1">
+                {stat.value}
+              </h3>
               <p className="text-sm text-muted-foreground">{stat.title}</p>
               {stat.subtext && (
                 <p className="text-xs text-primary mt-1">{stat.subtext}</p>
@@ -153,40 +169,35 @@ const Admin: React.FC = () => {
           ))}
         </div>
 
-        {/* Quick Actions */}
+        {/* Recent Orders & Reservations */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Recent Orders */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-2xl p-6 shadow-soft border border-border/50"
-          >
-            <div className="flex items-center justify-between mb-4">
+          {/* Orders */}
+          <div className="bg-white rounded-2xl p-6 shadow-soft border border-border/50">
+            <div className="flex justify-between mb-4">
               <h2 className="font-serif text-lg font-semibold">Recent Orders</h2>
-              <Link to="/admin/orders" className="text-primary text-sm font-medium hover:underline">
+              <Link to="/admin/orders" className="text-primary text-sm font-medium">
                 View All
               </Link>
             </div>
-            {orders.slice(0, 5).length > 0 ? (
+
+            {recentOrders.length ? (
               <div className="space-y-3">
-                {orders.slice(0, 5).map((order) => (
+                {recentOrders.map(order => (
                   <div
                     key={order.orderId}
-                    className="flex items-center justify-between p-3 bg-ivory rounded-xl"
+                    className="flex justify-between p-3 bg-ivory rounded-xl"
                   >
                     <div>
                       <p className="font-medium text-sm">{order.orderId}</p>
-                      <p className="text-xs text-muted-foreground">{order.fullName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {order.fullName}
+                      </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-serif font-semibold text-primary">₹{order.totalAmount.toFixed(0)}</p>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        order.orderStatus === 'Completed' ? 'bg-green-100 text-green-600' :
-                        order.orderStatus === 'Preparing' ? 'bg-amber-100 text-amber-600' :
-                        order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-600' :
-                        'bg-blue-100 text-blue-600'
-                      }`}>
+                      <p className="font-serif font-semibold text-primary">
+                        {formatPrice(order.totalAmount)}
+                      </p>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">
                         {order.orderStatus}
                       </span>
                     </div>
@@ -194,42 +205,46 @@ const Admin: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground text-sm text-center py-8">No orders yet</p>
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No orders yet
+              </p>
             )}
-          </motion.div>
+          </div>
 
-          {/* Recent Reservations */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white rounded-2xl p-6 shadow-soft border border-border/50"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-serif text-lg font-semibold">Recent Reservations</h2>
-              <Link to="/admin/reservations" className="text-primary text-sm font-medium hover:underline">
+          {/* Reservations */}
+          <div className="bg-white rounded-2xl p-6 shadow-soft border border-border/50">
+            <div className="flex justify-between mb-4">
+              <h2 className="font-serif text-lg font-semibold">
+                Recent Reservations
+              </h2>
+              <Link
+                to="/admin/reservations"
+                className="text-primary text-sm font-medium"
+              >
                 View All
               </Link>
             </div>
-            {reservations.slice(0, 5).length > 0 ? (
+
+            {recentReservations.length ? (
               <div className="space-y-3">
-                {reservations.slice(0, 5).map((res) => (
+                {recentReservations.map(res => (
                   <div
                     key={res.reservationId}
-                    className="flex items-center justify-between p-3 bg-ivory rounded-xl"
+                    className="flex justify-between p-3 bg-ivory rounded-xl"
                   >
                     <div>
-                      <p className="font-medium text-sm">{res.reservationId}</p>
-                      <p className="text-xs text-muted-foreground">{res.fullName} • {res.guests} guests</p>
+                      <p className="font-medium text-sm">
+                        {res.reservationId}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {res.fullName} • {res.guests} guests
+                      </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm">{new Date(res.date).toLocaleDateString()}</p>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        res.status === 'Confirmed' ? 'bg-green-100 text-green-600' :
-                        res.status === 'Pending' ? 'bg-amber-100 text-amber-600' :
-                        res.status === 'Rejected' ? 'bg-red-100 text-red-600' :
-                        'bg-blue-100 text-blue-600'
-                      }`}>
+                      <p className="text-sm">
+                        {new Date(res.date).toLocaleDateString()}
+                      </p>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-600">
                         {res.status}
                       </span>
                     </div>
@@ -237,9 +252,11 @@ const Admin: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground text-sm text-center py-8">No reservations yet</p>
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No reservations yet
+              </p>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>
