@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, Package, ChefHat, CheckCircle, Clock } from "lucide-react";
+import { useLocation } from "react-router-dom";
+
+type OrderStatus = "Pending" | "Preparing" | "Completed" | "Cancelled";
 
 const TrackOrder: React.FC = () => {
-  const [orderId, setOrderId] = useState("");
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const urlOrderId = params.get("orderId") || "";
+
+  const [orderId, setOrderId] = useState(urlOrderId);
   const [order, setOrder] = useState<any>(null);
   const [error, setError] = useState("");
 
-  const handleTrack = () => {
+  const findOrder = (id: string) => {
     setError("");
     setOrder(null);
 
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    const found = orders.find((o: any) => o.id === orderId);
+    const found = orders.find((o: any) => o.orderId === id);
 
     if (!found) {
       setError("❌ Order not found. Please check your Order ID.");
@@ -20,6 +27,25 @@ const TrackOrder: React.FC = () => {
     }
 
     setOrder(found);
+  };
+
+  useEffect(() => {
+    if (urlOrderId) {
+      findOrder(urlOrderId);
+    }
+  }, [urlOrderId]);
+
+  const getStatusIcon = (status: OrderStatus) => {
+    switch (status) {
+      case "Preparing":
+        return <ChefHat className="w-5 h-5 text-amber-600" />;
+      case "Completed":
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case "Cancelled":
+        return <Package className="w-5 h-5 text-red-600" />;
+      default:
+        return <Clock className="w-5 h-5 text-blue-600" />;
+    }
   };
 
   return (
@@ -33,9 +59,10 @@ const TrackOrder: React.FC = () => {
           Track Your Order
         </h1>
         <p className="text-muted-foreground text-center mb-6">
-          Enter your Order ID to check live status
+          Enter your Order ID to see live order status
         </p>
 
+        {/* Input */}
         <div className="flex gap-2 mb-4">
           <input
             value={orderId}
@@ -44,7 +71,7 @@ const TrackOrder: React.FC = () => {
             className="luxury-input flex-1"
           />
           <button
-            onClick={handleTrack}
+            onClick={() => findOrder(orderId)}
             className="btn-gold px-5 flex items-center gap-2"
           >
             <Search size={18} />
@@ -56,19 +83,28 @@ const TrackOrder: React.FC = () => {
           <p className="text-red-500 text-sm text-center">{error}</p>
         )}
 
+        {/* Order Details */}
         {order && (
-          <div className="mt-6 border-t pt-6 space-y-2 text-sm">
-            <p><b>Order ID:</b> {order.id}</p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-6 border-t pt-6 space-y-3 text-sm"
+          >
+            <p>
+              <b>Order ID:</b>{" "}
+              <span className="font-mono text-primary">{order.orderId}</span>
+            </p>
             <p><b>Name:</b> {order.fullName}</p>
             <p><b>Mobile:</b> {order.mobile}</p>
-            <p><b>Total:</b> ₹{order.total}</p>
-            <p>
-              <b>Status:</b>{" "}
-              <span className="text-primary font-medium">
-                {order.status}
+            <p><b>Total:</b> ₹{order.totalAmount}</p>
+
+            <div className="flex items-center gap-2 mt-2">
+              {getStatusIcon(order.orderStatus)}
+              <span className="font-medium text-primary">
+                {order.orderStatus}
               </span>
-            </p>
-          </div>
+            </div>
+          </motion.div>
         )}
       </motion.div>
     </div>
