@@ -64,11 +64,17 @@ const Menu: React.FC = () => {
             opacity: { duration: 1.5 },
             scale: { duration: 14, ease: "linear" },
           }}
-          style={{
-            backgroundImage: `url(${background})`,
-            y,
-          }}
-          className="fixed inset-0 bg-cover bg-center z-0"
+          <img
+    src={background}
+    alt=""
+    loading="eager"
+    decoding="async"
+    fetchPriority="high"
+    className="w-full h-full object-cover scale-105"
+  />
+
+  {/* Overlay (same as before) */}
+  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-[1]" />
         />
       </AnimatePresence>
 
