@@ -1,6 +1,15 @@
-export const USD_TO_INR = 83;
+// src/lib/utils/currency.ts
 
-export const formatINR = (usdPrice: number) => {
-  const inr = usdPrice * USD_TO_INR;
-  return `₹${inr.toFixed(0)}`;
+const USD_TO_INR = 83; // 🔁 change here if rate updates
+
+export const convertToINR = (usd: number): number => {
+  return Math.round(usd * USD_TO_INR);
+};
+
+export const formatINR = (usd: number): string => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(convertToINR(usd));
 };
