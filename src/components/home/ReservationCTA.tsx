@@ -6,7 +6,7 @@ const ReservationCTA = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-32 bg-black text-white overflow-hidden">
+   <section className="relative py-32 bg-[#FAFAF8] text-foreground">
       <div className="absolute inset-0 bg-gradient-to-br from-black via-black/80 to-black" />
 
       <div className="relative z-10 max-w-6xl mx-auto text-center px-6">
