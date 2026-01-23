@@ -114,11 +114,15 @@ const Reservations = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url(/main.webp)" }}
-      />
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+     <img
+  src="/reservation-bg.webp"
+  alt=""
+  loading="eager"
+  decoding="async"
+  className="absolute inset-0 w-full h-full object-cover scale-105"
+/>
+
+<div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
 
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
