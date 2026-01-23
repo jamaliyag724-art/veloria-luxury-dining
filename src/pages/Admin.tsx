@@ -15,7 +15,7 @@ import {
 import { useAdmin } from '@/context/AdminContext';
 import { useOrders } from '@/context/OrderContext';
 import { useReservations } from '@/context/ReservationContext';
-import { formatPrice } from '@/utils/currency';
+import { formatPrice } from '@/lib/currency';
 
 const Admin: React.FC = () => {
   const navigate = useNavigate();
