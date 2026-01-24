@@ -19,10 +19,10 @@ const navLinks = [
 ];
 
 interface NavbarProps {
-  onCartClick: () => void;
+  onCartClick?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();

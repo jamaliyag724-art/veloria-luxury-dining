@@ -20,8 +20,10 @@ import { formatPrice } from '@/lib/currency';
 const Admin: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAdmin();
-  const { orders, getTotalRevenue, getOrdersCount } = useOrders();
-  const { reservations, getReservationsCount } = useReservations();
+  const { orders, getTotalRevenue, getOrdersCount, loading: ordersLoading } = useOrders();
+  const { reservations, getReservationsCount, loading: reservationsLoading } = useReservations();
+
+  const isLoading = ordersLoading || reservationsLoading;
 
   const handleLogout = () => {
     logout();

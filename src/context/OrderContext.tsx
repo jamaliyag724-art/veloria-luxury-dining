@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface OrderItem {
   id: string;
@@ -30,16 +31,17 @@ export interface Order {
 
 interface OrderContextType {
   orders: Order[];
-  addOrder: (order: Omit<Order, 'orderId' | 'createdAt' | 'orderStatus' | 'paymentStatus'>) => string;
-  updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+  loading: boolean;
+  error: string | null;
+  addOrder: (order: Omit<Order, 'orderId' | 'createdAt' | 'orderStatus' | 'paymentStatus'>) => Promise<string>;
+  updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
   getOrderById: (orderId: string) => Order | undefined;
   getTotalRevenue: () => number;
   getOrdersCount: () => { total: number; pending: number; preparing: number; completed: number; cancelled: number };
+  refetchOrders: () => Promise<void>;
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
-
-const STORAGE_KEY = 'veloria_orders';
 
 const generateOrderId = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -51,41 +53,107 @@ const generateOrderId = (): string => {
 };
 
 export const OrderProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchOrders = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error: fetchError } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (fetchError) throw fetchError;
+
+      const mappedOrders: Order[] = (data || []).map((row) => ({
+        orderId: row.order_id,
+        fullName: row.full_name,
+        email: row.email,
+        mobile: row.mobile,
+        address: row.address,
+        city: row.city,
+        pincode: row.pincode,
+        items: (row.items as unknown as OrderItem[]) || [],
+        subtotal: Number(row.subtotal),
+        tax: Number(row.tax),
+        totalAmount: Number(row.total_amount),
+        paymentStatus: row.payment_status as PaymentStatus,
+        orderStatus: row.order_status as OrderStatus,
+        createdAt: row.created_at,
+      }));
+
+      setOrders(mappedOrders);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+      setError('Failed to fetch orders');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
-  }, [orders]);
+    fetchOrders();
 
-  const addOrder = (orderData: Omit<Order, 'orderId' | 'createdAt' | 'orderStatus' | 'paymentStatus'>): string => {
-    const orderId = generateOrderId();
-    const newOrder: Order = {
-      ...orderData,
-      orderId,
-      paymentStatus: 'Paid',
-      orderStatus: 'Preparing',
-      createdAt: new Date().toISOString(),
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('orders-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        () => {
+          fetchOrders();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
     };
-    setOrders(prev => [newOrder, ...prev]);
+  }, [fetchOrders]);
+
+  const addOrder = async (orderData: Omit<Order, 'orderId' | 'createdAt' | 'orderStatus' | 'paymentStatus'>): Promise<string> => {
+    const orderId = generateOrderId();
+    
+    const { error: insertError } = await supabase
+      .from('orders')
+      .insert([{
+        order_id: orderId,
+        full_name: orderData.fullName,
+        email: orderData.email,
+        mobile: orderData.mobile,
+        address: orderData.address,
+        city: orderData.city,
+        pincode: orderData.pincode,
+        items: JSON.parse(JSON.stringify(orderData.items)),
+        subtotal: orderData.subtotal,
+        tax: orderData.tax,
+        total_amount: orderData.totalAmount,
+        payment_status: 'Paid',
+        order_status: 'Preparing',
+      }]);
+
+    if (insertError) {
+      console.error('Error adding order:', insertError);
+      throw new Error('Failed to create order');
+    }
+
     return orderId;
   };
-const updateOrderStatus = (orderId: string, status: OrderStatus) => {
-  setOrders((prev) => {
-    const updated = prev.map((order) =>
-      order.orderId === orderId
-        ? { ...order, orderStatus: status }
-        : order
-    );
 
-    // 🔑 THIS IS THE KEY
-    localStorage.setItem("orders", JSON.stringify(updated));
+  const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+    const { error: updateError } = await supabase
+      .from('orders')
+      .update({ order_status: status })
+      .eq('order_id', orderId);
 
-    return updated;
-  });
-};
+    if (updateError) {
+      console.error('Error updating order status:', updateError);
+      throw new Error('Failed to update order status');
+    }
+  };
 
   const getOrderById = (orderId: string): Order | undefined => {
     return orders.find(order => order.orderId === orderId);
@@ -110,11 +178,14 @@ const updateOrderStatus = (orderId: string, status: OrderStatus) => {
   return (
     <OrderContext.Provider value={{
       orders,
+      loading,
+      error,
       addOrder,
       updateOrderStatus,
       getOrderById,
       getTotalRevenue,
       getOrdersCount,
+      refetchOrders: fetchOrders,
     }}>
       {children}
     </OrderContext.Provider>

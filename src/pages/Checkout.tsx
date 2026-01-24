@@ -75,14 +75,20 @@ const Checkout: React.FC = () => {
     checkoutSchema.safeParse(formData).success && items.length > 0;
 
   /* -------------------- PAYMENT -------------------- */
-  const handlePayment = () => {
-    if (!isFormValid()) return;
+  const handlePayment = async () => {
+    const validation = checkoutSchema.safeParse(formData);
+    if (!validation.success || items.length === 0) return;
 
     setStep("processing");
 
-    setTimeout(() => {
-      const orderId = addOrder({
-        ...formData,
+    try {
+      const orderId = await addOrder({
+        fullName: validation.data.fullName,
+        email: validation.data.email,
+        mobile: validation.data.mobile,
+        address: validation.data.address,
+        city: validation.data.city,
+        pincode: validation.data.pincode,
         items,
         subtotal,
         tax: taxAmount,
@@ -92,7 +98,10 @@ const Checkout: React.FC = () => {
       confetti({ particleCount: 120, spread: 80 });
       clearCart();
       navigate(`/order-success/${orderId}`);
-    }, 2000);
+    } catch (error) {
+      console.error("Order failed:", error);
+      setStep("payment");
+    }
   };
 
   /* -------------------- PROCESSING -------------------- */
