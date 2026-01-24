@@ -1,8 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import VeloriaLoader from "@/components/ui/VeloriaLoader";
-if (loading) {
-  return <VeloriaLoader />;
-}
 import {
   motion,
   AnimatePresence,
@@ -19,7 +16,7 @@ import MenuItemCard from "@/components/menu/MenuItemCard";
 import { menuCategories, getItemsByCategory } from "@/data/menuData";
 
 /* ---------------------------------------
-   CATEGORY → BACKGROUND MAP (WebP)
+   CATEGORY → BACKGROUND MAP
 ---------------------------------------- */
 const CATEGORY_BACKGROUNDS: Record<string, string> = {
   starters: "/starters.webp",
@@ -31,67 +28,88 @@ const CATEGORY_BACKGROUNDS: Record<string, string> = {
 };
 
 const Menu: React.FC = () => {
+  /* ---------------------------------------
+     STATE
+  ---------------------------------------- */
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
+  const [loading, setLoading] = useState(true);
 
+  /* ---------------------------------------
+     LOADER TIMING (Luxury Entry)
+  ---------------------------------------- */
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* ---------------------------------------
+     DATA
+  ---------------------------------------- */
   const items = getItemsByCategory(activeCategory);
   const currentCategory = menuCategories.find(
     (c) => c.id === activeCategory
   );
 
   /* ---------------------------------------
-     PARALLAX SCROLL
+     PARALLAX
   ---------------------------------------- */
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
   /* ---------------------------------------
-     ACTIVE BACKGROUND (SAFE)
+     BACKGROUND SAFE MAP
   ---------------------------------------- */
   const background = useMemo(() => {
     return (
       CATEGORY_BACKGROUNDS[activeCategory] ||
-      CATEGORY_BACKGROUNDS["starters"]
+      CATEGORY_BACKGROUNDS.starters
     );
   }, [activeCategory]);
 
+  /* ---------------------------------------
+     🔥 LOADER (BLOCK PAGE)
+  ---------------------------------------- */
+  if (loading) {
+    return <VeloriaLoader />;
+  }
+
+  /* ---------------------------------------
+     MAIN RENDER
+  ---------------------------------------- */
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🌄 BACKGROUND (Ken Burns + Parallax) */}
-     <AnimatePresence mode="wait">
-  <motion.div
-    key={activeCategory}
-    initial={{ opacity: 0, scale: 1 }}
-    animate={{ opacity: 1, scale: 1.08 }}
-    exit={{ opacity: 0 }}
-    transition={{
-      opacity: { duration: 1.5 },
-      scale: { duration: 14, ease: "linear" },
-    }}
-    style={{ y }}
-    className="fixed inset-0 z-0 overflow-hidden"
-  >
-    {/* ✅ REAL IMAGE (PERFORMANCE FIX) */}
-    <img
-      src={background}
-      alt=""
-      loading="eager"
-      decoding="async"
-      fetchPriority="high"
-      className="w-full h-full object-cover scale-105"
-    />
+      {/* 🌄 BACKGROUND */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeCategory}
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1.08 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            opacity: { duration: 1.5 },
+            scale: { duration: 14, ease: "linear" },
+          }}
+          style={{ y }}
+          className="fixed inset-0 z-0 overflow-hidden"
+        >
+          <img
+            src={background}
+            alt=""
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="w-full h-full object-cover scale-105"
+          />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+        </motion.div>
+      </AnimatePresence>
 
-    {/* Overlay */}
-    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-  </motion.div>
-</AnimatePresence>
-
-      {/* 🌑 BASE DARK OVERLAY */}
+      {/* Dark Overlay */}
       <div className="fixed inset-0 bg-black/25 z-[5] pointer-events-none" />
 
-      {/* 🌫️ AMBIENT FOG OVERLAY (STEP 5) */}
+      {/* 🌫️ Ambient Fog */}
       <div className="pointer-events-none fixed inset-0 z-[8] overflow-hidden">
-        {/* Fog layer 1 */}
         <motion.div
           className="absolute -top-1/3 -left-1/4 w-[140%] h-[140%]"
           style={{
@@ -99,18 +117,10 @@ const Menu: React.FC = () => {
               "radial-gradient(ellipse at center, rgba(255,255,255,0.08), transparent 70%)",
             filter: "blur(80px)",
           }}
-          animate={{
-            x: ["-5%", "5%", "-5%"],
-            y: ["-3%", "3%", "-3%"],
-          }}
-          transition={{
-            duration: 90,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          animate={{ x: ["-5%", "5%", "-5%"], y: ["-3%", "3%", "-3%"] }}
+          transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Fog layer 2 */}
         <motion.div
           className="absolute -bottom-1/3 -right-1/4 w-[140%] h-[140%]"
           style={{
@@ -118,15 +128,8 @@ const Menu: React.FC = () => {
               "radial-gradient(ellipse at center, rgba(212,162,76,0.06), transparent 70%)",
             filter: "blur(100px)",
           }}
-          animate={{
-            x: ["4%", "-4%", "4%"],
-            y: ["2%", "-2%", "2%"],
-          }}
-          transition={{
-            duration: 120,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+          animate={{ x: ["4%", "-4%", "4%"], y: ["2%", "-2%", "2%"] }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
         />
       </div>
 
@@ -135,7 +138,7 @@ const Menu: React.FC = () => {
         <Navbar onCartClick={() => setIsCartOpen(true)} />
 
         <main className="pt-32 pb-32">
-  <div className="section-container">
+          <div className="section-container">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -149,18 +152,16 @@ const Menu: React.FC = () => {
                 Our Menu
               </h1>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Discover our carefully curated selection of dishes, each crafted
-                with the finest ingredients.
+                Discover our carefully curated selection of dishes, crafted with
+                the finest ingredients.
               </p>
             </motion.div>
 
             {/* Category Tabs */}
-            <div className="mb-8">
-              <CategoryTabs
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-              />
-            </div>
+            <CategoryTabs
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+            />
 
             {/* Category Description */}
             <motion.p
@@ -187,13 +188,13 @@ const Menu: React.FC = () => {
         </main>
       </div>
 
-      {/* 🌅 FOOTER — SEPARATE VISUAL CHAPTER */}
+      {/* Footer */}
       <section className="relative z-30 bg-gradient-to-b from-background via-background to-muted/40">
         <div className="w-24 h-[2px] bg-primary mx-auto mb-12 rounded-full" />
         <Footer />
       </section>
 
-      {/* 🛒 CART UI */}
+      {/* Cart */}
       <FloatingCart onClick={() => setIsCartOpen(true)} />
       <CartModal
         isOpen={isCartOpen}
