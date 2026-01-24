@@ -4,42 +4,43 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     setError("");
     setLoading(true);
 
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // 1️⃣ Supabase Auth Login
+    const { data, error: authError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (authError || !data.session) {
+    if (authError || !data.user) {
       setError("Invalid email or password");
       setLoading(false);
       return;
     }
 
-    // 🔐 Check admin role from profiles
-    const { data: profile, error: profileError } = await supabase
+    // 2️⃣ Check admin role
+    const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", data.user.id)
       .single();
 
-    if (profileError || profile?.role !== "admin") {
+    if (profile?.role !== "admin") {
       await supabase.auth.signOut();
-      setError("Access denied. Admin only.");
+      setError("You are not authorized as admin");
       setLoading(false);
       return;
     }
 
-    // ✅ Admin verified
+    // 3️⃣ Success
     navigate("/admin", { replace: true });
   };
 
@@ -51,7 +52,6 @@ export default function AdminLogin() {
         </h1>
 
         <input
-          type="email"
           className="w-full mb-4 px-4 py-3 rounded-lg border"
           placeholder="Email"
           value={email}
