@@ -1,51 +1,72 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-interface AdminContextType {
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => boolean;
-  logout: () => void;
-}
+type AdminContextType = {
+  loading: boolean;
+  isAdmin: boolean;
+  logout: () => Promise<void>;
+};
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-// Mock admin credentials
-const ADMIN_EMAIL = 'admin@veloria.com';
-const ADMIN_PASSWORD = 'admin123';
-
-export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const saved = sessionStorage.getItem('veloria-admin-auth');
-    return saved === 'true';
-  });
+export function AdminProvider({ children }: { children: React.ReactNode }) {
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    sessionStorage.setItem('veloria-admin-auth', String(isAuthenticated));
-  }, [isAuthenticated]);
+    const checkAdmin = async () => {
+      const { data } = await supabase.auth.getSession();
 
-  const login = (email: string, password: string): boolean => {
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      return true;
-    }
-    return false;
-  };
+      if (!data.session) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    sessionStorage.removeItem('veloria-admin-auth');
+      const userId = data.session.user.id;
+
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+      if (!error && profile?.role === "admin") {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+
+      setLoading(false);
+    };
+
+    checkAdmin();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      checkAdmin();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setIsAdmin(false);
   };
 
   return (
-    <AdminContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AdminContext.Provider value={{ loading, isAdmin, logout }}>
       {children}
     </AdminContext.Provider>
   );
-};
+}
 
-export const useAdmin = () => {
+export function useAdmin() {
   const context = useContext(AdminContext);
   if (!context) {
-    throw new Error('useAdmin must be used within an AdminProvider');
+    throw new Error("useAdmin must be used inside AdminProvider");
   }
   return context;
-};
+}
