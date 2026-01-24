@@ -17,7 +17,7 @@ import { useOrders, OrderStatus } from '@/context/OrderContext';
 const AdminOrders: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAdmin();
-  const { orders, updateOrderStatus } = useOrders();
+  const { orders, updateOrderStatus, loading } = useOrders();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');

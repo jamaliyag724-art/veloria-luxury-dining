@@ -19,7 +19,7 @@ import { useReservations, ReservationStatus } from '@/context/ReservationContext
 const AdminReservations: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAdmin();
-  const { reservations, updateReservationStatus } = useReservations();
+  const { reservations, updateReservationStatus, loading } = useReservations();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<ReservationStatus | 'all'>('all');

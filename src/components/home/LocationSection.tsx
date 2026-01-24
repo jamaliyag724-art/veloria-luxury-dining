@@ -106,9 +106,6 @@ const LocationSection: React.FC = () => {
                   >
                     {restaurantInfo.phone}
                   </a>
-                  <p className="text-muted-foreground">
-                    {restaurantInfo.email}
-                  </p>
                 </div>
               </motion.div>
             </div>

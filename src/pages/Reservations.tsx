@@ -27,6 +27,7 @@ const Reservations = () => {
   const navigate = useNavigate();
   const { addReservation } = useReservations();
   const [cartOpen, setCartOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<ReservationFormData>({
     fullName: "",
@@ -73,7 +74,7 @@ const Reservations = () => {
     validateField(name as keyof ReservationFormData, parsedValue);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const result = reservationSchema.safeParse(formData);
@@ -95,16 +96,22 @@ const Reservations = () => {
       return;
     }
 
-    const id = addReservation({
-      fullName: formData.fullName,
-      email: formData.email,
-      mobile: formData.mobile,
-      guests: formData.guests,
-      date: formData.date,
-      time: formData.time,
-      specialRequest: formData.specialRequest,
-    });
-    navigate(`/reservation-success/${id}`);
+    setSubmitting(true);
+    try {
+      const id = await addReservation({
+        fullName: formData.fullName,
+        email: formData.email,
+        mobile: formData.mobile,
+        guests: formData.guests,
+        date: formData.date,
+        time: formData.time,
+        specialRequest: formData.specialRequest,
+      });
+      navigate(`/reservation-success/${id}`);
+    } catch (error) {
+      console.error('Reservation failed:', error);
+      setSubmitting(false);
+    }
   };
 
   const inputClass = (field: keyof ReservationFormData) => 
@@ -275,9 +282,10 @@ const Reservations = () => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="btn-gold w-full py-4 text-lg"
+              disabled={submitting}
+              className="btn-gold w-full py-4 text-lg disabled:opacity-50"
             >
-              Confirm Reservation
+              {submitting ? 'Processing...' : 'Confirm Reservation'}
             </motion.button>
 
             <p className="text-center text-sm text-muted-foreground">
