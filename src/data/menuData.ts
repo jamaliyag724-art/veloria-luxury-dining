@@ -28,7 +28,7 @@ export const menuItems: MenuItem[] = [
   // STARTERS (15 items)
   { id: 's1', name: 'Truffle Burrata', description: 'Creamy burrata with black truffle shavings, heirloom tomatoes, and aged balsamic', price: 24, image: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400', category: 'starters', featured: true },
   { id: 's2', name: 'Seared Foie Gras', description: 'Pan-seared foie gras with brioche, fig compote, and port reduction', price: 38, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400', category: 'starters' },
-  { id: 's3', name: 'Oyster Selection', description: 'Six premium oysters with champagne mignonette and lemon', price: 32, image: 'https://www.pexels.com/photo/fresh-oysters-served-with-ice-and-lime-10432749?w=400', category: 'starters' },
+  { id: 's3', name: 'Oyster Selection', description: 'Six premium oysters with champagne mignonette and lemon', price: 32, image: 'https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=800&q=80?w=400', category: 'starters' },
   { id: 's4', name: 'Tuna Tartare', description: 'Fresh yellowfin tuna with avocado mousse, sesame, and wasabi aioli', price: 28, image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400', category: 'starters' },
   { id: 's5', name: 'Lobster Bisque', description: 'Velvety lobster soup with cognac cream and chive oil', price: 22, image: 'https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=400', category: 'starters' },
   { id: 's6', name: 'Beef Carpaccio', description: 'Thinly sliced wagyu with arugula, parmesan, and truffle oil', price: 26, image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=400', category: 'starters' },
@@ -43,7 +43,7 @@ export const menuItems: MenuItem[] = [
   { id: 's15', name: 'Artichoke Hearts', description: 'Grilled artichokes with lemon aioli and herbs', price: 16, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400', category: 'starters', dietary: ['vegan'] },
 
   // BRUNCH (15 items)
-  { id: 'b1', name: 'Eggs Royale', description: 'Poached eggs with smoked salmon, hollandaise on brioche', price: 26, image: 'https://images.unsplash.com/photo-1608039829572-9f68dd24a7fe?w=400', category: 'brunch', featured: true },
+  { id: 'b1', name: 'Eggs Royale', description: 'Poached eggs with smoked salmon, hollandaise on brioche', price: 26, image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80?w=400', category: 'brunch', featured: true },
   { id: 'b2', name: 'Truffle Scrambled Eggs', description: 'Soft scrambled eggs with black truffle and chives', price: 28, image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400', category: 'brunch' },
   { id: 'b3', name: 'French Toast Royale', description: 'Brioche french toast with berries and maple crème', price: 22, image: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400', category: 'brunch' },
   { id: 'b4', name: 'Avocado Toast Deluxe', description: 'Sourdough with avocado, poached eggs, and dukkah', price: 20, image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=400', category: 'brunch', dietary: ['vegetarian'] },
@@ -72,14 +72,14 @@ export const menuItems: MenuItem[] = [
   { id: 'l10', name: 'Tuna Melt', description: 'Albacore tuna with swiss on sourdough', price: 22, image: 'https://images.unsplash.com/photo-1485451456034-3f9391c6f769?w=400', category: 'lunch' },
   { id: 'l11', name: 'Quinoa Buddha Bowl', description: 'Roasted vegetables, chickpeas, and tahini', price: 21, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400', category: 'lunch', dietary: ['vegan'] },
   { id: 'l12', name: 'Beef Bourguignon', description: 'Slow-braised beef in red wine with vegetables', price: 38, image: 'https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=400', category: 'lunch' },
-  { id: 'l13', name: 'Duck Confit Salad', description: 'Crispy duck leg with frisée and poached egg', price: 29, image: 'https://images.unsplash.com/photo-1580554530778-ca36943571e6?w=400', category: 'lunch' },
+  { id: 'l13', name: 'Duck Confit Salad', description: 'Crispy duck leg with frisée and poached egg', price: 29, image: 'https://images.unsplash.com/photo-1604908177225-2f8a4c6b7a7e?auto=format&fit=crop&w=800&q=80?w=400', category: 'lunch' },
   { id: 'l14', name: 'Margherita Flatbread', description: 'San Marzano tomatoes, mozzarella, and basil', price: 20, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400', category: 'lunch', dietary: ['vegetarian'] },
   { id: 'l15', name: 'Cobb Salad', description: 'Chicken, bacon, avocado, blue cheese, and egg', price: 25, image: 'https://images.unsplash.com/photo-1512852939750-1305098529bf?w=400', category: 'lunch' },
 
   // MAIN COURSE (15 items)
   { id: 'm1', name: 'Wagyu Ribeye', description: 'A5 wagyu with bone marrow butter and roasted garlic', price: 145, image: 'https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=400', category: 'main-course', featured: true },
   { id: 'm2', name: 'Lobster Thermidor', description: 'Whole lobster with creamy cognac sauce and gratin', price: 85, image: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400', category: 'main-course' },
-  { id: 'm3', name: 'Duck à l\'Orange', description: 'Roasted duck breast with citrus glaze and fondant potato', price: 52, image: 'https://images.unsplash.com/photo-1580554530778-ca36943571e6?w=400', category: 'main-course' },
+  { id: 'm3', name: 'Duck à l\'Orange', description: 'Roasted duck breast with citrus glaze and fondant potato', price: 52, image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80?w=400', category: 'main-course' },
   { id: 'm4', name: 'Filet Mignon', description: 'Prime beef tenderloin with red wine reduction', price: 68, image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=400', category: 'main-course' },
   { id: 'm5', name: 'Rack of Lamb', description: 'Herb-crusted lamb with rosemary jus and ratatouille', price: 58, image: 'https://images.unsplash.com/photo-1514516345957-556ca7d90a29?w=400', category: 'main-course' },
   { id: 'm6', name: 'Dover Sole Meunière', description: 'Whole Dover sole with brown butter and capers', price: 72, image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400', category: 'main-course' },
@@ -96,7 +96,7 @@ export const menuItems: MenuItem[] = [
   // DESSERTS (15 items)
   { id: 'd1', name: 'Crème Brûlée', description: 'Classic vanilla custard with caramelized sugar', price: 14, image: 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=400', category: 'desserts', featured: true },
   { id: 'd2', name: 'Chocolate Soufflé', description: 'Warm dark chocolate soufflé with vanilla ice cream', price: 18, image: 'https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=400', category: 'desserts' },
-  { id: 'd3', name: 'Tarte Tatin', description: 'Caramelized apple tart with crème fraîche', price: 15, image: 'https://images.unsplash.com/photo-1568571780765-9276ac8b75a7?w=400', category: 'desserts' },
+  { id: 'd3', name: 'Tarte Tatin', description: 'Caramelized apple tart with crème fraîche', price: 15, image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80?w=400', category: 'desserts' },
   { id: 'd4', name: 'Tiramisu', description: 'Espresso-soaked ladyfingers with mascarpone', price: 14, image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400', category: 'desserts' },
   { id: 'd5', name: 'Lemon Tart', description: 'Tangy lemon curd in buttery shortbread crust', price: 13, image: 'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=400', category: 'desserts' },
   { id: 'd6', name: 'Profiteroles', description: 'Choux pastry with vanilla ice cream and chocolate', price: 15, image: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400', category: 'desserts' },
