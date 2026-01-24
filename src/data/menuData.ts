@@ -28,7 +28,7 @@ export const menuItems: MenuItem[] = [
   // STARTERS (15 items)
   { id: 's1', name: 'Truffle Burrata', description: 'Creamy burrata with black truffle shavings, heirloom tomatoes, and aged balsamic', price: 24, image: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400', category: 'starters', featured: true },
   { id: 's2', name: 'Seared Foie Gras', description: 'Pan-seared foie gras with brioche, fig compote, and port reduction', price: 38, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400', category: 'starters' },
-  { id: 's3', name: 'Oyster Selection', description: 'Six premium oysters with champagne mignonette and lemon', price: 32, image: 'https://images.unsplash.com/photo-1606756790138-261d2b21cd78?w=400', category: 'starters' },
+  { id: 's3', name: 'Oyster Selection', description: 'Six premium oysters with champagne mignonette and lemon', price: 32, image: 'file:///Users/Gaurang/Downloads/oyster.png?w=400', category: 'starters' },
   { id: 's4', name: 'Tuna Tartare', description: 'Fresh yellowfin tuna with avocado mousse, sesame, and wasabi aioli', price: 28, image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400', category: 'starters' },
   { id: 's5', name: 'Lobster Bisque', description: 'Velvety lobster soup with cognac cream and chive oil', price: 22, image: 'https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=400', category: 'starters' },
   { id: 's6', name: 'Beef Carpaccio', description: 'Thinly sliced wagyu with arugula, parmesan, and truffle oil', price: 26, image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=400', category: 'starters' },
