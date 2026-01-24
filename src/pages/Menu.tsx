@@ -1,4 +1,8 @@
 import React, { useState, useMemo } from "react";
+import VeloriaLoader from "@/components/ui/VeloriaLoader";
+if (loading) {
+  return <VeloriaLoader />;
+}
 import {
   motion,
   AnimatePresence,
