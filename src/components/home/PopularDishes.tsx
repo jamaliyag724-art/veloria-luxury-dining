@@ -65,8 +65,10 @@ const PopularDishes: React.FC = () => {
                     {item.name}
                   </h3>
                   <span className="font-serif text-xl font-bold text-primary whitespace-nowrap">
-                    ${item.price}
-                  </span>
+                 <p className="text-primary font-semibold">
+                ₹{item.price.toLocaleString("en-IN")}
+                </p>
+                 </span>
                 </div>
                 <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
                   {item.description}
