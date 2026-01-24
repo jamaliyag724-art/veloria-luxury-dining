@@ -1,47 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+
+const ADMIN_EMAIL = "admin@veloria.com";
+const ADMIN_PASSWORD = "admin123";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    setError("");
-    setLoading(true);
+  // Agar pehle se login hai to admin panel bhej do
+  useEffect(() => {
+    const isAdmin = localStorage.getItem("veloria_admin") === "true";
+    if (isAdmin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [navigate]);
 
-    // 1️⃣ Supabase Auth Login
-    const { data, error: authError } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  const handleLogin = () => {
+    console.log("EMAIL:", email);
+    console.log("PASSWORD:", password);
 
-    if (authError || !data.user) {
+    if (
+      email.trim() === ADMIN_EMAIL &&
+      password.trim() === ADMIN_PASSWORD
+    ) {
+      localStorage.setItem("veloria_admin", "true");
+      navigate("/admin", { replace: true });
+    } else {
       setError("Invalid email or password");
-      setLoading(false);
-      return;
     }
-
-    // 2️⃣ Check admin role
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-
-    if (profile?.role !== "admin") {
-      await supabase.auth.signOut();
-      setError("You are not authorized as admin");
-      setLoading(false);
-      return;
-    }
-
-    // 3️⃣ Success
-    navigate("/admin", { replace: true });
   };
 
   return (
@@ -53,7 +43,7 @@ export default function AdminLogin() {
 
         <input
           className="w-full mb-4 px-4 py-3 rounded-lg border"
-          placeholder="Email"
+          placeholder="admin@veloria.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -61,7 +51,7 @@ export default function AdminLogin() {
         <input
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-lg border"
-          placeholder="Password"
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -72,10 +62,9 @@ export default function AdminLogin() {
 
         <button
           onClick={handleLogin}
-          disabled={loading}
-          className="w-full py-3 rounded-lg bg-[#d4a24c] text-white font-medium disabled:opacity-60"
+          className="w-full py-3 rounded-lg bg-[#d4a24c] text-white font-medium"
         >
-          {loading ? "Signing in..." : "Login"}
+          Login
         </button>
       </div>
     </div>
