@@ -72,7 +72,7 @@ export const menuItems: MenuItem[] = [
   { id: 'l10', name: 'Tuna Melt', description: 'Albacore tuna with swiss on sourdough', price: 22, image: 'https://images.unsplash.com/photo-1485451456034-3f9391c6f769?w=400', category: 'lunch' },
   { id: 'l11', name: 'Quinoa Buddha Bowl', description: 'Roasted vegetables, chickpeas, and tahini', price: 21, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400', category: 'lunch', dietary: ['vegan'] },
   { id: 'l12', name: 'Beef Bourguignon', description: 'Slow-braised beef in red wine with vegetables', price: 38, image: 'https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=400', category: 'lunch' },
-  { id: 'l13', name: 'Duck Confit Salad', description: 'Crispy duck leg with frisée and poached egg', price: 29, image: 'https://images.unsplash.com/photo-1604908177225-2f8a4c6b7a7e?auto=format&fit=crop&w=800&q=80?w=400', category: 'lunch' },
+  { id: 'l13', name: 'Duck Confit Salad', description: 'Crispy duck leg with frisée and poached egg', price: 29, image: 'https://images.unsplash.com/photo-1604908554027-3c2c4f8f7d63?auto=format&fit=crop&w=800&q=80?w=400', category: 'lunch' },
   { id: 'l14', name: 'Margherita Flatbread', description: 'San Marzano tomatoes, mozzarella, and basil', price: 20, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400', category: 'lunch', dietary: ['vegetarian'] },
   { id: 'l15', name: 'Cobb Salad', description: 'Chicken, bacon, avocado, blue cheese, and egg', price: 25, image: 'https://images.unsplash.com/photo-1512852939750-1305098529bf?w=400', category: 'lunch' },
 
