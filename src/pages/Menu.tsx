@@ -13,8 +13,8 @@ import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
-import MenuContext from "@/context/MenuContext";
-const { items, loading } = useMenu();
+import { useMenu } from "@/context/MenuContext";
+
 /* ---------------------------------------
    CATEGORY → BACKGROUND MAP
 ---------------------------------------- */
@@ -33,6 +33,7 @@ const Menu: React.FC = () => {
   /* ---------------------------------------
      STATE
   ---------------------------------------- */
+  const { items, loading } = useMenu();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
   const [categoryLoading, setCategoryLoading] = useState(false);
