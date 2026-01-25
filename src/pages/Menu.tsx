@@ -29,9 +29,6 @@ const CATEGORY_BACKGROUNDS: Record<string, string> = {
   "wine-beverages": "/wine.webp",
 };
 
-/* ---------------------------------------
-   PRELOAD ALL BACKGROUNDS (CRITICAL)
----------------------------------------- */
 const ALL_BACKGROUNDS = Object.values(CATEGORY_BACKGROUNDS);
 
 const Menu: React.FC = () => {
@@ -45,15 +42,15 @@ const Menu: React.FC = () => {
   const [categoryLoading, setCategoryLoading] = useState(false);
 
   /* ---------------------------------------
-     PAGE LOADER (FIRST OPEN)
+     PAGE LOADER (FIRST VISIT)
   ---------------------------------------- */
   useEffect(() => {
-    const timer = setTimeout(() => setPageLoading(false), 1500);
+    const timer = setTimeout(() => setPageLoading(false), 1400);
     return () => clearTimeout(timer);
   }, []);
 
   /* ---------------------------------------
-     PRELOAD BACKGROUND IMAGES
+     PRELOAD ALL BACKGROUNDS (NO FLICKER)
   ---------------------------------------- */
   useEffect(() => {
     ALL_BACKGROUNDS.forEach((src) => {
@@ -63,21 +60,30 @@ const Menu: React.FC = () => {
   }, []);
 
   /* ---------------------------------------
-     CATEGORY SWITCH LOADER (SMALL)
-  ---------------------------------------- */
-  useEffect(() => {
-    setCategoryLoading(true);
-    const timer = setTimeout(() => setCategoryLoading(false), 350);
-    return () => clearTimeout(timer);
-  }, [activeCategory]);
-
-  /* ---------------------------------------
      DATA
   ---------------------------------------- */
-  const items = getItemsByCategory(activeCategory);
+  const items = useMemo(
+    () => getItemsByCategory(activeCategory),
+    [activeCategory]
+  );
+
   const currentCategory = menuCategories.find(
     (c) => c.id === activeCategory
   );
+
+  /* ---------------------------------------
+     CATEGORY SWITCH HANDLER (CONTROLLED)
+  ---------------------------------------- */
+  const handleCategoryChange = (category: string) => {
+    if (category === activeCategory) return;
+
+    setCategoryLoading(true);
+    setActiveCategory(category);
+
+    setTimeout(() => {
+      setCategoryLoading(false);
+    }, 500); // 👈 luxury delay
+  };
 
   /* ---------------------------------------
      PARALLAX
@@ -86,14 +92,9 @@ const Menu: React.FC = () => {
   const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
   /* ---------------------------------------
-     ACTIVE BACKGROUND (SAFE)
+     ACTIVE BACKGROUND
   ---------------------------------------- */
-  const background = useMemo(() => {
-    return (
-      CATEGORY_BACKGROUNDS[activeCategory] ||
-      CATEGORY_BACKGROUNDS.starters
-    );
-  }, [activeCategory]);
+  const background = CATEGORY_BACKGROUNDS[activeCategory];
 
   /* ---------------------------------------
      BLOCK PAGE ON FIRST LOAD
@@ -107,25 +108,26 @@ const Menu: React.FC = () => {
   ---------------------------------------- */
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🌄 BACKGROUND — SMOOTH CROSSFADE */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
+      {/* 🌄 BACKGROUND (SMOOTH CROSSFADE) */}
+      <AnimatePresence mode="wait">
         <motion.img
           key={background}
           src={background}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           style={{ y }}
-          className="absolute inset-0 w-full h-full object-cover scale-105"
+          className="fixed inset-0 z-0 w-full h-full object-cover scale-105"
         />
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-      </div>
+      </AnimatePresence>
 
-      {/* 🌑 DARK OVERLAY */}
-      <div className="fixed inset-0 bg-black/25 z-[5] pointer-events-none" />
+      {/* Overlays */}
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2]" />
+      <div className="fixed inset-0 bg-black/25 z-[3]" />
 
-      {/* 🌫️ AMBIENT FOG */}
-      <div className="pointer-events-none fixed inset-0 z-[8] overflow-hidden">
+      {/* 🌫️ Ambient Fog */}
+      <div className="pointer-events-none fixed inset-0 z-[4] overflow-hidden">
         <motion.div
           className="absolute -top-1/3 -left-1/4 w-[140%] h-[140%]"
           style={{
@@ -168,18 +170,17 @@ const Menu: React.FC = () => {
                 Our Menu
               </h1>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Discover our carefully curated selection of dishes, crafted with
-                the finest ingredients.
+                Discover our carefully curated selection of dishes.
               </p>
             </motion.div>
 
             {/* CATEGORY TABS */}
             <CategoryTabs
               activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
+              onCategoryChange={handleCategoryChange}
             />
 
-            {/* CATEGORY DESCRIPTION */}
+            {/* DESCRIPTION */}
             <motion.p
               key={activeCategory}
               initial={{ opacity: 0 }}
@@ -190,21 +191,20 @@ const Menu: React.FC = () => {
             </motion.p>
 
             {/* MENU GRID */}
-           <motion.div
-  layout
-  className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
->
-  <AnimatePresence mode="popLayout">
-    {categoryLoading
-      ? Array.from({ length: 6 }).map((_, i) => (
-          <MenuItemSkeleton key={i} />
-        ))
-      : items.map((item) => (
-          <MenuItemCard key={item.id} item={item} />
-        ))}
-  </AnimatePresence>
-</motion.div>
-
+            <motion.div
+              layout
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence mode="popLayout">
+                {categoryLoading
+                  ? Array.from({ length: 6 }).map((_, i) => (
+                      <MenuItemSkeleton key={`skeleton-${i}`} index={i} />
+                    ))
+                  : items.map((item) => (
+                      <MenuItemCard key={item.id} item={item} />
+                    ))}
+              </AnimatePresence>
+            </motion.div>
           </div>
         </main>
       </div>
