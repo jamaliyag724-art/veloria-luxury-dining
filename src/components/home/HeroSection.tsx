@@ -121,6 +121,12 @@ const HeroSection: React.FC = () => {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
                 className="btn-gold w-full sm:w-auto py-4 sm:py-3"
+                onClick={() => {
+                            showLoader("reservation"); // 🍽️ fork & spoon
+                            setTimeout(() => {
+                            navigate("/reservations");
+                            }, 900);
+                         }}
               >
                 Reserve a Table
                 <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
