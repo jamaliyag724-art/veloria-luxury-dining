@@ -16,7 +16,7 @@ import { OrderProvider } from "@/context/OrderContext";
 
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 
-/* Lazy Pages */
+/* -------- Lazy Pages -------- */
 const Index = lazy(() => import("./pages/Index"));
 const Menu = lazy(() => import("./pages/Menu"));
 const Reservations = lazy(() => import("./pages/Reservations"));
@@ -38,14 +38,17 @@ const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const queryClient = new QueryClient();
 
 const App = () => {
+  /* 🌟 ONE-TIME WEBSITE LOADER */
   const [appLoading, setAppLoading] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setAppLoading(false), 1500);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setAppLoading(false), 1500);
+    return () => clearTimeout(timer);
   }, []);
 
-  if (appLoading) return <VeloriaLoader />;
+  if (appLoading) {
+    return <VeloriaLoader />;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -58,8 +61,13 @@ const App = () => {
                 <Sonner position="top-center" />
 
                 <BrowserRouter>
-                  <Suspense fallback={<PageLoader />}>
+                  {/* ✅ PAGE LOADER (manual, hidden by default) */}
+                  <PageLoader />
+
+                  {/* ❌ NO loader in Suspense */}
+                  <Suspense fallback={null}>
                     <Routes>
+                      {/* Public */}
                       <Route path="/" element={<Index />} />
                       <Route path="/menu" element={<Menu />} />
                       <Route path="/reservations" element={<Reservations />} />
@@ -75,17 +83,30 @@ const App = () => {
                       <Route path="/admin/login" element={<AdminLogin />} />
                       <Route
                         path="/admin"
-                        element={<ProtectedAdminRoute><Admin /></ProtectedAdminRoute>}
+                        element={
+                          <ProtectedAdminRoute>
+                            <Admin />
+                          </ProtectedAdminRoute>
+                        }
                       />
                       <Route
                         path="/admin/orders"
-                        element={<ProtectedAdminRoute><AdminOrders /></ProtectedAdminRoute>}
+                        element={
+                          <ProtectedAdminRoute>
+                            <AdminOrders />
+                          </ProtectedAdminRoute>
+                        }
                       />
                       <Route
                         path="/admin/reservations"
-                        element={<ProtectedAdminRoute><AdminReservations /></ProtectedAdminRoute>}
+                        element={
+                          <ProtectedAdminRoute>
+                            <AdminReservations />
+                          </ProtectedAdminRoute>
+                        }
                       />
 
+                      {/* 404 */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
