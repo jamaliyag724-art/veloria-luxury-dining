@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
@@ -11,9 +11,17 @@ import { CartProvider } from "@/context/CartContext";
 import { AdminProvider } from "@/context/AdminContext";
 import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
-import { RouteLoaderProvider, useRouteLoader } from "@/context/RouteLoaderContext";
+import {
+  RouteLoaderProvider,
+  useRouteLoader,
+} from "@/context/RouteLoaderContext";
+import { MenuProvider } from "@/context/MenuContext"; // ✅ ONLY ADDITION
 
-import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
+import {
+  VeloriaBrandLoader,
+  RouteLoaderRenderer,
+} from "@/components/ui/loaders";
+
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 /* Pages */
@@ -34,9 +42,12 @@ import AdminOrders from "@/pages/AdminOrders";
 import AdminReservations from "@/pages/AdminReservations";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminMenu from "@/pages/AdminMenu";
+
 const queryClient = new QueryClient();
 
-// Inner component that uses the RouteLoader context
+/* ------------------------------
+   INNER APP (unchanged)
+-------------------------------- */
 const AppContent = () => {
   const { hasShownBrandLoader, markBrandLoaderShown } = useRouteLoader();
   const [showBrandLoader, setShowBrandLoader] = useState(!hasShownBrandLoader);
@@ -67,7 +78,10 @@ const AppContent = () => {
         <Route path="/reservations" element={<Reservations />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-        <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
+        <Route
+          path="/reservation-success/:id"
+          element={<ReservationSuccess />}
+        />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/track-order" element={<TrackOrder />} />
@@ -101,11 +115,11 @@ const AppContent = () => {
         <Route
           path="/admin/menu"
           element={
-               <ProtectedAdminRoute>
-                  <AdminMenu />
-              </ProtectedAdminRoute>
+            <ProtectedAdminRoute>
+              <AdminMenu />
+            </ProtectedAdminRoute>
           }
-              />
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -113,23 +127,28 @@ const AppContent = () => {
   );
 };
 
+/* ------------------------------
+   ROOT APP (ONLY MenuProvider wrapped)
+-------------------------------- */
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <OrderProvider>
-          <ReservationProvider>
-            <CartProvider>
-              <AdminProvider>
-                <RouteLoaderProvider>
-                  <BrowserRouter>
-                    <AppContent />
-                  </BrowserRouter>
-                </RouteLoaderProvider>
-              </AdminProvider>
-            </CartProvider>
-          </ReservationProvider>
-        </OrderProvider>
+        <MenuProvider>
+          <OrderProvider>
+            <ReservationProvider>
+              <CartProvider>
+                <AdminProvider>
+                  <RouteLoaderProvider>
+                    <BrowserRouter>
+                      <AppContent />
+                    </BrowserRouter>
+                  </RouteLoaderProvider>
+                </AdminProvider>
+              </CartProvider>
+            </ReservationProvider>
+          </OrderProvider>
+        </MenuProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
