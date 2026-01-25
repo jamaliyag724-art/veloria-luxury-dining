@@ -66,7 +66,7 @@ const WelcomePopup: React.FC = () => {
               <Link to="/reservations">
                 <button
                   onClick={() => setOpen(false)}
-                  className="btn-outline-gold w-full"
+                  className="btn-gold w-full"
                 >
                   Reserve a Table
                 </button>
