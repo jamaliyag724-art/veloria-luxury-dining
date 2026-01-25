@@ -1,6 +1,8 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import VeloriaLoader from "@/components/ui/VeloriaLoader";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -43,6 +45,19 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  /* 🌟 GLOBAL ONE-TIME LOADER */
+  const [appLoading, setAppLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAppLoading(false), 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* 🚫 BLOCK EVERYTHING UNTIL READY */
+  if (appLoading) {
+    return <VeloriaLoader />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -54,13 +69,8 @@ const App = () => {
                 <Sonner position="top-center" />
 
                 <BrowserRouter>
-                  <Suspense
-                    fallback={
-                      <div className="min-h-screen flex items-center justify-center">
-                        <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    }
-                  >
+                  {/* ⚠️ NO SPINNER HERE */}
+                  <Suspense fallback={null}>
                     <Routes>
                       {/* Admin Auth */}
                       <Route path="/admin/login" element={<AdminLogin />} />
