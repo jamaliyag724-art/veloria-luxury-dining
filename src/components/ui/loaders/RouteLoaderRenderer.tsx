@@ -1,31 +1,48 @@
+import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { useRouteLoader } from "@/context/RouteLoaderContext";
+
 import MenuLoader from "./MenuLoader";
 import ReservationLoader from "./ReservationLoader";
 import WineLoader from "./WineLoader";
 import AboutLoader from "./AboutLoader";
+import VeloriaBrandLoader from "./VeloriaBrandLoader";
 
 const RouteLoaderRenderer = () => {
-  const { activeLoader } = useRouteLoader();
+  const { pathname } = useLocation();
 
   const renderLoader = () => {
-    switch (activeLoader) {
-      case "menu":
-        return <MenuLoader key="menu" />;
-      case "reservation":
-        return <ReservationLoader key="reservation" />;
-      case "checkout":
-        return <WineLoader key="checkout" label="Preparing Checkout" />;
-      case "contact":
-        return <WineLoader key="contact" label="Loading" />;
-      case "about":
-        return <AboutLoader key="about" />;
-      default:
-        return null;
+    // Home / first load
+    if (pathname === "/") {
+      return <VeloriaBrandLoader />;
     }
+
+    if (pathname.startsWith("/menu")) {
+      return <MenuLoader />;
+    }
+
+    if (pathname.startsWith("/reservations")) {
+      return <ReservationLoader />;
+    }
+
+    if (
+      pathname.startsWith("/checkout") ||
+      pathname.startsWith("/contact")
+    ) {
+      return <WineLoader />;
+    }
+
+    if (pathname.startsWith("/about")) {
+      return <AboutLoader />;
+    }
+
+    return null;
   };
 
-  return <AnimatePresence mode="wait">{renderLoader()}</AnimatePresence>;
+  return (
+    <AnimatePresence mode="wait">
+      {renderLoader()}
+    </AnimatePresence>
+  );
 };
 
 export default RouteLoaderRenderer;
