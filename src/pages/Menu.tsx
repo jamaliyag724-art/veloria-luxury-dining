@@ -190,20 +190,21 @@ const Menu: React.FC = () => {
             </motion.p>
 
             {/* MENU GRID */}
-            <motion.div
-              layout
-              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              <AnimatePresence mode="popLayout">
-                {categoryLoading
-                  ? Array.from({ length: 6 }).map((_, i) => (
-                      <MenuItemSkeleton key={i} />
-                    ))
-                  : items.map((item) => (
-                      <MenuItemCard key={item.id} item={item} />
-                    ))}
-              </AnimatePresence>
-            </motion.div>
+           <motion.div
+  layout
+  className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+>
+  <AnimatePresence mode="popLayout">
+    {categoryLoading
+      ? Array.from({ length: 6 }).map((_, i) => (
+          <MenuItemSkeleton key={i} />
+        ))
+      : items.map((item) => (
+          <MenuItemCard key={item.id} item={item} />
+        ))}
+  </AnimatePresence>
+</motion.div>
+
           </div>
         </main>
       </div>
