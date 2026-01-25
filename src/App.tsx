@@ -1,10 +1,6 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-import VeloriaLoader from "@/components/ui/VeloriaLoader";
-import PageLoader from "@/components/ui/PageLoader";
-import RouteFallback from "@/components/ui/RouteFallback";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -17,7 +13,7 @@ import { OrderProvider } from "@/context/OrderContext";
 
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 
-/* -------- Lazy Pages -------- */
+/* Lazy Pages */
 const Index = lazy(() => import("./pages/Index"));
 const Menu = lazy(() => import("./pages/Menu"));
 const Reservations = lazy(() => import("./pages/Reservations"));
@@ -30,36 +26,15 @@ const Contact = lazy(() => import("./pages/Contact"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-/* -------- Admin -------- */
+/* Admin */
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminOrders = lazy(() => import("./pages/AdminOrders"));
 const AdminReservations = lazy(() => import("./pages/AdminReservations"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 
-/* -------- Query Client -------- */
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 const App = () => {
-  /* 🌟 ONE-TIME WEBSITE LOADER */
-  const [appLoading, setAppLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setAppLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  /* Block app until brand loader finishes */
-  if (appLoading) {
-    return <VeloriaLoader />;
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -71,65 +46,40 @@ const App = () => {
                 <Sonner position="top-center" />
 
                 <BrowserRouter>
-                  {/* 🔥 Manual Page Loader (Navbar triggers it) */}
-                  <PageLoader />
-
-                  {/* ✅ Safe Suspense (NO blank pages) */}
-                  <Suspense fallback={<RouteFallback />}>
+                  {/* ❌ NO GLOBAL LOADER */}
+                  <Suspense fallback={null}>
                     <Routes>
-                      {/* -------- Public Pages -------- */}
                       <Route path="/" element={<Index />} />
                       <Route path="/menu" element={<Menu />} />
                       <Route path="/reservations" element={<Reservations />} />
-                      <Route
-                        path="/reservation-success/:id"
-                        element={<ReservationSuccess />}
-                      />
-                      <Route
-                        path="/reservation-status"
-                        element={<ReservationStatus />}
-                      />
+                      <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
+                      <Route path="/reservation-status" element={<ReservationStatus />} />
                       <Route path="/checkout" element={<Checkout />} />
-                      <Route
-                        path="/order-success/:orderId"
-                        element={<OrderSuccess />}
-                      />
+                      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/track-order" element={<TrackOrder />} />
 
-                      {/* -------- Admin -------- */}
+                      {/* Admin */}
                       <Route path="/admin/login" element={<AdminLogin />} />
                       <Route
                         path="/admin"
-                        element={
-                          <ProtectedAdminRoute>
-                            <Admin />
-                          </ProtectedAdminRoute>
-                        }
+                        element={<ProtectedAdminRoute><Admin /></ProtectedAdminRoute>}
                       />
                       <Route
                         path="/admin/orders"
-                        element={
-                          <ProtectedAdminRoute>
-                            <AdminOrders />
-                          </ProtectedAdminRoute>
-                        }
+                        element={<ProtectedAdminRoute><AdminOrders /></ProtectedAdminRoute>}
                       />
                       <Route
                         path="/admin/reservations"
-                        element={
-                          <ProtectedAdminRoute>
-                            <AdminReservations />
-                          </ProtectedAdminRoute>
-                        }
+                        element={<ProtectedAdminRoute><AdminReservations /></ProtectedAdminRoute>}
                       />
 
-                      {/* -------- 404 -------- */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
                 </BrowserRouter>
+
               </AdminProvider>
             </CartProvider>
           </ReservationProvider>
