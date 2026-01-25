@@ -6,7 +6,6 @@ import {
   useTransform,
 } from "framer-motion";
 
-import VeloriaLoader from "@/components/ui/VeloriaLoader";
 import MenuItemSkeleton from "@/components/menu/MenuItemSkeleton";
 
 import Navbar from "@/components/layout/Navbar";
@@ -37,20 +36,10 @@ const Menu: React.FC = () => {
   ---------------------------------------- */
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
-
-  const [pageLoading, setPageLoading] = useState(true);
   const [categoryLoading, setCategoryLoading] = useState(false);
 
   /* ---------------------------------------
-     PAGE LOADER (FIRST VISIT)
-  ---------------------------------------- */
-  useEffect(() => {
-    const timer = setTimeout(() => setPageLoading(false), 1400);
-    return () => clearTimeout(timer);
-  }, []);
-
-  /* ---------------------------------------
-     PRELOAD ALL BACKGROUNDS (NO FLICKER)
+     PRELOAD BACKGROUNDS (NO FLICKER)
   ---------------------------------------- */
   useEffect(() => {
     ALL_BACKGROUNDS.forEach((src) => {
@@ -72,7 +61,7 @@ const Menu: React.FC = () => {
   );
 
   /* ---------------------------------------
-     CATEGORY SWITCH HANDLER (CONTROLLED)
+     CATEGORY SWITCH
   ---------------------------------------- */
   const handleCategoryChange = (category: string) => {
     if (category === activeCategory) return;
@@ -82,7 +71,7 @@ const Menu: React.FC = () => {
 
     setTimeout(() => {
       setCategoryLoading(false);
-    }, 500); // 👈 luxury delay
+    }, 450); // luxury micro-delay
   };
 
   /* ---------------------------------------
@@ -91,24 +80,19 @@ const Menu: React.FC = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
-  /* ---------------------------------------
-     ACTIVE BACKGROUND
-  ---------------------------------------- */
   const background = CATEGORY_BACKGROUNDS[activeCategory];
-
-  /* ---------------------------------------
-     BLOCK PAGE ON FIRST LOAD
-  ---------------------------------------- */
-  if (pageLoading) {
-    return <VeloriaLoader />;
-  }
 
   /* ---------------------------------------
      RENDER
   ---------------------------------------- */
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* 🌄 BACKGROUND (SMOOTH CROSSFADE) */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative min-h-screen overflow-hidden"
+    >
+      {/* 🌄 BACKGROUND */}
       <AnimatePresence mode="wait">
         <motion.img
           key={background}
@@ -116,7 +100,7 @@ const Menu: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
           style={{ y }}
           className="fixed inset-0 z-0 w-full h-full object-cover scale-105"
         />
@@ -126,31 +110,6 @@ const Menu: React.FC = () => {
       <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2]" />
       <div className="fixed inset-0 bg-black/25 z-[3]" />
 
-      {/* 🌫️ Ambient Fog */}
-      <div className="pointer-events-none fixed inset-0 z-[4] overflow-hidden">
-        <motion.div
-          className="absolute -top-1/3 -left-1/4 w-[140%] h-[140%]"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(255,255,255,0.08), transparent 70%)",
-            filter: "blur(80px)",
-          }}
-          animate={{ x: ["-5%", "5%", "-5%"], y: ["-3%", "3%", "-3%"] }}
-          transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
-        />
-
-        <motion.div
-          className="absolute -bottom-1/3 -right-1/4 w-[140%] h-[140%]"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(212,162,76,0.06), transparent 70%)",
-            filter: "blur(100px)",
-          }}
-          animate={{ x: ["4%", "-4%", "4%"], y: ["2%", "-2%", "2%"] }}
-          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-        />
-      </div>
-
       {/* 🌟 CONTENT */}
       <div className="relative z-20">
         <Navbar onCartClick={() => setIsCartOpen(true)} />
@@ -159,14 +118,15 @@ const Menu: React.FC = () => {
           <div className="section-container">
             {/* HEADER */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
               className="text-center mb-12"
             >
-              <span className="text-primary font-medium tracking-wider text-sm uppercase">
+              <span className="text-primary tracking-wider text-sm uppercase">
                 Culinary Excellence
               </span>
-              <h1 className="font-serif text-4xl md:text-5xl font-medium mt-4 mb-4">
+              <h1 className="font-serif text-4xl md:text-5xl mt-4 mb-4">
                 Our Menu
               </h1>
               <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -221,7 +181,7 @@ const Menu: React.FC = () => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       />
-    </div>
+    </motion.div>
   );
 };
 
