@@ -116,28 +116,29 @@ const HeroSection: React.FC = () => {
             transition={{ duration: 1, delay: 1.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            {/* PRIMARY CTA */}
-            <Link to="/reservations" className="w-full sm:w-auto">
-              <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className="btn-gold w-full sm:w-auto py-4 sm:py-3"
-                onClick={() => {
+           {/* PRIMARY CTA */}
+<motion.button
+  whileHover={{ scale: 1.04 }}
+  whileTap={{ scale: 0.96 }}
+  className="btn-gold w-full sm:w-auto py-4 sm:py-3"
+  onClick={() => {
+    // 🔥 show reservation loader (🍽️ fork & spoon)
     document.dispatchEvent(
       new CustomEvent("route-loader", {
-        detail: { type: "reservation" }, // 🍽️ fork & spoon
+        detail: { type: "reservation" },
       })
     );
 
+    // ⏳ luxury delay
     setTimeout(() => {
       navigate("/reservations");
-    }, 700); // smooth luxury delay
+    }, 700);
   }}
-              >
-                Reserve a Table
-                <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-            </Link>
+>
+  Reserve a Table
+  <ArrowRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+</motion.button>
+
 
             {/* SECONDARY CTA */}
             <Link to="/menu" className="w-full sm:w-auto">
