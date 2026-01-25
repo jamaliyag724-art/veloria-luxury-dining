@@ -33,7 +33,7 @@ const Menu: React.FC = () => {
   /* ---------------------------------------
      STATE
   ---------------------------------------- */
-  const { items, loading } = useMenu();
+  
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
   const [categoryLoading, setCategoryLoading] = useState(false);
