@@ -13,6 +13,7 @@ import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
+
 import { useMenu } from "@/context/MenuContext";
 
 /* ---------------------------------------
@@ -33,10 +34,13 @@ const Menu: React.FC = () => {
   /* ---------------------------------------
      STATE
   ---------------------------------------- */
-  
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
-  const [categoryLoading, setCategoryLoading] = useState(false);
+
+  /* ---------------------------------------
+     MENU CONTEXT
+  ---------------------------------------- */
+  const { items, categories, loading } = useMenu();
 
   /* ---------------------------------------
      PRELOAD BACKGROUNDS
@@ -49,30 +53,18 @@ const Menu: React.FC = () => {
   }, []);
 
   /* ---------------------------------------
-     DATA
+     FILTER ITEMS
   ---------------------------------------- */
-  const items = useMemo(
-    () => getItemsByCategory(activeCategory),
-    [activeCategory]
-  );
+  const filteredItems = useMemo(() => {
+    return items.filter(
+      (item) =>
+        item.category === activeCategory && item.available !== false
+    );
+  }, [items, activeCategory]);
 
-  const currentCategory = menuCategories.find(
+  const currentCategory = categories.find(
     (c) => c.id === activeCategory
   );
-
-  /* ---------------------------------------
-     CATEGORY SWITCH
-  ---------------------------------------- */
-  const handleCategoryChange = (category: string) => {
-    if (category === activeCategory) return;
-
-    setCategoryLoading(true);
-    setActiveCategory(category);
-
-    setTimeout(() => {
-      setCategoryLoading(false);
-    }, 450);
-  };
 
   /* ---------------------------------------
      PARALLAX
@@ -80,7 +72,9 @@ const Menu: React.FC = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
-  const background = CATEGORY_BACKGROUNDS[activeCategory];
+  const background =
+    CATEGORY_BACKGROUNDS[activeCategory] ||
+    CATEGORY_BACKGROUNDS.starters;
 
   /* ---------------------------------------
      RENDER
@@ -95,7 +89,7 @@ const Menu: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
           style={{ y }}
           className="fixed inset-0 z-0 w-full h-full object-cover scale-105"
         />
@@ -132,30 +126,32 @@ const Menu: React.FC = () => {
             {/* CATEGORY TABS */}
             <CategoryTabs
               activeCategory={activeCategory}
-              onCategoryChange={handleCategoryChange}
+              onCategoryChange={setActiveCategory}
             />
 
             {/* DESCRIPTION */}
-            <motion.p
-              key={activeCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center text-muted-foreground mb-10"
-            >
-              {currentCategory?.description}
-            </motion.p>
+            {currentCategory?.description && (
+              <motion.p
+                key={activeCategory}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-muted-foreground mb-10"
+              >
+                {currentCategory.description}
+              </motion.p>
+            )}
 
             {/* MENU GRID */}
             <motion.div
               layout
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              <AnimatePresence mode="popLayout">
-                {categoryLoading
+              <AnimatePresence>
+                {loading
                   ? Array.from({ length: 6 }).map((_, i) => (
                       <MenuItemSkeleton key={i} index={i} />
                     ))
-                  : items.map((item) => (
+                  : filteredItems.map((item) => (
                       <MenuItemCard key={item.id} item={item} />
                     ))}
               </AnimatePresence>
