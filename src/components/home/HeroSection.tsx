@@ -117,26 +117,27 @@ const HeroSection: React.FC = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
            {/* PRIMARY CTA */}
-<motion.button
+     <motion.button
+  type="button"
   whileHover={{ scale: 1.04 }}
   whileTap={{ scale: 0.96 }}
-  className="btn-gold w-full sm:w-auto py-4 sm:py-3"
+  className="btn-gold w-full sm:w-auto py-4 sm:py-3 cursor-pointer"
   onClick={() => {
-    // 🔥 show reservation loader (🍽️ fork & spoon)
+    console.log("Reserve clicked"); // 👈 test log
+
     document.dispatchEvent(
       new CustomEvent("route-loader", {
         detail: { type: "reservation" },
       })
     );
 
-    // ⏳ luxury delay
     setTimeout(() => {
       navigate("/reservations");
     }, 700);
   }}
 >
   Reserve a Table
-  <ArrowRight className="inline-block ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+  <ArrowRight className="inline-block ml-2 w-4 h-4" />
 </motion.button>
 
 
