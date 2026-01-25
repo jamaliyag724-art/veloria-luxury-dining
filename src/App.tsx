@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
@@ -12,6 +12,7 @@ import { AdminProvider } from "@/context/AdminContext";
 import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
 import { RouteLoaderProvider, useRouteLoader } from "@/context/RouteLoaderContext";
+import { MenuProvider } from "@/context/MenuContext"; // ✅ ONLY ADDITION
 
 import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
@@ -34,9 +35,12 @@ import AdminOrders from "@/pages/AdminOrders";
 import AdminReservations from "@/pages/AdminReservations";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminMenu from "@/pages/AdminMenu";
+
 const queryClient = new QueryClient();
 
-// Inner component that uses the RouteLoader context
+/* ---------------------------------------
+   INNER APP
+---------------------------------------- */
 const AppContent = () => {
   const { hasShownBrandLoader, markBrandLoaderShown } = useRouteLoader();
   const [showBrandLoader, setShowBrandLoader] = useState(!hasShownBrandLoader);
@@ -48,14 +52,14 @@ const AppContent = () => {
 
   return (
     <>
-      {/* Brand Loader - Only on first visit */}
+      {/* Brand Loader */}
       <AnimatePresence>
         {showBrandLoader && (
           <VeloriaBrandLoader onComplete={handleBrandLoaderComplete} />
         )}
       </AnimatePresence>
 
-      {/* Route-specific Loaders */}
+      {/* Route Loaders */}
       <RouteLoaderRenderer />
 
       <Toaster />
@@ -101,11 +105,11 @@ const AppContent = () => {
         <Route
           path="/admin/menu"
           element={
-               <ProtectedAdminRoute>
-                  <AdminMenu />
-              </ProtectedAdminRoute>
+            <ProtectedAdminRoute>
+              <AdminMenu />
+            </ProtectedAdminRoute>
           }
-              />
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -113,6 +117,9 @@ const AppContent = () => {
   );
 };
 
+/* ---------------------------------------
+   ROOT APP
+---------------------------------------- */
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -121,11 +128,13 @@ export default function App() {
           <ReservationProvider>
             <CartProvider>
               <AdminProvider>
-                <RouteLoaderProvider>
-                  <BrowserRouter>
-                    <AppContent />
-                  </BrowserRouter>
-                </RouteLoaderProvider>
+                <MenuProvider> {/* ✅ ONLY THIS WRAPPER */}
+                  <RouteLoaderProvider>
+                    <BrowserRouter>
+                      <AppContent />
+                    </BrowserRouter>
+                  </RouteLoaderProvider>
+                </MenuProvider>
               </AdminProvider>
             </CartProvider>
           </ReservationProvider>
@@ -133,4 +142,4 @@ export default function App() {
       </TooltipProvider>
     </QueryClientProvider>
   );
-} 
+}
