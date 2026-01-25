@@ -74,24 +74,40 @@ const Reservations: React.FC = () => {
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      <main className="min-h-screen flex items-center justify-center bg-[#faf8f4] px-4 pt-32 pb-20">
+      {/* ================= BACKGROUND ================= */}
+      <main className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-24">
+        {/* Image */}
+        <img
+          src="/reservation-bg.webp"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+
+        {/* ================= CARD ================= */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-3xl bg-white rounded-[28px] shadow-xl p-10"
+          className="relative z-10 w-full max-w-3xl 
+                     bg-white/95 backdrop-blur-xl
+                     rounded-[32px] shadow-2xl p-10"
         >
           {/* HEADER */}
-          <div className="text-center mb-8">
-            <span className="text-primary tracking-widest text-xs uppercase">
+          <div className="text-center mb-10">
+            <span className="text-primary tracking-[0.25em] text-xs uppercase">
               Book a Table
             </span>
-            <h1 className="font-serif text-4xl mt-2 mb-2">
+
+            <h1 className="font-serif text-4xl mt-3 mb-2">
               Make a Reservation
             </h1>
-            <p className="text-sm text-muted-foreground">
-              Only <span className="text-primary font-medium">2 tables</span>{" "}
-              remaining for this evening
-            </p>
+
+            <div className="inline-flex items-center gap-2 mt-2 px-4 py-1.5
+                            rounded-full bg-primary/10 text-primary text-sm">
+              Only <strong>2 tables</strong> remaining for this evening
+            </div>
           </div>
 
           {/* FORM */}
@@ -100,6 +116,7 @@ const Reservations: React.FC = () => {
               <Input label="Full Name" name="fullName" value={form.fullName} onChange={handleChange} error={errors.fullName} />
               <Input label="Email" name="email" value={form.email} onChange={handleChange} error={errors.email} />
               <Input label="Mobile" name="mobile" value={form.mobile} onChange={handleChange} error={errors.mobile} />
+
               <div>
                 <label className="label">Guests</label>
                 <div className="relative">
