@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 /* 🔁 BACKGROUND IMAGES */
 const HERO_IMAGES = [
@@ -122,11 +123,16 @@ const HeroSection: React.FC = () => {
                 whileTap={{ scale: 0.96 }}
                 className="btn-gold w-full sm:w-auto py-4 sm:py-3"
                 onClick={() => {
-                            showLoader("reservation"); // 🍽️ fork & spoon
-                            setTimeout(() => {
-                            navigate("/reservations");
-                            }, 900);
-                         }}
+    document.dispatchEvent(
+      new CustomEvent("route-loader", {
+        detail: { type: "reservation" }, // 🍽️ fork & spoon
+      })
+    );
+
+    setTimeout(() => {
+      navigate("/reservations");
+    }, 700); // smooth luxury delay
+  }}
               >
                 Reserve a Table
                 <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
