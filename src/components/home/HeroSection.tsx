@@ -132,7 +132,7 @@ const HeroSection: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="btn-outline-gold w-full sm:w-auto py-4 sm:py-3"
+                className="btn-brown w-full sm:w-auto py-4 sm:py-3"
               >
                 Explore Menu
                <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
