@@ -1,27 +1,23 @@
 import React, { createContext, useContext, useState } from "react";
 
-export type LoaderType =
-  | "idle"
-  | "menu"
-  | "reservation"
-  | "checkout";
+type RouteType = "menu" | "reservation" | "checkout" | null;
 
 interface RouteLoaderContextType {
-  loader: LoaderType;
-  setLoader: (type: LoaderType) => void;
+  activeRoute: RouteType;
+  showLoader: (route: RouteType) => void;
+  hideLoader: () => void;
 }
 
 const RouteLoaderContext = createContext<RouteLoaderContextType | null>(null);
 
-export const RouteLoaderProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [loader, setLoader] = useState<LoaderType>("default");
+export const RouteLoaderProvider = ({ children }: { children: React.ReactNode }) => {
+  const [activeRoute, setActiveRoute] = useState<RouteType>(null);
+
+  const showLoader = (route: RouteType) => setActiveRoute(route);
+  const hideLoader = () => setActiveRoute(null);
 
   return (
-    <RouteLoaderContext.Provider value={{ loader, setLoader }}>
+    <RouteLoaderContext.Provider value={{ activeRoute, showLoader, hideLoader }}>
       {children}
     </RouteLoaderContext.Provider>
   );
@@ -29,8 +25,6 @@ export const RouteLoaderProvider = ({
 
 export const useRouteLoader = () => {
   const ctx = useContext(RouteLoaderContext);
-  if (!ctx) {
-    throw new Error("useRouteLoader must be used inside RouteLoaderProvider");
-  }
+  if (!ctx) throw new Error("useRouteLoader must be used inside RouteLoaderProvider");
   return ctx;
 };
