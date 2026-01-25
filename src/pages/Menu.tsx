@@ -14,8 +14,6 @@ import FloatingCart from "@/components/cart/FloatingCart";
 import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
 
-import { useMenu } from "@/context/MenuContext";
-
 /* ---------------------------------------
    CATEGORY → BACKGROUND MAP
 ---------------------------------------- */
@@ -40,7 +38,7 @@ const Menu: React.FC = () => {
   /* ---------------------------------------
      MENU CONTEXT
   ---------------------------------------- */
-  const { items, categories, loading } = useMenu();
+ 
 
   /* ---------------------------------------
      PRELOAD BACKGROUNDS
