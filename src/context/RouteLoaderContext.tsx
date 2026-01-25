@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 export type LoaderType =
-  | "default"
+  | "idle"
   | "menu"
   | "reservation"
   | "checkout";
