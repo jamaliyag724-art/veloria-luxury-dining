@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import VeloriaLoader from "@/components/ui/VeloriaLoader";
 import PageLoader from "@/components/ui/PageLoader";
+import RouteFallback from "@/components/ui/RouteFallback";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -29,13 +30,21 @@ const Contact = lazy(() => import("./pages/Contact"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-/* Admin */
+/* -------- Admin -------- */
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminOrders = lazy(() => import("./pages/AdminOrders"));
 const AdminReservations = lazy(() => import("./pages/AdminReservations"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 
-const queryClient = new QueryClient();
+/* -------- Query Client -------- */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
   /* 🌟 ONE-TIME WEBSITE LOADER */
@@ -46,6 +55,7 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  /* Block app until brand loader finishes */
   if (appLoading) {
     return <VeloriaLoader />;
   }
@@ -61,25 +71,34 @@ const App = () => {
                 <Sonner position="top-center" />
 
                 <BrowserRouter>
-                  {/* ✅ PAGE LOADER (manual, hidden by default) */}
+                  {/* 🔥 Manual Page Loader (Navbar triggers it) */}
                   <PageLoader />
 
-                  {/* ❌ NO loader in Suspense */}
-                  <Suspense fallback={null}>
+                  {/* ✅ Safe Suspense (NO blank pages) */}
+                  <Suspense fallback={<RouteFallback />}>
                     <Routes>
-                      {/* Public */}
+                      {/* -------- Public Pages -------- */}
                       <Route path="/" element={<Index />} />
                       <Route path="/menu" element={<Menu />} />
                       <Route path="/reservations" element={<Reservations />} />
-                      <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
-                      <Route path="/reservation-status" element={<ReservationStatus />} />
+                      <Route
+                        path="/reservation-success/:id"
+                        element={<ReservationSuccess />}
+                      />
+                      <Route
+                        path="/reservation-status"
+                        element={<ReservationStatus />}
+                      />
                       <Route path="/checkout" element={<Checkout />} />
-                      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+                      <Route
+                        path="/order-success/:orderId"
+                        element={<OrderSuccess />}
+                      />
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/track-order" element={<TrackOrder />} />
 
-                      {/* Admin */}
+                      {/* -------- Admin -------- */}
                       <Route path="/admin/login" element={<AdminLogin />} />
                       <Route
                         path="/admin"
@@ -106,7 +125,7 @@ const App = () => {
                         }
                       />
 
-                      {/* 404 */}
+                      {/* -------- 404 -------- */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
