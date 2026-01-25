@@ -15,6 +15,11 @@ import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import { restaurantInfo } from "@/data/restaurantData";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Contact: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,34 +82,42 @@ const Contact: React.FC = () => {
     <div className="min-h-screen bg-background">
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-      <main className="pt-24 pb-24">
+      <main className="pt-28 pb-28">
         <div className="section-container">
           {/* ================= HEADER ================= */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.7 }}
+            className="text-center mb-20"
           >
-            <span className="text-primary tracking-widest text-sm uppercase">
+            <span className="text-primary tracking-[0.3em] text-xs uppercase">
               Get in Touch
             </span>
-            <h1 className="font-serif text-4xl md:text-5xl mt-4 mb-4">
+
+            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6">
               Contact Us
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+
+            <div className="w-20 h-[2px] bg-primary mx-auto mb-6 rounded-full" />
+
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               For reservations, private events, or general inquiries,
               our team is happy to assist you.
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-14">
+          <div className="grid lg:grid-cols-2 gap-16">
             {/* ================= FORM ================= */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.7, delay: 0.1 }}
             >
-              <div className="glass-card p-8">
-                <h2 className="font-serif text-2xl mb-6">
+              <div className="glass-card p-10 rounded-3xl">
+                <h2 className="font-serif text-2xl mb-8">
                   Send Us a Message
                 </h2>
 
@@ -114,9 +127,10 @@ const Contact: React.FC = () => {
                       key="success"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="text-center py-12"
+                      exit={{ opacity: 0 }}
+                      className="text-center py-14"
                     >
-                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
                         <CheckCircle className="w-10 h-10 text-green-600" />
                       </div>
                       <h3 className="font-serif text-xl mb-2">
@@ -130,7 +144,7 @@ const Contact: React.FC = () => {
                     <motion.form
                       key="form"
                       onSubmit={handleSubmit}
-                      className="space-y-5"
+                      className="space-y-6"
                     >
                       <input
                         name="name"
@@ -197,15 +211,21 @@ const Contact: React.FC = () => {
 
             {/* ================= INFO + MAP ================= */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-8"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="space-y-10"
             >
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 gap-5">
                 {contactDetails.map((item) => (
-                  <div key={item.title} className="glass-card p-5">
+                  <motion.div
+                    key={item.title}
+                    whileHover={{ y: -4 }}
+                    className="glass-card p-6 rounded-2xl"
+                  >
                     <div className="flex gap-4">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                         <item.icon className="w-5 h-5 text-primary" />
                       </div>
                       <div>
@@ -222,21 +242,24 @@ const Contact: React.FC = () => {
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="glass-card overflow-hidden h-[420px] w-full">
+              {/* MAP */}
+              <div className="glass-card overflow-hidden h-[420px] rounded-3xl relative">
+                <span className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur px-4 py-1 rounded-full text-xs">
+                  Our Location
+                </span>
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515"
                   width="100%"
                   height="100%"
                   loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
 
-              <div className="glass-card p-6">
+              <div className="glass-card p-8 rounded-2xl">
                 <h3 className="font-serif text-lg mb-3">
                   Planning a Private Event?
                 </h3>
@@ -244,9 +267,13 @@ const Contact: React.FC = () => {
                   Our elegant dining space is perfect for celebrations
                   and corporate gatherings.
                 </p>
-                <button className="btn-outline-gold text-sm px-6 py-2.5">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="btn-outline-gold text-sm px-6 py-2.5"
+                >
                   Inquire About Events
-                </button>
+                </motion.button>
               </div>
             </motion.div>
           </div>
