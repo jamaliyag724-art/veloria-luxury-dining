@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
+/* ---------------- LINKS ---------------- */
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Menu", path: "/menu" },
@@ -22,6 +23,18 @@ interface NavbarProps {
   onCartClick?: () => void;
 }
 
+/* ---------------- PAGE LOADER TRIGGER ---------------- */
+const triggerPageLoader = () => {
+  const el = document.getElementById("page-loader");
+  if (!el) return;
+
+  el.classList.remove("hidden");
+
+  setTimeout(() => {
+    el.classList.add("hidden");
+  }, 450); // premium timing
+};
+
 const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -29,12 +42,14 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
 
+  /* Scroll shadow */
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* Close mobile menu on route change */
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
@@ -43,7 +58,11 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
 
   const handleNavClick = (path: string) => {
     setIsOpen(false);
-    navigate(path);
+
+    if (location.pathname !== path) {
+      triggerPageLoader();
+      navigate(path);
+    }
   };
 
   return (
@@ -52,7 +71,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 inset-x-0 z-50 transition-all ${
           scrolled
             ? "bg-card/95 backdrop-blur-lg shadow-medium py-3"
@@ -63,7 +82,11 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
           <div className="flex items-center justify-between">
 
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
+            <Link
+              to="/"
+              onClick={() => location.pathname !== "/" && triggerPageLoader()}
+              className="flex items-center gap-2"
+            >
               <Utensils className="w-8 h-8 text-primary" />
               <span className="font-serif text-2xl font-semibold">
                 Veloria
@@ -73,9 +96,9 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
-                <Link
+                <button
                   key={link.name}
-                  to={link.path}
+                  onClick={() => handleNavClick(link.path)}
                   className={`relative text-sm font-medium transition-colors ${
                     isActive(link.path)
                       ? "text-primary"
@@ -89,12 +112,12 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                       className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
                     />
                   )}
-                </Link>
+                </button>
               ))}
 
               {/* Track Order */}
-              <Link
-                to="/track-order"
+              <button
+                onClick={() => handleNavClick("/track-order")}
                 className="flex items-center gap-2 px-4 py-2 rounded-full
                            bg-primary/10 text-primary
                            hover:bg-primary hover:text-primary-foreground
@@ -102,7 +125,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
               >
                 <Search className="w-4 h-4" />
                 Track Order
-              </Link>
+              </button>
             </div>
 
             {/* Right Actions */}
@@ -130,11 +153,12 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
               </motion.button>
 
               {/* Desktop Reserve */}
-              <Link to="/reservations" className="hidden md:block">
-                <button className="btn-gold px-6 py-2.5 text-sm">
-                  Reserve Now
-                </button>
-              </Link>
+              <button
+                onClick={() => handleNavClick("/reservations")}
+                className="hidden md:block btn-gold px-6 py-2.5 text-sm"
+              >
+                Reserve Now
+              </button>
 
               {/* Mobile Toggle */}
               <button
@@ -181,7 +205,6 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                     </button>
                   ))}
 
-                  {/* Mobile Track Order */}
                   <button
                     onClick={() => handleNavClick("/track-order")}
                     className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl
