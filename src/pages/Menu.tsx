@@ -13,7 +13,8 @@ import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
-import MenuContext from "./context/MenuContext";
+import MenuContext from "@/context/MenuContext";
+const { items, loading } = useMenu();
 /* ---------------------------------------
    CATEGORY → BACKGROUND MAP
 ---------------------------------------- */
