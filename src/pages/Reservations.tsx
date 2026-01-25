@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Users, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+
+import { useRouteLoader } from "@/context/RouteLoaderContext"; // ✅ ADD
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -25,6 +27,21 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Reservations: React.FC = () => {
+  /* ---------------------------------------
+     🍽️ ROUTE LOADER
+  ---------------------------------------- */
+  const { setLoader } = useRouteLoader();
+
+  useEffect(() => {
+    setLoader("reservation"); // 🍽️ PLATE LOADER
+
+    const t = setTimeout(() => {
+      setLoader("default");
+    }, 1400);
+
+    return () => clearTimeout(t);
+  }, [setLoader]);
+
   const navigate = useNavigate();
   const { addReservation } = useReservations();
 
@@ -90,6 +107,7 @@ const Reservations: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative z-10 w-full max-w-3xl 
                      bg-white/95 backdrop-blur-xl
                      rounded-[32px] shadow-2xl p-10"
