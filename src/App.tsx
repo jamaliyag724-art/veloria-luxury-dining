@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -12,7 +11,7 @@ import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
 import { RouteLoaderProvider } from "@/context/RouteLoaderContext";
 
-import FoodLoader from "@/components/ui/FoodLoader";
+import RouteLoaderRenderer from "@/components/ui/RouteLoaderRenderer";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 /* Pages */
@@ -44,61 +43,61 @@ const App = () => {
             <CartProvider>
               <AdminProvider>
                 <RouteLoaderProvider>
-                  {/* 🔥 ALWAYS ON TOP */}
-                  <FoodLoader />
-
                   <BrowserRouter>
+                    {/* 🔥 FOOD ROUTE LOADER (OVERLAY ONLY) */}
+                    <RouteLoaderRenderer />
+
                     <Toaster />
                     <Sonner position="top-center" />
 
-                    <Suspense fallback={null}>
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/menu" element={<Menu />} />
-                        <Route path="/reservations" element={<Reservations />} />
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route
-                          path="/order-success/:orderId"
-                          element={<OrderSuccess />}
-                        />
-                        <Route
-                          path="/reservation-success/:id"
-                          element={<ReservationSuccess />}
-                        />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/track-order" element={<TrackOrder />} />
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/menu" element={<Menu />} />
+                      <Route path="/reservations" element={<Reservations />} />
+                      <Route path="/checkout" element={<Checkout />} />
 
-                        {/* ADMIN */}
-                        <Route path="/admin/login" element={<AdminLogin />} />
-                        <Route
-                          path="/admin"
-                          element={
-                            <ProtectedAdminRoute>
-                              <Admin />
-                            </ProtectedAdminRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/orders"
-                          element={
-                            <ProtectedAdminRoute>
-                              <AdminOrders />
-                            </ProtectedAdminRoute>
-                          }
-                        />
-                        <Route
-                          path="/admin/reservations"
-                          element={
-                            <ProtectedAdminRoute>
-                              <AdminReservations />
-                            </ProtectedAdminRoute>
-                          }
-                        />
+                      <Route
+                        path="/order-success/:orderId"
+                        element={<OrderSuccess />}
+                      />
+                      <Route
+                        path="/reservation-success/:id"
+                        element={<ReservationSuccess />}
+                      />
 
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Suspense>
+                      <Route path="/about" element={<About />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/track-order" element={<TrackOrder />} />
+
+                      {/* ADMIN */}
+                      <Route path="/admin/login" element={<AdminLogin />} />
+                      <Route
+                        path="/admin"
+                        element={
+                          <ProtectedAdminRoute>
+                            <Admin />
+                          </ProtectedAdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/orders"
+                        element={
+                          <ProtectedAdminRoute>
+                            <AdminOrders />
+                          </ProtectedAdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/reservations"
+                        element={
+                          <ProtectedAdminRoute>
+                            <AdminReservations />
+                          </ProtectedAdminRoute>
+                        }
+                      />
+
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
                   </BrowserRouter>
                 </RouteLoaderProvider>
               </AdminProvider>
