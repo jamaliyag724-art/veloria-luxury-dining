@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import VeloriaLoader from "@/components/ui/VeloriaLoader";
 import PageLoader from "@/components/ui/PageLoader";
-import PageWrapper from "@/components/layout/PageWrapper";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -17,17 +16,17 @@ import { OrderProvider } from "@/context/OrderContext";
 
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 
-/* -------- LAZY PAGES -------- */
+/* Lazy Pages */
 const Index = lazy(() => import("./pages/Index"));
 const Menu = lazy(() => import("./pages/Menu"));
-const Checkout = lazy(() => import("./pages/Checkout"));
-const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
 const Reservations = lazy(() => import("./pages/Reservations"));
 const ReservationSuccess = lazy(() => import("./pages/ReservationSuccess"));
 const ReservationStatus = lazy(() => import("./pages/ReservationStatus"));
-const TrackOrder = lazy(() => import("./pages/TrackOrder"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
+const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 /* Admin */
@@ -36,28 +35,17 @@ const AdminOrders = lazy(() => import("./pages/AdminOrders"));
 const AdminReservations = lazy(() => import("./pages/AdminReservations"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 
-/* -------- QUERY CLIENT -------- */
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 const App = () => {
-  /* 🌟 ONE-TIME WEBSITE LOADER */
   const [appLoading, setAppLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setAppLoading(false), 1800);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setAppLoading(false), 1500);
+    return () => clearTimeout(t);
   }, []);
 
-  if (appLoading) {
-    return <VeloriaLoader />;
-  }
+  if (appLoading) return <VeloriaLoader />;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -70,129 +58,35 @@ const App = () => {
                 <Sonner position="top-center" />
 
                 <BrowserRouter>
-                  {/* 🔥 ROUTE LOADER */}
                   <Suspense fallback={<PageLoader />}>
                     <Routes>
-                      {/* Admin Auth */}
-                      <Route path="/admin/login" element={<AdminLogin />} />
+                      <Route path="/" element={<Index />} />
+                      <Route path="/menu" element={<Menu />} />
+                      <Route path="/reservations" element={<Reservations />} />
+                      <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
+                      <Route path="/reservation-status" element={<ReservationStatus />} />
+                      <Route path="/checkout" element={<Checkout />} />
+                      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/track-order" element={<TrackOrder />} />
 
-                      {/* Protected Admin */}
+                      {/* Admin */}
+                      <Route path="/admin/login" element={<AdminLogin />} />
                       <Route
                         path="/admin"
-                        element={
-                          <ProtectedAdminRoute>
-                            <Admin />
-                          </ProtectedAdminRoute>
-                        }
+                        element={<ProtectedAdminRoute><Admin /></ProtectedAdminRoute>}
                       />
                       <Route
                         path="/admin/orders"
-                        element={
-                          <ProtectedAdminRoute>
-                            <AdminOrders />
-                          </ProtectedAdminRoute>
-                        }
+                        element={<ProtectedAdminRoute><AdminOrders /></ProtectedAdminRoute>}
                       />
                       <Route
                         path="/admin/reservations"
-                        element={
-                          <ProtectedAdminRoute>
-                            <AdminReservations />
-                          </ProtectedAdminRoute>
-                        }
+                        element={<ProtectedAdminRoute><AdminReservations /></ProtectedAdminRoute>}
                       />
 
-                      {/* Public Pages */}
-                      <Route
-                        path="/"
-                        element={
-                          <PageWrapper>
-                            <Index />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/menu"
-                        element={
-                          <PageWrapper>
-                            <Menu />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/reservations"
-                        element={
-                          <PageWrapper>
-                            <Reservations />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/reservation-success/:id"
-                        element={
-                          <PageWrapper>
-                            <ReservationSuccess />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/reservation-status"
-                        element={
-                          <PageWrapper>
-                            <ReservationStatus />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/checkout"
-                        element={
-                          <PageWrapper>
-                            <Checkout />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/order-success/:orderId"
-                        element={
-                          <PageWrapper>
-                            <OrderSuccess />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/about"
-                        element={
-                          <PageWrapper>
-                            <About />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/contact"
-                        element={
-                          <PageWrapper>
-                            <Contact />
-                          </PageWrapper>
-                        }
-                      />
-                      <Route
-                        path="/track-order"
-                        element={
-                          <PageWrapper>
-                            <TrackOrder />
-                          </PageWrapper>
-                        }
-                      />
-
-                      {/* 404 */}
-                      <Route
-                        path="*"
-                        element={
-                          <PageWrapper>
-                            <NotFound />
-                          </PageWrapper>
-                        }
-                      />
+                      <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
                 </BrowserRouter>
