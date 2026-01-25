@@ -1,26 +1,11 @@
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import type { Easing } from "framer-motion";
 
 const MenuItemSkeleton: React.FC<{ index?: number }> = ({ index = 0 }) => {
-  const prefersReducedMotion = useReducedMotion();
+  const delay = index * 0.04;
 
-  const shimmer = {
-    initial: { backgroundPosition: "200% 0%" },
-    animate: {
-      backgroundPosition: "-200% 0%",
-      transition: {
-        duration: prefersReducedMotion ? 0 : 2.4,
-        repeat: prefersReducedMotion ? 0 : Infinity,
-        ease: "linear",
-        delay: index * 0.04, // 👈 luxury stagger
-      },
-    },
-  };
-
-  const shimmerBg = (
-    gold = 0.22,
-    light = 0.08
-  ) => ({
+  const shimmerBg = (gold = 0.22, light = 0.08) => ({
     background: `linear-gradient(
       110deg,
       rgba(255,255,255,${light}) 25%,
@@ -35,9 +20,14 @@ const MenuItemSkeleton: React.FC<{ index?: number }> = ({ index = 0 }) => {
       {/* IMAGE */}
       <div className="relative h-56 w-full overflow-hidden">
         <motion.div
-          variants={shimmer}
-          initial="initial"
-          animate="animate"
+          initial={{ backgroundPosition: "200% 0%" }}
+          animate={{ backgroundPosition: "-200% 0%" }}
+          transition={{
+            duration: 2.4,
+            repeat: Infinity,
+            ease: "linear" as Easing,
+            delay,
+          }}
           className="absolute inset-0"
           style={shimmerBg(0.18, 0.06)}
         />
@@ -47,25 +37,40 @@ const MenuItemSkeleton: React.FC<{ index?: number }> = ({ index = 0 }) => {
       <div className="p-5 space-y-4">
         {/* TITLE */}
         <motion.div
-          variants={shimmer}
-          initial="initial"
-          animate="animate"
+          initial={{ backgroundPosition: "200% 0%" }}
+          animate={{ backgroundPosition: "-200% 0%" }}
+          transition={{
+            duration: 2.4,
+            repeat: Infinity,
+            ease: "linear" as Easing,
+            delay,
+          }}
           className="h-5 w-3/4 rounded-full"
           style={shimmerBg()}
         />
 
         {/* DESCRIPTION */}
         <motion.div
-          variants={shimmer}
-          initial="initial"
-          animate="animate"
+          initial={{ backgroundPosition: "200% 0%" }}
+          animate={{ backgroundPosition: "-200% 0%" }}
+          transition={{
+            duration: 2.4,
+            repeat: Infinity,
+            ease: "linear" as Easing,
+            delay,
+          }}
           className="h-4 w-full rounded-full"
           style={shimmerBg(0.18, 0.06)}
         />
         <motion.div
-          variants={shimmer}
-          initial="initial"
-          animate="animate"
+          initial={{ backgroundPosition: "200% 0%" }}
+          animate={{ backgroundPosition: "-200% 0%" }}
+          transition={{
+            duration: 2.4,
+            repeat: Infinity,
+            ease: "linear" as Easing,
+            delay,
+          }}
           className="h-4 w-5/6 rounded-full"
           style={shimmerBg(0.18, 0.06)}
         />
@@ -73,17 +78,27 @@ const MenuItemSkeleton: React.FC<{ index?: number }> = ({ index = 0 }) => {
         {/* PRICE + BUTTON */}
         <div className="flex items-center justify-between pt-3">
           <motion.div
-            variants={shimmer}
-            initial="initial"
-            animate="animate"
+            initial={{ backgroundPosition: "200% 0%" }}
+            animate={{ backgroundPosition: "-200% 0%" }}
+            transition={{
+              duration: 2.4,
+              repeat: Infinity,
+              ease: "linear" as Easing,
+              delay,
+            }}
             className="h-6 w-20 rounded-full"
             style={shimmerBg(0.35, 0.1)}
           />
 
           <motion.div
-            variants={shimmer}
-            initial="initial"
-            animate="animate"
+            initial={{ backgroundPosition: "200% 0%" }}
+            animate={{ backgroundPosition: "-200% 0%" }}
+            transition={{
+              duration: 2.4,
+              repeat: Infinity,
+              ease: "linear" as Easing,
+              delay,
+            }}
             className="h-10 w-24 rounded-xl"
             style={shimmerBg(0.28, 0.08)}
           />

@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AnimatePresence } from "framer-motion";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
@@ -9,9 +11,9 @@ import { CartProvider } from "@/context/CartContext";
 import { AdminProvider } from "@/context/AdminContext";
 import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
-import { RouteLoaderProvider } from "@/context/RouteLoaderContext";
+import { RouteLoaderProvider, useRouteLoader } from "@/context/RouteLoaderContext";
 
-import FoodLoader from "@/components/ui/FoodLoader";
+import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 /* Pages */
@@ -34,6 +36,75 @@ import AdminLogin from "@/pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
+// Inner component that uses the RouteLoader context
+const AppContent = () => {
+  const { hasShownBrandLoader, markBrandLoaderShown } = useRouteLoader();
+  const [showBrandLoader, setShowBrandLoader] = useState(!hasShownBrandLoader);
+
+  const handleBrandLoaderComplete = () => {
+    setShowBrandLoader(false);
+    markBrandLoaderShown();
+  };
+
+  return (
+    <>
+      {/* Brand Loader - Only on first visit */}
+      <AnimatePresence>
+        {showBrandLoader && (
+          <VeloriaBrandLoader onComplete={handleBrandLoaderComplete} />
+        )}
+      </AnimatePresence>
+
+      {/* Route-specific Loaders */}
+      <RouteLoaderRenderer />
+
+      <Toaster />
+      <Sonner position="top-center" />
+
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/reservations" element={<Reservations />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+        <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/track-order" element={<TrackOrder />} />
+
+        {/* ADMIN */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <Admin />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedAdminRoute>
+              <AdminOrders />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/reservations"
+          element={
+            <ProtectedAdminRoute>
+              <AdminReservations />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
+};
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -44,54 +115,7 @@ export default function App() {
               <AdminProvider>
                 <RouteLoaderProvider>
                   <BrowserRouter>
-                    {/* 🔥 ONLY FOOD LOADER */}
-                    <FoodLoader />
-
-                    <Toaster />
-                    <Sonner position="top-center" />
-
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/menu" element={<Menu />} />
-                      <Route path="/reservations" element={<Reservations />} />
-                      <Route path="/checkout" element={<Checkout />} />
-
-                      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-                      <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
-
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/track-order" element={<TrackOrder />} />
-
-                      {/* ADMIN */}
-                      <Route path="/admin/login" element={<AdminLogin />} />
-                      <Route
-                        path="/admin"
-                        element={
-                          <ProtectedAdminRoute>
-                            <Admin />
-                          </ProtectedAdminRoute>
-                        }
-                      />
-                      <Route
-                        path="/admin/orders"
-                        element={
-                          <ProtectedAdminRoute>
-                            <AdminOrders />
-                          </ProtectedAdminRoute>
-                        }
-                      />
-                      <Route
-                        path="/admin/reservations"
-                        element={
-                          <ProtectedAdminRoute>
-                            <AdminReservations />
-                          </ProtectedAdminRoute>
-                        }
-                      />
-
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
+                    <AppContent />
                   </BrowserRouter>
                 </RouteLoaderProvider>
               </AdminProvider>

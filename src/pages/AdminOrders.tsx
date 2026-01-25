@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  ShoppingBag,
-  CalendarDays,
   UtensilsCrossed,
   Search,
   Filter,
@@ -165,7 +162,7 @@ const AdminOrders: React.FC = () => {
                   <ul className="text-sm space-y-1 ml-6 list-disc">
                     {order.items.map((item, idx) => (
                       <li key={idx}>
-                        {item.name} × {item.qty} — ₹{item.price}
+                        {item.name} × {item.quantity} — ₹{item.price}
                       </li>
                     ))}
                   </ul>

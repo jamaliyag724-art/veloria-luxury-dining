@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  ShoppingBag,
-  CalendarDays,
   UtensilsCrossed,
   Search,
   Filter,
@@ -12,7 +9,6 @@ import {
   ChevronDown,
   Users,
   MessageSquare,
-  MapPin,
   Clock
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
@@ -155,14 +151,6 @@ const AdminReservations: React.FC = () => {
                   </p>
                 </div>
               </div>
-
-              {/* ADDRESS */}
-              {res.address && (
-                <div className="mt-3 flex items-start gap-2 text-sm">
-                  <MapPin className="w-4 h-4 mt-0.5" />
-                  <span>{res.address}</span>
-                </div>
-              )}
 
               {/* CREATED AT */}
               {res.createdAt && (

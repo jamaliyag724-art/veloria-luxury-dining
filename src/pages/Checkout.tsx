@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { z } from "zod";
-
-import { useRouteLoader } from "@/context/RouteLoaderContext"; // ✅ ADD
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -35,21 +33,6 @@ type CheckoutFormData = z.infer<typeof checkoutSchema>;
 const TAX_RATE = 0.1;
 
 const Checkout: React.FC = () => {
-  /* ---------------------------------------
-     🍷 ROUTE LOADER
-  ---------------------------------------- */
-  const { setLoader } = useRouteLoader();
-
-  useEffect(() => {
-    setLoader("checkout"); // 🍷 WINE LOADER
-
-    const t = setTimeout(() => {
-      setLoader("default");
-    }, 1200);
-
-    return () => clearTimeout(t);
-  }, [setLoader]);
-
   const { items, totalPrice, clearCart } = useCart();
   const { addOrder } = useOrders();
   const navigate = useNavigate();
@@ -97,7 +80,12 @@ const Checkout: React.FC = () => {
 
     try {
       const orderId = await addOrder({
-        ...validation.data,
+        fullName: validation.data.fullName,
+        email: validation.data.email,
+        mobile: validation.data.mobile,
+        address: validation.data.address,
+        city: validation.data.city,
+        pincode: validation.data.pincode,
         items,
         subtotal,
         tax: taxAmount,

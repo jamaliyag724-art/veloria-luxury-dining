@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Users, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-
-import { useRouteLoader } from "@/context/RouteLoaderContext"; // ✅ ADD
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -27,21 +25,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Reservations: React.FC = () => {
-  /* ---------------------------------------
-     🍽️ ROUTE LOADER
-  ---------------------------------------- */
-  const { setLoader } = useRouteLoader();
-
-  useEffect(() => {
-    setLoader("reservation"); // 🍽️ PLATE LOADER
-
-    const t = setTimeout(() => {
-      setLoader("default");
-    }, 1400);
-
-    return () => clearTimeout(t);
-  }, [setLoader]);
-
   const navigate = useNavigate();
   const { addReservation } = useReservations();
 
@@ -80,8 +63,21 @@ const Reservations: React.FC = () => {
     }
 
     setLoading(true);
-    const id = await addReservation(form);
-    navigate(`/reservation-success/${id}`);
+    try {
+      const id = await addReservation({
+        fullName: result.data.fullName,
+        email: result.data.email,
+        mobile: result.data.mobile,
+        guests: result.data.guests,
+        date: result.data.date,
+        time: result.data.time,
+        specialRequest: result.data.specialRequest,
+      });
+      navigate(`/reservation-success/${id}`);
+    } catch (error) {
+      console.error("Reservation failed:", error);
+      setLoading(false);
+    }
   };
 
   const today = new Date().toISOString().split("T")[0];

@@ -6,8 +6,6 @@ import {
   useTransform,
 } from "framer-motion";
 
-import { useRouteLoader } from "@/context/RouteLoaderContext"; // ✅ ADD
-
 import MenuItemSkeleton from "@/components/menu/MenuItemSkeleton";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -32,21 +30,6 @@ const CATEGORY_BACKGROUNDS: Record<string, string> = {
 const ALL_BACKGROUNDS = Object.values(CATEGORY_BACKGROUNDS);
 
 const Menu: React.FC = () => {
-  /* ---------------------------------------
-     ROUTE LOADER 🍲
-  ---------------------------------------- */
-  const { setLoader } = useRouteLoader();
-
-  useEffect(() => {
-    setLoader("menu"); // 🍲 MENU LOADER
-
-    const t = setTimeout(() => {
-      setLoader("default");
-    }, 1200);
-
-    return () => clearTimeout(t);
-  }, [setLoader]);
-
   /* ---------------------------------------
      STATE
   ---------------------------------------- */

@@ -10,14 +10,14 @@ import {
 } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
-import { useRouteLoader } from "@/context/RouteLoaderContext";
+import { useRouteLoader, LoaderType } from "@/context/RouteLoaderContext";
 
 const navLinks = [
   { name: "Home", path: "/", loader: null },
-  { name: "Menu", path: "/menu", loader: "menu" },
-  { name: "Reservations", path: "/reservations", loader: "reservation" },
-  { name: "About", path: "/about", loader: null },
-  { name: "Contact", path: "/contact", loader: null },
+  { name: "Menu", path: "/menu", loader: "menu" as LoaderType },
+  { name: "Reservations", path: "/reservations", loader: "reservation" as LoaderType },
+  { name: "About", path: "/about", loader: "about" as LoaderType },
+  { name: "Contact", path: "/contact", loader: "contact" as LoaderType },
 ];
 
 interface NavbarProps {
@@ -29,23 +29,22 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { totalItems } = useCart();
-
   const { showLoader, hideLoader } = useRouteLoader();
 
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
-  const handleNavigate = (
-    path: string,
-    loaderType: "menu" | "reservation" | "checkout" | null
-  ) => {
+  const handleNavigate = (path: string, loaderType: LoaderType) => {
+    // Don't show loader if we're already on that page
+    if (location.pathname === path) return;
+
     if (loaderType) {
       showLoader(loaderType);
       setTimeout(() => {
         navigate(path);
         hideLoader();
-      }, 1200);
+      }, 1000);
     } else {
       navigate(path);
     }
@@ -78,13 +77,8 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
               {navLinks.map((link) => (
                 <button
                   key={link.name}
-                  onClick={() =>
-                    handleNavigate(
-                      link.path,
-                      link.loader as any
-                    )
-                  }
-                  className={`text-sm ${
+                  onClick={() => handleNavigate(link.path, link.loader)}
+                  className={`text-sm transition-colors ${
                     isActive(link.path)
                       ? "text-primary"
                       : "text-foreground/80 hover:text-primary"
@@ -120,9 +114,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
 
               {/* RESERVE */}
               <button
-                onClick={() =>
-                  handleNavigate("/reservations", "reservation")
-                }
+                onClick={() => handleNavigate("/reservations", "reservation")}
                 className="hidden md:block btn-gold px-6 py-2"
               >
                 Reserve Now
@@ -149,20 +141,23 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
             exit={{ x: "100%" }}
             className="fixed inset-y-0 right-0 w-[80%] bg-card z-50 p-6"
           >
-            {navLinks.map((link) => (
+            <div className="mt-16 space-y-2">
+              {navLinks.map((link) => (
+                <button
+                  key={link.name}
+                  onClick={() => handleNavigate(link.path, link.loader)}
+                  className="block w-full text-left py-3 text-lg"
+                >
+                  {link.name}
+                </button>
+              ))}
               <button
-                key={link.name}
-                onClick={() =>
-                  handleNavigate(
-                    link.path,
-                    link.loader as any
-                  )
-                }
-                className="block w-full text-left py-3"
+                onClick={() => handleNavigate("/track-order", null)}
+                className="block w-full text-left py-3 text-lg"
               >
-                {link.name}
+                Track Order
               </button>
-            ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
