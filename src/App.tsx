@@ -1,69 +1,42 @@
-import { Suspense, lazy, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Suspense } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import FoodLoader from "@/components/ui/FoodLoader";
-import RouteFallback from "@/components/ui/RouteFallback";
-
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { CartProvider } from "@/context/CartContext";
 import { AdminProvider } from "@/context/AdminContext";
 import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
+import { RouteLoaderProvider } from "@/context/RouteLoaderContext";
+
+import FoodLoader from "@/components/ui/FoodLoader";
+import PageLoader from "@/components/ui/PageLoader";
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 /* Pages */
-const Index = lazy(() => import("./pages/Index"));
-const Menu = lazy(() => import("./pages/Menu"));
-const Reservations = lazy(() => import("./pages/Reservations"));
-const Checkout = lazy(() => import("./pages/Checkout"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+import Index from "@/pages/Index";
+import Menu from "@/pages/Menu";
+import Reservations from "@/pages/Reservations";
+import Checkout from "@/pages/Checkout";
+import OrderSuccess from "@/pages/OrderSuccess";
+import ReservationSuccess from "@/pages/ReservationSuccess";
+import About from "@/pages/About";
+import Contact from "@/pages/Contact";
+import TrackOrder from "@/pages/TrackOrder";
+import NotFound from "@/pages/NotFound";
+
+/* Admin */
+import Admin from "@/pages/Admin";
+import AdminOrders from "@/pages/AdminOrders";
+import AdminReservations from "@/pages/AdminReservations";
+import AdminLogin from "@/pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
-const AppRoutes = () => {
-  const location = useLocation();
-  const [routeLoading, setRouteLoading] = useState(false);
-
-  useEffect(() => {
-    setRouteLoading(true);
-    const t = setTimeout(() => setRouteLoading(false), 700);
-    return () => clearTimeout(t);
-  }, [location.pathname]);
-
-  return (
-    <>
-      {routeLoading && <FoodLoader />}
-
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/reservations" element={<Reservations />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </>
-  );
-};
-
 const App = () => {
-  const [bootLoading, setBootLoading] = useState(true);
-
-  useEffect(() => {
-    const t = setTimeout(() => setBootLoading(false), 1500);
-    return () => clearTimeout(t);
-  }, []);
-
-  if (bootLoading) return <FoodLoader />;
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -71,12 +44,65 @@ const App = () => {
           <ReservationProvider>
             <CartProvider>
               <AdminProvider>
-                <Toaster />
-                <Sonner position="top-center" />
+                {/* 🔥 ROUTE LOADER PROVIDER */}
+                <RouteLoaderProvider>
+                  <BrowserRouter>
+                    {/* 🔥 GLOBAL FOOD LOADER */}
+                    <FoodLoader />
 
-                <BrowserRouter>
-                  <AppRoutes />
-                </BrowserRouter>
+                    <Toaster />
+                    <Sonner position="top-center" />
+
+                    <Suspense fallback={<PageLoader />}>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/menu" element={<Menu />} />
+                        <Route path="/reservations" element={<Reservations />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route
+                          path="/order-success/:orderId"
+                          element={<OrderSuccess />}
+                        />
+                        <Route
+                          path="/reservation-success/:id"
+                          element={<ReservationSuccess />}
+                        />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/track-order" element={<TrackOrder />} />
+
+                        {/* ADMIN */}
+                        <Route path="/admin/login" element={<AdminLogin />} />
+                        <Route
+                          path="/admin"
+                          element={
+                            <ProtectedAdminRoute>
+                              <Admin />
+                            </ProtectedAdminRoute>
+                          }
+                        />
+                        <Route
+                          path="/admin/orders"
+                          element={
+                            <ProtectedAdminRoute>
+                              <AdminOrders />
+                            </ProtectedAdminRoute>
+                          }
+                        />
+                        <Route
+                          path="/admin/reservations"
+                          element={
+                            <ProtectedAdminRoute>
+                              <AdminReservations />
+                            </ProtectedAdminRoute>
+                          }
+                        />
+
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
+                  </BrowserRouter>
+                </RouteLoaderProvider>
               </AdminProvider>
             </CartProvider>
           </ReservationProvider>
