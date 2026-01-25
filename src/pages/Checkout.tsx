@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { z } from "zod";
+
+import { useRouteLoader } from "@/context/RouteLoaderContext"; // ✅ ADD
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -33,6 +35,21 @@ type CheckoutFormData = z.infer<typeof checkoutSchema>;
 const TAX_RATE = 0.1;
 
 const Checkout: React.FC = () => {
+  /* ---------------------------------------
+     🍷 ROUTE LOADER
+  ---------------------------------------- */
+  const { setLoader } = useRouteLoader();
+
+  useEffect(() => {
+    setLoader("checkout"); // 🍷 WINE LOADER
+
+    const t = setTimeout(() => {
+      setLoader("default");
+    }, 1200);
+
+    return () => clearTimeout(t);
+  }, [setLoader]);
+
   const { items, totalPrice, clearCart } = useCart();
   const { addOrder } = useOrders();
   const navigate = useNavigate();
@@ -50,14 +67,11 @@ const Checkout: React.FC = () => {
     pincode: "",
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof CheckoutFormData, string>>
-  >({});
   const [touched, setTouched] = useState<
     Partial<Record<keyof CheckoutFormData, boolean>>
   >({});
 
-  /* -------------------- PRICE (NUMBER ONLY) -------------------- */
+  /* -------------------- PRICE -------------------- */
   const subtotal = totalPrice;
   const taxAmount = subtotal * TAX_RATE;
   const totalAmount = subtotal + taxAmount;
@@ -83,12 +97,7 @@ const Checkout: React.FC = () => {
 
     try {
       const orderId = await addOrder({
-        fullName: validation.data.fullName,
-        email: validation.data.email,
-        mobile: validation.data.mobile,
-        address: validation.data.address,
-        city: validation.data.city,
-        pincode: validation.data.pincode,
+        ...validation.data,
         items,
         subtotal,
         tax: taxAmount,
@@ -104,10 +113,10 @@ const Checkout: React.FC = () => {
     }
   };
 
-  /* -------------------- PROCESSING -------------------- */
+  /* -------------------- PROCESSING (LOCAL ONLY) -------------------- */
   if (step === "processing") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
@@ -132,12 +141,16 @@ const Checkout: React.FC = () => {
             <ArrowLeft size={16} /> Back to Menu
           </button>
 
-          <h1 className="font-serif text-4xl text-center mb-10">Checkout</h1>
+          <h1 className="font-serif text-4xl text-center mb-10">
+            Checkout
+          </h1>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* DELIVERY FORM */}
             <div className="lg:col-span-2 glass-card p-6">
-              <h2 className="font-serif text-xl mb-6">Delivery Details</h2>
+              <h2 className="font-serif text-xl mb-6">
+                Delivery Details
+              </h2>
 
               <div className="grid md:grid-cols-2 gap-4">
                 {[
@@ -182,12 +195,21 @@ const Checkout: React.FC = () => {
               </div>
 
               {/* SUMMARY */}
-              <h2 className="font-serif text-xl mt-8 mb-4">Order Summary</h2>
+              <h2 className="font-serif text-xl mt-8 mb-4">
+                Order Summary
+              </h2>
 
               {items.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm mb-2">
-                  <span>{item.name} × {item.quantity}</span>
-                  <span>{formatINR(item.price * item.quantity)}</span>
+                <div
+                  key={item.id}
+                  className="flex justify-between text-sm mb-2"
+                >
+                  <span>
+                    {item.name} × {item.quantity}
+                  </span>
+                  <span>
+                    {formatINR(item.price * item.quantity)}
+                  </span>
                 </div>
               ))}
 
@@ -211,7 +233,9 @@ const Checkout: React.FC = () => {
 
             {/* PAYMENT */}
             <div className="glass-card p-6 h-fit">
-              <h2 className="font-serif text-xl mb-6">Payment Method</h2>
+              <h2 className="font-serif text-xl mb-6">
+                Payment Method
+              </h2>
 
               {[
                 { id: "card", icon: CreditCard, label: "Card" },
@@ -234,7 +258,7 @@ const Checkout: React.FC = () => {
               <button
                 disabled={!isFormValid()}
                 onClick={handlePayment}
-                className="btn-gold w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-gold w-full mt-6 disabled:opacity-50"
               >
                 Pay {formatINR(totalAmount)}
               </button>
