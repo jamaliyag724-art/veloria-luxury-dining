@@ -1,21 +1,27 @@
 import React, { createContext, useContext, useState } from "react";
 
+export type LoaderType =
+  | "default"
+  | "menu"
+  | "reservation"
+  | "checkout";
+
 interface RouteLoaderContextType {
-  loading: boolean;
-  start: () => void;
-  stop: () => void;
+  loader: LoaderType;
+  setLoader: (type: LoaderType) => void;
 }
 
 const RouteLoaderContext = createContext<RouteLoaderContextType | null>(null);
 
-export const RouteLoaderProvider = ({ children }: { children: React.ReactNode }) => {
-  const [loading, setLoading] = useState(false);
-
-  const start = () => setLoading(true);
-  const stop = () => setLoading(false);
+export const RouteLoaderProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [loader, setLoader] = useState<LoaderType>("default");
 
   return (
-    <RouteLoaderContext.Provider value={{ loading, start, stop }}>
+    <RouteLoaderContext.Provider value={{ loader, setLoader }}>
       {children}
     </RouteLoaderContext.Provider>
   );
