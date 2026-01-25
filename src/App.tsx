@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import VeloriaLoader from "@/components/ui/VeloriaLoader";
+import PageLoader from "@/components/ui/PageLoader";
+import PageWrapper from "@/components/layout/PageWrapper";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -45,7 +47,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  /* 🌟 GLOBAL ONE-TIME LOADER */
+  /* 🌟 ONE-TIME WEBSITE LOADER */
   const [appLoading, setAppLoading] = useState(true);
 
   useEffect(() => {
@@ -53,7 +55,6 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  /* 🚫 BLOCK EVERYTHING UNTIL READY */
   if (appLoading) {
     return <VeloriaLoader />;
   }
@@ -69,8 +70,8 @@ const App = () => {
                 <Sonner position="top-center" />
 
                 <BrowserRouter>
-                  {/* ⚠️ NO SPINNER HERE */}
-                  <Suspense fallback={null}>
+                  {/* 🔥 ROUTE LOADER */}
+                  <Suspense fallback={<PageLoader />}>
                     <Routes>
                       {/* Admin Auth */}
                       <Route path="/admin/login" element={<AdminLogin />} />
@@ -101,20 +102,97 @@ const App = () => {
                         }
                       />
 
-                      {/* Public */}
-                      <Route path="/" element={<Index />} />
-                      <Route path="/menu" element={<Menu />} />
-                      <Route path="/reservations" element={<Reservations />} />
-                      <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
-                      <Route path="/reservation-status" element={<ReservationStatus />} />
-                      <Route path="/checkout" element={<Checkout />} />
-                      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/track-order" element={<TrackOrder />} />
+                      {/* Public Pages */}
+                      <Route
+                        path="/"
+                        element={
+                          <PageWrapper>
+                            <Index />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/menu"
+                        element={
+                          <PageWrapper>
+                            <Menu />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/reservations"
+                        element={
+                          <PageWrapper>
+                            <Reservations />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/reservation-success/:id"
+                        element={
+                          <PageWrapper>
+                            <ReservationSuccess />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/reservation-status"
+                        element={
+                          <PageWrapper>
+                            <ReservationStatus />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/checkout"
+                        element={
+                          <PageWrapper>
+                            <Checkout />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/order-success/:orderId"
+                        element={
+                          <PageWrapper>
+                            <OrderSuccess />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/about"
+                        element={
+                          <PageWrapper>
+                            <About />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/contact"
+                        element={
+                          <PageWrapper>
+                            <Contact />
+                          </PageWrapper>
+                        }
+                      />
+                      <Route
+                        path="/track-order"
+                        element={
+                          <PageWrapper>
+                            <TrackOrder />
+                          </PageWrapper>
+                        }
+                      />
 
                       {/* 404 */}
-                      <Route path="*" element={<NotFound />} />
+                      <Route
+                        path="*"
+                        element={
+                          <PageWrapper>
+                            <NotFound />
+                          </PageWrapper>
+                        }
+                      />
                     </Routes>
                   </Suspense>
                 </BrowserRouter>
