@@ -1,18 +1,27 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import ReservationLoader from "@/components/ui/ReservationLoader";
 
-const ReservationLoader = () => {
+const Reservations = () => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+
+    // API / Supabase call
+    await new Promise((r) => setTimeout(r, 1500));
+
+    setSubmitting(false);
+  };
+
+  if (submitting) {
+    return <ReservationLoader />;
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center">
-      <motion.div
-        className="w-1 h-40 bg-primary rounded-full"
-        animate={{ height: [0, 160, 0] }}
-        transition={{ repeat: Infinity, duration: 1.8 }}
-      />
-      <p className="absolute bottom-24 text-primary tracking-widest text-sm">
-        Reserving Table
-      </p>
-    </div>
+    <form onSubmit={handleSubmit}>
+      {/* reservation form */}
+    </form>
   );
 };
 
-export default ReservationLoader;
+export default Reservations;
