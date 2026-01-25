@@ -13,7 +13,6 @@ import { OrderProvider } from "@/context/OrderContext";
 import { RouteLoaderProvider } from "@/context/RouteLoaderContext";
 
 import FoodLoader from "@/components/ui/FoodLoader";
-import PageLoader from "@/components/ui/PageLoader";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 /* Pages */
@@ -44,16 +43,15 @@ const App = () => {
           <ReservationProvider>
             <CartProvider>
               <AdminProvider>
-                {/* 🔥 ROUTE LOADER PROVIDER */}
                 <RouteLoaderProvider>
-                  <BrowserRouter>
-                    {/* 🔥 GLOBAL FOOD LOADER */}
-                    <FoodLoader />
+                  {/* 🔥 ALWAYS ON TOP */}
+                  <FoodLoader />
 
+                  <BrowserRouter>
                     <Toaster />
                     <Sonner position="top-center" />
 
-                    <Suspense fallback={<PageLoader />}>
+                    <Suspense fallback={null}>
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/menu" element={<Menu />} />
