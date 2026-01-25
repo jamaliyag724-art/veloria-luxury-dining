@@ -6,8 +6,9 @@ import {
   useTransform,
 } from "framer-motion";
 
-import MenuItemSkeleton from "@/components/menu/MenuItemSkeleton";
+import { useRouteLoader } from "@/context/RouteLoaderContext"; // ✅ ADD
 
+import MenuItemSkeleton from "@/components/menu/MenuItemSkeleton";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
@@ -32,6 +33,21 @@ const ALL_BACKGROUNDS = Object.values(CATEGORY_BACKGROUNDS);
 
 const Menu: React.FC = () => {
   /* ---------------------------------------
+     ROUTE LOADER 🍲
+  ---------------------------------------- */
+  const { setLoader } = useRouteLoader();
+
+  useEffect(() => {
+    setLoader("menu"); // 🍲 MENU LOADER
+
+    const t = setTimeout(() => {
+      setLoader("default");
+    }, 1200);
+
+    return () => clearTimeout(t);
+  }, [setLoader]);
+
+  /* ---------------------------------------
      STATE
   ---------------------------------------- */
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -39,7 +55,7 @@ const Menu: React.FC = () => {
   const [categoryLoading, setCategoryLoading] = useState(false);
 
   /* ---------------------------------------
-     PRELOAD BACKGROUNDS (NO FLICKER)
+     PRELOAD BACKGROUNDS
   ---------------------------------------- */
   useEffect(() => {
     ALL_BACKGROUNDS.forEach((src) => {
@@ -71,7 +87,7 @@ const Menu: React.FC = () => {
 
     setTimeout(() => {
       setCategoryLoading(false);
-    }, 450); // luxury micro-delay
+    }, 450);
   };
 
   /* ---------------------------------------
@@ -86,12 +102,7 @@ const Menu: React.FC = () => {
      RENDER
   ---------------------------------------- */
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="relative min-h-screen overflow-hidden"
-    >
+    <div className="relative min-h-screen overflow-hidden">
       {/* 🌄 BACKGROUND */}
       <AnimatePresence mode="wait">
         <motion.img
@@ -100,7 +111,7 @@ const Menu: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           style={{ y }}
           className="fixed inset-0 z-0 w-full h-full object-cover scale-105"
         />
@@ -110,7 +121,7 @@ const Menu: React.FC = () => {
       <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2]" />
       <div className="fixed inset-0 bg-black/25 z-[3]" />
 
-      {/* 🌟 CONTENT */}
+      {/* CONTENT */}
       <div className="relative z-20">
         <Navbar onCartClick={() => setIsCartOpen(true)} />
 
@@ -158,7 +169,7 @@ const Menu: React.FC = () => {
               <AnimatePresence mode="popLayout">
                 {categoryLoading
                   ? Array.from({ length: 6 }).map((_, i) => (
-                      <MenuItemSkeleton key={`skeleton-${i}`} index={i} />
+                      <MenuItemSkeleton key={i} index={i} />
                     ))
                   : items.map((item) => (
                       <MenuItemCard key={item.id} item={item} />
@@ -181,7 +192,7 @@ const Menu: React.FC = () => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       />
-    </motion.div>
+    </div>
   );
 };
 
