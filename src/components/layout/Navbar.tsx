@@ -8,9 +8,10 @@ import {
   Utensils,
   Search,
 } from "lucide-react";
-import { useCart } from "@/context/CartContext";
 
-/* ---------------- LINKS ---------------- */
+import { useCart } from "@/context/CartContext";
+import { useRouteLoader } from "@/context/RouteLoaderContext";
+
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Menu", path: "/menu" },
@@ -23,55 +24,42 @@ interface NavbarProps {
   onCartClick?: () => void;
 }
 
-/* ---------------- PAGE LOADER TRIGGER ---------------- */
-const triggerPageLoader = () => {
-  const el = document.getElementById("page-loader");
-  if (!el) return;
-
-  el.classList.remove("hidden");
-
-  setTimeout(() => {
-    el.classList.add("hidden");
-  }, 450); // premium timing
-};
-
 const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
   const { totalItems } = useCart();
+  const { show, hide } = useRouteLoader();
 
-  /* Scroll shadow */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* Close mobile menu on route change */
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
-  const isActive = (path: string) => location.pathname === path;
-
   const handleNavClick = (path: string) => {
-    setIsOpen(false);
+    if (path === location.pathname) return;
 
-    if (location.pathname !== path) {
-      triggerPageLoader();
+    show(); // 🍽️ show food loader
+
+    setTimeout(() => {
       navigate(path);
-    }
+      hide(); // 🍽️ hide after route change
+    }, 650);
   };
 
   return (
     <>
-      {/* ================= NAVBAR ================= */}
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6 }}
         className={`fixed top-0 inset-x-0 z-50 transition-all ${
           scrolled
             ? "bg-card/95 backdrop-blur-lg shadow-medium py-3"
@@ -82,16 +70,15 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
           <div className="flex items-center justify-between">
 
             {/* Logo */}
-            <Link
-              to="/"
-              onClick={() => location.pathname !== "/" && triggerPageLoader()}
+            <button
+              onClick={() => handleNavClick("/")}
               className="flex items-center gap-2"
             >
               <Utensils className="w-8 h-8 text-primary" />
               <span className="font-serif text-2xl font-semibold">
                 Veloria
               </span>
-            </Link>
+            </button>
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-6">
@@ -100,13 +87,13 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                   key={link.name}
                   onClick={() => handleNavClick(link.path)}
                   className={`relative text-sm font-medium transition-colors ${
-                    isActive(link.path)
+                    location.pathname === link.path
                       ? "text-primary"
                       : "text-foreground/80 hover:text-primary"
                   }`}
                 >
                   {link.name}
-                  {isActive(link.path) && (
+                  {location.pathname === link.path && (
                     <motion.span
                       layoutId="activeNav"
                       className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
@@ -115,7 +102,6 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                 </button>
               ))}
 
-              {/* Track Order */}
               <button
                 onClick={() => handleNavClick("/track-order")}
                 className="flex items-center gap-2 px-4 py-2 rounded-full
@@ -130,12 +116,11 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3">
-
               {/* Cart */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={onCartClick}
-                className="relative p-3 rounded-full bg-secondary/60 active:scale-95"
+                className="relative p-3 rounded-full bg-secondary/60"
               >
                 <ShoppingBag className="w-5 h-5" />
                 <AnimatePresence>
@@ -152,18 +137,10 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                 </AnimatePresence>
               </motion.button>
 
-              {/* Desktop Reserve */}
-              <button
-                onClick={() => handleNavClick("/reservations")}
-                className="hidden md:block btn-gold px-6 py-2.5 text-sm"
-              >
-                Reserve Now
-              </button>
-
               {/* Mobile Toggle */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-3 rounded-xl bg-secondary/60 active:scale-95"
+                className="md:hidden p-3 rounded-xl bg-secondary/60"
               >
                 {isOpen ? <X /> : <Menu />}
               </button>
@@ -172,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
         </div>
       </motion.nav>
 
-      {/* ================= MOBILE MENU ================= */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -191,37 +168,16 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
               transition={{ type: "spring", stiffness: 200 }}
               className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-sm bg-card z-50"
             >
-              <div className="p-6 flex flex-col h-full">
-
-                {/* Links */}
-                <div className="space-y-2 flex-1">
-                  {navLinks.map((link) => (
-                    <button
-                      key={link.name}
-                      onClick={() => handleNavClick(link.path)}
-                      className="w-full text-left px-4 py-4 rounded-2xl hover:bg-secondary text-base"
-                    >
-                      {link.name}
-                    </button>
-                  ))}
-
+              <div className="p-6 flex flex-col h-full space-y-4">
+                {navLinks.map((link) => (
                   <button
-                    onClick={() => handleNavClick("/track-order")}
-                    className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl
-                               bg-primary/10 text-primary font-medium text-base"
+                    key={link.name}
+                    onClick={() => handleNavClick(link.path)}
+                    className="w-full text-left px-4 py-4 rounded-2xl hover:bg-secondary text-base"
                   >
-                    <Search className="w-5 h-5" />
-                    Track Order
+                    {link.name}
                   </button>
-                </div>
-
-                {/* Bottom CTA */}
-                <button
-                  onClick={() => handleNavClick("/reservations")}
-                  className="btn-gold w-full mt-6 py-4 text-lg rounded-2xl"
-                >
-                  Reserve a Table
-                </button>
+                ))}
               </div>
             </motion.div>
           </>
