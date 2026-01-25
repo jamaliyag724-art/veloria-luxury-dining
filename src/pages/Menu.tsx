@@ -1,18 +1,15 @@
 import React, { useState, useMemo, useEffect } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 
-import MenuItemSkeleton from "@/components/menu/MenuItemSkeleton";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
+import MenuItemSkeleton from "@/components/menu/MenuItemSkeleton";
+
+import { menuCategories, getItemsByCategory } from "@/data/menuData";
 
 /* ---------------------------------------
    CATEGORY → BACKGROUND MAP
@@ -29,20 +26,11 @@ const CATEGORY_BACKGROUNDS: Record<string, string> = {
 const ALL_BACKGROUNDS = Object.values(CATEGORY_BACKGROUNDS);
 
 const Menu: React.FC = () => {
-  /* ---------------------------------------
-     STATE
-  ---------------------------------------- */
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("starters");
+  const [loading, setLoading] = useState(false);
 
-  /* ---------------------------------------
-     MENU CONTEXT
-  ---------------------------------------- */
- 
-
-  /* ---------------------------------------
-     PRELOAD BACKGROUNDS
-  ---------------------------------------- */
+  /* Preload backgrounds */
   useEffect(() => {
     ALL_BACKGROUNDS.forEach((src) => {
       const img = new Image();
@@ -50,36 +38,34 @@ const Menu: React.FC = () => {
     });
   }, []);
 
-  /* ---------------------------------------
-     FILTER ITEMS
-  ---------------------------------------- */
-  const filteredItems = useMemo(() => {
-    return items.filter(
-      (item) =>
-        item.category === activeCategory && item.available !== false
-    );
-  }, [items, activeCategory]);
+  /* Items */
+  const items = useMemo(
+    () => getItemsByCategory(activeCategory),
+    [activeCategory]
+  );
 
-  const currentCategory = categories.find(
+  const currentCategory = menuCategories.find(
     (c) => c.id === activeCategory
   );
 
-  /* ---------------------------------------
-     PARALLAX
-  ---------------------------------------- */
+  /* Category change with skeleton */
+  const handleCategoryChange = (category: string) => {
+    if (category === activeCategory) return;
+    setLoading(true);
+    setActiveCategory(category);
+    setTimeout(() => setLoading(false), 400);
+  };
+
+  /* Parallax */
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], ["0%", "12%"]);
 
   const background =
-    CATEGORY_BACKGROUNDS[activeCategory] ||
-    CATEGORY_BACKGROUNDS.starters;
+    CATEGORY_BACKGROUNDS[activeCategory] || CATEGORY_BACKGROUNDS.starters;
 
-  /* ---------------------------------------
-     RENDER
-  ---------------------------------------- */
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 🌄 BACKGROUND */}
+      {/* Background */}
       <AnimatePresence mode="wait">
         <motion.img
           key={background}
@@ -94,20 +80,19 @@ const Menu: React.FC = () => {
       </AnimatePresence>
 
       {/* Overlays */}
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2]" />
-      <div className="fixed inset-0 bg-black/25 z-[3]" />
+      <div className="fixed inset-0 bg-black/40 z-[2]" />
+      <div className="fixed inset-0 bg-black/20 z-[3]" />
 
-      {/* CONTENT */}
+      {/* Content */}
       <div className="relative z-20">
         <Navbar onCartClick={() => setIsCartOpen(true)} />
 
         <main className="pt-32 pb-32">
           <div className="section-container">
-            {/* HEADER */}
+            {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
               className="text-center mb-12"
             >
               <span className="text-primary tracking-wider text-sm uppercase">
@@ -121,25 +106,19 @@ const Menu: React.FC = () => {
               </p>
             </motion.div>
 
-            {/* CATEGORY TABS */}
+            {/* Categories */}
             <CategoryTabs
               activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
+              onCategoryChange={handleCategoryChange}
             />
 
-            {/* DESCRIPTION */}
             {currentCategory?.description && (
-              <motion.p
-                key={activeCategory}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center text-muted-foreground mb-10"
-              >
+              <p className="text-center text-muted-foreground mb-10">
                 {currentCategory.description}
-              </motion.p>
+              </p>
             )}
 
-            {/* MENU GRID */}
+            {/* Grid */}
             <motion.div
               layout
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -149,7 +128,7 @@ const Menu: React.FC = () => {
                   ? Array.from({ length: 6 }).map((_, i) => (
                       <MenuItemSkeleton key={i} index={i} />
                     ))
-                  : filteredItems.map((item) => (
+                  : items.map((item) => (
                       <MenuItemCard key={item.id} item={item} />
                     ))}
               </AnimatePresence>
@@ -158,13 +137,12 @@ const Menu: React.FC = () => {
         </main>
       </div>
 
-      {/* FOOTER */}
-      <section className="relative z-30 bg-gradient-to-b from-background via-background to-muted/40">
-        <div className="w-24 h-[2px] bg-primary mx-auto mb-12 rounded-full" />
+      {/* Footer */}
+      <section className="relative z-30 bg-background">
         <Footer />
       </section>
 
-      {/* CART */}
+      {/* Cart */}
       <FloatingCart onClick={() => setIsCartOpen(true)} />
       <CartModal
         isOpen={isCartOpen}
