@@ -11,7 +11,7 @@ import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
 import { RouteLoaderProvider } from "@/context/RouteLoaderContext";
 
-import RouteLoaderRenderer from "@/components/ui/RouteLoaderRenderer";
+import FoodLoader from "@/components/ui/FoodLoader";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 /* Pages */
@@ -34,7 +34,7 @@ import AdminLogin from "@/pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -44,8 +44,8 @@ const App = () => {
               <AdminProvider>
                 <RouteLoaderProvider>
                   <BrowserRouter>
-                    {/* 🔥 FOOD ROUTE LOADER (OVERLAY ONLY) */}
-                    <RouteLoaderRenderer />
+                    {/* 🔥 ONLY FOOD LOADER */}
+                    <FoodLoader />
 
                     <Toaster />
                     <Sonner position="top-center" />
@@ -56,14 +56,8 @@ const App = () => {
                       <Route path="/reservations" element={<Reservations />} />
                       <Route path="/checkout" element={<Checkout />} />
 
-                      <Route
-                        path="/order-success/:orderId"
-                        element={<OrderSuccess />}
-                      />
-                      <Route
-                        path="/reservation-success/:id"
-                        element={<ReservationSuccess />}
-                      />
+                      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+                      <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
 
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
@@ -107,6 +101,4 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
-};
-
-export default App;
+}
