@@ -89,7 +89,6 @@ const Admin: React.FC = () => {
       name: "Menu",
       icon: UtensilsCrossed,
       path: "/admin/menu",
-      disabled: true,
     },
   ];
 
