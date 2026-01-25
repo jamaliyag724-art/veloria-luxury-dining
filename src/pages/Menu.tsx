@@ -13,7 +13,14 @@ import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import CategoryTabs from "@/components/menu/CategoryTabs";
 import MenuItemCard from "@/components/menu/MenuItemCard";
-import { menuCategories, getItemsByCategory } from "@/data/menuData";
+import { useMenu } from "@/context/MenuContext";
+
+const { items } = useMenu();
+
+const filteredItems = (items ?? []).filter(
+  item => item.category === activeCategory && item.available
+);
+
 
 /* ---------------------------------------
    CATEGORY → BACKGROUND MAP
