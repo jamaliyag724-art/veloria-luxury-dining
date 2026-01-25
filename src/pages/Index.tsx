@@ -12,41 +12,37 @@ import FAQSection from "@/components/home/FAQSection";
 import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import WelcomePopup from "@/components/home/WelcomePopup";
-import PageLoader from "@/components/ui/PageLoader";
 
 const Index: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <PageLoader duration={2000}>
-      {/* 🌐 FULL HOME PAGE */}
-      <div className="min-h-screen bg-background">
-        <Navbar onCartClick={() => setIsCartOpen(true)} />
+    <div className="min-h-screen bg-background">
+      <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-        {/* Optional welcome popup */}
-        <WelcomePopup />
+      {/* Optional welcome popup */}
+      <WelcomePopup />
 
-        <main>
-          <HeroSection />
-          <ChefRecommendations />
-          <AboutSection />
-          <PopularDishes />
-          <ReservationCTA />
-          <TestimonialsSection />
-          <LocationSection />
-          <FAQSection />
-        </main>
+      <main>
+        <HeroSection />
+        <ChefRecommendations />
+        <AboutSection />
+        <PopularDishes />
+        <ReservationCTA />
+        <TestimonialsSection />
+        <LocationSection />
+        <FAQSection />
+      </main>
 
-        <Footer />
+      <Footer />
 
-        {/* 🛒 Cart UI */}
-        <FloatingCart onClick={() => setIsCartOpen(true)} />
-        <CartModal
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-        />
-      </div>
-    </PageLoader>
+      {/* 🛒 Cart UI */}
+      <FloatingCart onClick={() => setIsCartOpen(true)} />
+      <CartModal
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
+    </div>
   );
 };
 
