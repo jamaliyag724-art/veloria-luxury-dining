@@ -12,7 +12,7 @@ import { AdminProvider } from "@/context/AdminContext";
 import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
 import { RouteLoaderProvider, useRouteLoader } from "@/context/RouteLoaderContext";
-import { MenuProvider } from "@/context/MenuContext"; // ✅ ONLY ADDITION
+import { MenuProvider } from "@/context/MenuContext";
 
 import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
@@ -24,6 +24,7 @@ import Reservations from "@/pages/Reservations";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
 import ReservationSuccess from "@/pages/ReservationSuccess";
+import ReservationStatus from "@/pages/ReservationStatus"; // ✅ IMPORTANT
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import TrackOrder from "@/pages/TrackOrder";
@@ -52,23 +53,25 @@ const AppContent = () => {
 
   return (
     <>
-      {/* Brand Loader */}
+      {/* Brand Loader (first visit only) */}
       <AnimatePresence>
         {showBrandLoader && (
           <VeloriaBrandLoader onComplete={handleBrandLoaderComplete} />
         )}
       </AnimatePresence>
 
-      {/* Route Loaders */}
+      {/* Route specific loaders */}
       <RouteLoaderRenderer />
 
       <Toaster />
       <Sonner position="top-center" />
 
       <Routes>
+        {/* PUBLIC */}
         <Route path="/" element={<Index />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/reservations" element={<Reservations />} />
+        <Route path="/reservation-status" element={<ReservationStatus />} /> {/* ✅ FIX */}
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success/:orderId" element={<OrderSuccess />} />
         <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
@@ -111,6 +114,7 @@ const AppContent = () => {
           }
         />
 
+        {/* FALLBACK */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
@@ -128,7 +132,7 @@ export default function App() {
           <ReservationProvider>
             <CartProvider>
               <AdminProvider>
-                <MenuProvider> {/* ✅ ONLY THIS WRAPPER */}
+                <MenuProvider>
                   <RouteLoaderProvider>
                     <BrowserRouter>
                       <AppContent />
