@@ -13,9 +13,9 @@ import { useReservations } from "@/context/ReservationContext";
    VALIDATION
 ------------------------------ */
 const schema = z.object({
-  fullName: z.string().min(2),
-  email: z.string().email(),
-  mobile: z.string().regex(/^[6-9]\d{9}$/),
+  fullName: z.string().min(2, "Name is required"),
+  email: z.string().email("Invalid email"),
+  mobile: z.string().regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
   guests: z.number().min(1),
   date: z.string().min(1),
   time: z.string().min(1),
@@ -62,20 +62,14 @@ const Reservations: React.FC = () => {
       return;
     }
 
+    setErrors({});
     setLoading(true);
+
     try {
-      const id = await addReservation({
-        fullName: result.data.fullName,
-        email: result.data.email,
-        mobile: result.data.mobile,
-        guests: result.data.guests,
-        date: result.data.date,
-        time: result.data.time,
-        specialRequest: result.data.specialRequest,
-      });
+      const id = await addReservation(result.data);
       navigate(`/reservation-success/${id}`);
-    } catch (error) {
-      console.error("Reservation failed:", error);
+    } catch (err) {
+      console.error(err);
       setLoading(false);
     }
   };
@@ -87,23 +81,18 @@ const Reservations: React.FC = () => {
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      {/* ================= BACKGROUND ================= */}
       <main className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-24">
-        {/* Image */}
+        {/* Background */}
         <img
           src="/reservation-bg.webp"
-          alt=""
           className="absolute inset-0 w-full h-full object-cover"
+          alt=""
         />
-
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
-        {/* ================= CARD ================= */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative z-10 w-full max-w-3xl 
                      bg-white/95 backdrop-blur-xl
                      rounded-[32px] shadow-2xl p-10"
@@ -113,11 +102,9 @@ const Reservations: React.FC = () => {
             <span className="text-primary tracking-[0.25em] text-xs uppercase">
               Book a Table
             </span>
-
             <h1 className="font-serif text-4xl mt-3 mb-2">
               Make a Reservation
             </h1>
-
             <div className="inline-flex items-center gap-2 mt-2 px-4 py-1.5
                             rounded-full bg-primary/10 text-primary text-sm">
               Only <strong>2 tables</strong> remaining for this evening
@@ -141,7 +128,7 @@ const Reservations: React.FC = () => {
                     onChange={handleChange}
                     className="luxury-input pl-10"
                   >
-                    {[1,2,3,4,5,6,8,10].map((n) => (
+                    {[1,2,3,4,5,6,8,10].map(n => (
                       <option key={n}>{n}</option>
                     ))}
                   </select>
@@ -197,6 +184,31 @@ const Reservations: React.FC = () => {
               {loading ? "Processing..." : "Confirm Reservation"}
             </motion.button>
           </form>
+
+          {/* ================= TRACK OPTIONS ================= */}
+          <div className="mt-6 pt-6 border-t border-border text-center">
+            <p className="text-sm text-muted-foreground mb-3">
+              Already have a Reservation or Order ID?
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                type="button"
+                onClick={() => navigate("/reservation-status")}
+                className="btn-outline-gold px-6 py-3 text-sm"
+              >
+                Track Reservation
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate("/track-order")}
+                className="btn-outline-gold px-6 py-3 text-sm"
+              >
+                Track Order
+              </button>
+            </div>
+          </div>
         </motion.div>
       </main>
 
@@ -215,8 +227,8 @@ const Input = ({ label, error, ...props }: any) => (
     <label className="label">{label}</label>
     <input {...props} className="luxury-input" />
     {error && (
-      <p className="error-text">
-        <AlertCircle /> {error}
+      <p className="error-text flex items-center gap-1">
+        <AlertCircle className="w-4 h-4" /> {error}
       </p>
     )}
   </div>
