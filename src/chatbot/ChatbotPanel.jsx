@@ -9,20 +9,22 @@ export default function ChatbotPanel() {
     messages,
     addMessage,
     botReply,
-    isTyping
+    isTyping,
   } = useChatbotStore();
 
   const [input, setInput] = useState("");
-  const endRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
+  // auto scroll to bottom
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
 
-    const sound = new Audio("/sounds/soft-send.mp3");
+    // 🔊 soft send sound (correct path)
+    const sound = new Audio("/sound/soft-send.mp3");
     sound.volume = 0.12;
     sound.play().catch(() => {});
 
@@ -38,56 +40,86 @@ export default function ChatbotPanel() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.4 }}
-          className="fixed bottom-24 right-6 z-[2147483647]"
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{
+            position: "fixed",
+            bottom: "96px",
+            right: "24px",
+            zIndex: 2147483647,
+            pointerEvents: "auto",
+          }}
         >
-          <div className="w-[380px] h-[520px] rounded-2xl bg-white/90 backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden">
-
+          <div
+            className="
+              w-[380px] h-[520px]
+              rounded-2xl
+              bg-white/90 backdrop-blur-2xl
+              shadow-[0_40px_120px_rgba(0,0,0,0.25)]
+              flex flex-col overflow-hidden
+            "
+          >
             {/* HEADER */}
-            <div className="px-5 py-4 border-b flex justify-between">
-              <span className="text-xs tracking-widest">VELORIA CONCIERGE</span>
-              <button onClick={closeChat}>✕</button>
+            <div className="px-5 py-4 border-b border-black/5 flex justify-between items-center">
+              <div className="text-[11px] tracking-[0.25em] text-black/70">
+                VELORIA CONCIERGE
+              </div>
+              <button
+                onClick={closeChat}
+                className="opacity-50 hover:opacity-100 transition"
+              >
+                ✕
+              </button>
             </div>
 
             {/* MESSAGES */}
-            <div className="flex-1 px-4 py-4 overflow-y-auto text-sm">
-              {messages.map((m, i) => (
-                <div
+            <div className="flex-1 px-4 py-4 overflow-y-auto text-[14px] leading-relaxed">
+              {messages.map((msg, i) => (
+                <motion.div
                   key={i}
-                  className={`mb-3 flex ${
-                    m.from === "user" ? "justify-end" : "justify-start"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex mb-3 ${
+                    msg.from === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
                   <div
-                    className={`px-4 py-2 rounded-2xl max-w-[75%] ${
-                      m.from === "user"
-                        ? "bg-[#D4AF37]/20"
-                        : "bg-black/5"
+                    className={`max-w-[78%] px-4 py-2 rounded-2xl ${
+                      msg.from === "user"
+                        ? "bg-[#D4AF37]/20 text-black"
+                        : "bg-black/5 text-black"
                     }`}
                   >
-                    {m.text}
+                    {msg.text}
                   </div>
-                </div>
+                </motion.div>
               ))}
 
               {isTyping && (
-                <div className="text-xs opacity-60">Concierge is typing…</div>
+                <div className="text-xs opacity-60 mt-2 animate-pulse">
+                  Concierge is typing…
+                </div>
               )}
 
-              <div ref={endRef} />
+              <div ref={messagesEndRef} />
             </div>
 
             {/* INPUT */}
-            <div className="px-4 py-3 border-t">
+            <div className="px-4 py-3 border-t border-black/5">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Type your request…"
-                className="w-full px-4 py-2 rounded-full border text-sm outline-none"
+                className="
+                  w-full px-4 py-2
+                  rounded-full
+                  border border-black/15
+                  text-sm outline-none
+                  focus:ring-1 focus:ring-black/20
+                "
               />
             </div>
-
           </div>
         </motion.div>
       )}
