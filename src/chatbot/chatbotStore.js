@@ -165,3 +165,64 @@ export const useChatbotStore = create((set, get) => ({
     }
 
     if (get().statusMode) {
+      get().handleStatusInput(raw);
+      return;
+    }
+
+    if (get().orderMode) {
+      get().handleOrderInput(raw);
+      return;
+    }
+
+    set({ isTyping: true });
+
+    setTimeout(() => {
+      /* 3️⃣ Intent detection */
+      if (text.includes("check") && text.includes("reservation")) {
+        get().startStatusCheck();
+        set({ isTyping: false });
+        return;
+      }
+
+      if (text.includes("order")) {
+        get().startOrderTracking();
+        set({ isTyping: false });
+        return;
+      }
+
+      if (text.includes("book") || text.includes("reserve")) {
+        get().startReservation();
+        set({ isTyping: false });
+        return;
+      }
+
+      if (text.includes("menu")) {
+        set((state) => ({
+          isTyping: false,
+          messages: [
+            ...state.messages,
+            {
+              from: "bot",
+              text:
+                "Our menu features curated European cuisine. Would you like vegetarian or chef’s specials?"
+            }
+          ]
+        }));
+        return;
+      }
+
+      /* 4️⃣ Fallback */
+      set((state) => ({
+        isTyping: false,
+        messages: [
+          ...state.messages,
+          {
+            from: "bot",
+            text:
+              "I can assist with reservations, reservation status, order tracking, or menu details."
+          }
+        ]
+      }));
+    }, 900);
+  }
+}));
