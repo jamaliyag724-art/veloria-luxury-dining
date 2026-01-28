@@ -1,25 +1,18 @@
-import { motion } from "framer-motion";
-import { useChatbotStore } from "./chatbotStore";
-
-export default function ChatbotButton() {
-  const toggleChat = useChatbotStore((state) => state.toggleChat);
-
+export default function ChatbotButton({ onClick }) {
   return (
-    <motion.button
-      onClick={toggleChat}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
+    <button
+      onClick={onClick}
       className="
-        fixed bottom-6 right-6
-        z-[999999]
-        pointer-events-auto
+        fixed bottom-6 right-6 z-[9999]
         w-14 h-14 rounded-full
-        bg-[#C6A75E] text-black
-        flex items-center justify-center
-        shadow-2xl
+        bg-[#D4AF37]
+        text-black
+        shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+        hover:scale-105 transition
       "
+      aria-label="Open concierge"
     >
       ✦
-    </motion.button>
+    </button>
   );
 }
