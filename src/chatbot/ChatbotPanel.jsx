@@ -13,11 +13,10 @@ export default function ChatbotPanel() {
   } = useChatbotStore();
 
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef(null);
+  const endRef = useRef(null);
 
-  // auto scroll
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
   const sendMessage = () => {
@@ -39,84 +38,56 @@ export default function ChatbotPanel() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.4 }}
           className="fixed bottom-24 right-6 z-[2147483647]"
-          style={{ pointerEvents: "auto" }}
         >
-          <div
-            className="
-              w-[380px] h-[520px]
-              rounded-2xl
-              bg-white/85 backdrop-blur-2xl
-              shadow-[0_40px_120px_rgba(0,0,0,0.25)]
-              flex flex-col overflow-hidden
-            "
-          >
+          <div className="w-[380px] h-[520px] rounded-2xl bg-white/90 backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden">
+
             {/* HEADER */}
-            <div className="px-5 py-4 border-b border-black/5 flex justify-between">
-              <div className="text-[12px] tracking-[0.18em] text-black/70">
-                VELORIA CONCIERGE
-              </div>
-              <button
-                onClick={closeChat}
-                className="opacity-50 hover:opacity-100"
-              >
-                ✕
-              </button>
+            <div className="px-5 py-4 border-b flex justify-between">
+              <span className="text-xs tracking-widest">VELORIA CONCIERGE</span>
+              <button onClick={closeChat}>✕</button>
             </div>
 
             {/* MESSAGES */}
-            <div className="flex-1 px-4 py-4 overflow-y-auto text-[14px] leading-relaxed">
-              <AnimatePresence>
-                {messages.map((msg, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35 }}
-                    className={`flex mb-3 ${
-                      msg.from === "user" ? "justify-end" : "justify-start"
+            <div className="flex-1 px-4 py-4 overflow-y-auto text-sm">
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={`mb-3 flex ${
+                    m.from === "user" ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`px-4 py-2 rounded-2xl max-w-[75%] ${
+                      m.from === "user"
+                        ? "bg-[#D4AF37]/20"
+                        : "bg-black/5"
                     }`}
                   >
-                    <div
-                      className={`max-w-[78%] px-4 py-2 rounded-2xl ${
-                        msg.from === "user"
-                          ? "bg-[#D4AF37]/20 text-black"
-                          : "bg-black/5 text-black"
-                      }`}
-                    >
-                      {msg.text}
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                    {m.text}
+                  </div>
+                </div>
+              ))}
 
               {isTyping && (
-                <div className="text-xs opacity-60 mt-1 animate-pulse">
-                  Concierge is typing…
-                </div>
+                <div className="text-xs opacity-60">Concierge is typing…</div>
               )}
 
-              <div ref={messagesEndRef} />
+              <div ref={endRef} />
             </div>
 
             {/* INPUT */}
-            <div className="px-4 py-3 border-t border-black/5">
+            <div className="px-4 py-3 border-t">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Type your request…"
-                className="
-                  w-full px-4 py-2
-                  rounded-full
-                  border border-black/15
-                  text-sm outline-none
-                  focus:ring-1 focus:ring-black/20
-                "
+                className="w-full px-4 py-2 rounded-full border text-sm outline-none"
               />
             </div>
+
           </div>
         </motion.div>
       )}
