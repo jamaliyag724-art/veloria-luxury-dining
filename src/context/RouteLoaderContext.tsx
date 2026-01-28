@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-export type LoaderType = "menu" | "reservation" | "checkout" | "about" | "contact" | null;
+export type LoaderType =
+  | "menu"
+  | "reservation"
+  | "checkout"
+  | "about"
+  | "contact"
+  | null;
 
 interface RouteLoaderContextType {
   activeLoader: LoaderType;
@@ -17,7 +23,6 @@ const BRAND_LOADER_KEY = "veloria_brand_loader_shown";
 export const RouteLoaderProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeLoader, setActiveLoader] = useState<LoaderType>(null);
   const [hasShownBrandLoader, setHasShownBrandLoader] = useState(() => {
-    // Check sessionStorage to see if brand loader was already shown this session
     if (typeof window !== "undefined") {
       return sessionStorage.getItem(BRAND_LOADER_KEY) === "true";
     }
@@ -44,13 +49,18 @@ export const RouteLoaderProvider = ({ children }: { children: React.ReactNode })
         markBrandLoaderShown,
       }}
     >
-      {children}
+      {/* ✅ FIX 1: Disable pointer events ONLY when loader is active */}
+      <div className={activeLoader ? "pointer-events-none" : undefined}>
+        {children}
+      </div>
     </RouteLoaderContext.Provider>
   );
 };
 
 export const useRouteLoader = () => {
   const ctx = useContext(RouteLoaderContext);
-  if (!ctx) throw new Error("useRouteLoader must be used inside RouteLoaderProvider");
+  if (!ctx) {
+    throw new Error("useRouteLoader must be used inside RouteLoaderProvider");
+  }
   return ctx;
 };
