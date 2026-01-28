@@ -1,19 +1,26 @@
 import { useChatbotStore } from "./chatbotStore";
 
 export default function ChatbotButton() {
-  const toggleChat = useChatbotStore((s) => s.toggleChat);
+  const openChat = useChatbotStore((s) => s.openChat);
 
   return (
     <button
-      onClick={toggleChat}
-      className="
-        fixed bottom-6 right-6 z-[99999]
-        w-14 h-14 rounded-full
-        bg-[#D4AF37] text-black
-        shadow-[0_12px_40px_rgba(0,0,0,0.3)]
-        transition hover:scale-105
-      "
-      aria-label="Open concierge"
+      onClick={openChat}
+      style={{
+        position: "fixed",
+        bottom: 24,
+        right: 24,
+        zIndex: 2147483647,
+        width: 56,
+        height: 56,
+        borderRadius: "50%",
+        background: "#D4AF37",
+        color: "#000",
+        border: "none",
+        cursor: "pointer",
+        boxShadow: "0 20px 50px rgba(0,0,0,0.3)"
+      }}
+      aria-label="Open chat"
     >
       ✦
     </button>
