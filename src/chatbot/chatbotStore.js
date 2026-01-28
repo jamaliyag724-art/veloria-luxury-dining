@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { reservations } from "./reservationData";
 import { orders } from "./orderData";
-
-// ✅ IMPORT YOUR REAL MENU DATA
 import { menuCategories, menuItems } from "@/data/menuData";
 
 export const useChatbotStore = create((set, get) => ({
@@ -12,11 +10,8 @@ export const useChatbotStore = create((set, get) => ({
   messages: [
     {
       from: "bot",
-      text: "Welcome to Veloria. How may I assist you?",
-    },
-    {
-      from: "bot",
-      text: "I can help with reservations, reservation status, menu details, or order tracking.",
+      text: "Welcome to Veloria. How may I assist you today?",
+      actions: true, // 👈 QUICK ACTION BUTTONS
     },
   ],
 
@@ -30,14 +25,39 @@ export const useChatbotStore = create((set, get) => ({
 
   botReply: (input) => {
     const text = input.toLowerCase().trim();
-
     set({ isTyping: true });
 
     setTimeout(() => {
       let reply = "I’m sorry, I didn’t quite understand that.";
 
       /* =========================
-         🍽️ MENU ENTRY POINT
+         🎯 QUICK ACTIONS
+      ========================= */
+      if (text === "view_menu") {
+        set((state) => ({
+          messages: [
+            ...state.messages,
+            {
+              from: "bot",
+              text: "Please choose a menu category.",
+              menuCategories: true,
+            },
+          ],
+          isTyping: false,
+        }));
+        return;
+      }
+
+      if (text === "check_reservation") {
+        reply = "Please provide your reservation ID (e.g. RV-1024).";
+      }
+
+      if (text === "track_order") {
+        reply = "Please provide your order ID (e.g. ORD-9001).";
+      }
+
+      /* =========================
+         🍽️ MENU ENTRY (TEXT)
       ========================= */
       if (text.includes("menu")) {
         set((state) => ({
@@ -55,7 +75,7 @@ export const useChatbotStore = create((set, get) => ({
       }
 
       /* =========================
-         🍽️ CATEGORY SELECTION
+         🍽️ MENU CATEGORY
       ========================= */
       const category = menuCategories.find(
         (c) => c.id.toLowerCase() === text
@@ -66,25 +86,15 @@ export const useChatbotStore = create((set, get) => ({
           (item) => item.category === category.id
         );
 
-        if (items.length === 0) {
-          reply = `Currently no items available in ${category.name}.`;
-        } else {
-          reply =
-            `Our ${category.name} selection:\n\n` +
-            items
-              .slice(0, 5) // luxury feel – limited items
-              .map(
-                (i) =>
-                  `• ${i.name} — ₹${i.price}\n  ${i.description}`
-              )
-              .join("\n\n");
-        }
-
-        set((state) => ({
-          messages: [...state.messages, { from: "bot", text: reply }],
-          isTyping: false,
-        }));
-        return;
+        reply =
+          `Our ${category.name} selection:\n\n` +
+          items
+            .slice(0, 5)
+            .map(
+              (i) =>
+                `• ${i.name} — ₹${i.price}\n  ${i.description}`
+            )
+            .join("\n\n");
       }
 
       /* =========================
@@ -100,8 +110,6 @@ export const useChatbotStore = create((set, get) => ({
           reply = r
             ? `Reservation ${id}: ${r.name}, ${r.guests} guests on ${r.date} at ${r.time}. Status: ${r.status}.`
             : `I couldn’t find a reservation with ID ${id}.`;
-        } else {
-          reply = "Please provide your reservation ID (e.g. RV-1024).";
         }
       }
 
@@ -118,8 +126,6 @@ export const useChatbotStore = create((set, get) => ({
           reply = o
             ? `Order ${id}: ${o.items} items. Current status: ${o.status}.`
             : `I couldn’t find an order with ID ${id}.`;
-        } else {
-          reply = "Please provide your order ID (e.g. ORD-9001).";
         }
       }
 
@@ -127,6 +133,6 @@ export const useChatbotStore = create((set, get) => ({
         messages: [...state.messages, { from: "bot", text: reply }],
         isTyping: false,
       }));
-    }, 900);
+    }, 800);
   },
 }));
