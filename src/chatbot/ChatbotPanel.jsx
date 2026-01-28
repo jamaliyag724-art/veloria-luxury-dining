@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useChatbotStore } from "./chatbotStore";
 
 export default function ChatbotPanel() {
@@ -14,7 +15,7 @@ export default function ChatbotPanel() {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  // auto scroll to bottom on new message
+  // auto scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
@@ -24,142 +25,96 @@ export default function ChatbotPanel() {
   const sendMessage = () => {
     if (!input.trim()) return;
 
-    addMessage({
-      from: "user",
-      text: input
-    });
+    // soft send sound
+    const sound = new Audio("/sounds/soft-send.mp3");
+    sound.volume = 0.12;
+    sound.play().catch(() => {});
 
+    addMessage({ from: "user", text: input });
     botReply(input);
     setInput("");
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 96,
-        right: 24,
-        zIndex: 2147483647,
-        width: 380,
-        height: 520,
-        background: "rgba(255,255,255,0.92)",
-        backdropFilter: "blur(22px)",
-        borderRadius: 22,
-        boxShadow: "0 40px 120px rgba(0,0,0,0.25)",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden"
-      }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 30 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="fixed bottom-24 right-6 z-[9999]"
     >
-      {/* HEADER */}
       <div
-        style={{
-          padding: "16px 18px",
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}
+        className="
+          w-[380px] h-[520px]
+          rounded-2xl
+          bg-white/85 backdrop-blur-2xl
+          shadow-[0_40px_120px_rgba(0,0,0,0.25)]
+          flex flex-col overflow-hidden
+        "
       >
-        <div
-          style={{
-            fontSize: 13,
-            letterSpacing: "0.08em",
-            fontWeight: 500,
-            color: "#2B2B2B"
-          }}
-        >
-          VELORIA CONCIERGE
+        {/* HEADER */}
+        <div className="px-5 py-4 border-b border-black/5 flex justify-between">
+          <div className="text-[12px] tracking-[0.18em] text-black/70">
+            VELORIA CONCIERGE
+          </div>
+          <button onClick={closeChat} className="opacity-50 hover:opacity-100">
+            ✕
+          </button>
         </div>
 
-        <button
-          onClick={closeChat}
-          style={{
-            border: "none",
-            background: "transparent",
-            fontSize: 16,
-            cursor: "pointer",
-            opacity: 0.6
-          }}
-        >
-          ✕
-        </button>
-      </div>
+        {/* MESSAGES */}
+        <div className="flex-1 px-4 py-4 overflow-y-auto text-[14px] leading-relaxed">
+          <AnimatePresence>
+            {messages.map((msg, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35 }}
+                className={`flex mb-3 ${
+                  msg.from === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-[78%] px-4 py-2 rounded-2xl ${
+                    msg.from === "user"
+                      ? "bg-[#D4AF37]/20 text-black"
+                      : "bg-black/5 text-black"
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
-      {/* MESSAGES */}
-      <div
-        style={{
-          flex: 1,
-          padding: "18px",
-          overflowY: "auto",
-          fontSize: 14,
-          lineHeight: 1.6,
-          color: "#2A2A2A"
-        }}
-      >
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              justifyContent: msg.from === "user" ? "flex-end" : "flex-start",
-              marginBottom: 14
-            }}
-          >
-            <div
-              style={{
-                maxWidth: "78%",
-                padding: "10px 14px",
-                borderRadius: 16,
-                background:
-                  msg.from === "user"
-                    ? "rgba(212,175,55,0.18)"
-                    : "rgba(0,0,0,0.05)",
-                color: "#2A2A2A"
-              }}
-            >
-              {msg.text}
+          {isTyping && (
+            <div className="text-xs opacity-60 mt-1 animate-pulse">
+              Concierge is typing…
             </div>
-          </div>
-        ))}
+          )}
 
-        {isTyping && (
-          <div
-            style={{
-              fontSize: 12,
-              opacity: 0.55,
-              marginTop: 6
-            }}
-          >
-            Concierge is typing…
-          </div>
-        )}
+          <div ref={messagesEndRef} />
+        </div>
 
-        <div ref={messagesEndRef} />
+        {/* INPUT */}
+        <div className="px-4 py-3 border-t border-black/5">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            placeholder="Type your request…"
+            className="
+              w-full px-4 py-2
+              rounded-full
+              border border-black/15
+              text-sm outline-none
+              focus:ring-1 focus:ring-black/20
+            "
+          />
+        </div>
       </div>
-
-      {/* INPUT */}
-      <div
-        style={{
-          padding: "14px",
-          borderTop: "1px solid rgba(0,0,0,0.06)"
-        }}
-      >
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          placeholder="Type your request…"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: 999,
-            border: "1px solid rgba(0,0,0,0.15)",
-            fontSize: 14,
-            outline: "none"
-          }}
-        />
-      </div>
-    </div>
+    </motion.div>
   );
 }
