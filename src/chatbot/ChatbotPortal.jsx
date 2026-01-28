@@ -9,6 +9,5 @@ export default function ChatbotPortal({ children }) {
   }, []);
 
   if (!mounted) return null;
-
   return createPortal(children, document.body);
 }
