@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChatbotStore } from "./chatbotStore";
+import ChatbotPortal from "./ChatbotPortal";
 
 export default function ChatbotPanel() {
   const {
@@ -9,7 +10,7 @@ export default function ChatbotPanel() {
     messages,
     addMessage,
     botReply,
-    isTyping
+    isTyping,
   } = useChatbotStore();
 
   const [input, setInput] = useState("");
@@ -23,68 +24,71 @@ export default function ChatbotPanel() {
 
   const send = () => {
     if (!input.trim()) return;
-
     addMessage({ from: "user", text: input });
     botReply(input);
     setInput("");
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 30 }}
-      className="fixed bottom-24 right-6 z-[999999]"
-    >
-      <div className="w-[380px] h-[520px] bg-white rounded-2xl shadow-xl flex flex-col">
-        {/* HEADER */}
-        <div className="px-5 py-4 border-b flex justify-between">
-          <span className="text-xs tracking-widest">VELORIA CONCIERGE</span>
-          <button onClick={closeChat}>✕</button>
-        </div>
+    <ChatbotPortal>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ duration: 0.4 }}
+          style={{ pointerEvents: "auto" }}
+          className="fixed bottom-24 right-6 z-[999999]"
+        >
+          <div className="w-[360px] h-[520px] bg-white rounded-2xl shadow-[0_40px_120px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden">
+            {/* HEADER */}
+            <div className="px-4 py-3 border-b flex justify-between">
+              <span className="text-xs tracking-widest">
+                VELORIA CONCIERGE
+              </span>
+              <button onClick={closeChat}>✕</button>
+            </div>
 
-        {/* MESSAGES */}
-        <div className="flex-1 p-4 overflow-y-auto text-sm">
-          <AnimatePresence>
-            {messages.map((m, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`mb-3 flex ${
-                  m.from === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
+            {/* MESSAGES */}
+            <div className="flex-1 p-4 overflow-y-auto text-sm">
+              {messages.map((m, i) => (
                 <div
-                  className={`px-4 py-2 rounded-2xl max-w-[75%] ${
-                    m.from === "user"
-                      ? "bg-[#D4AF37]/20"
-                      : "bg-black/5"
+                  key={i}
+                  className={`mb-3 ${
+                    m.from === "user" ? "text-right" : "text-left"
                   }`}
                 >
-                  {m.text}
+                  <span
+                    className={`inline-block px-4 py-2 rounded-xl ${
+                      m.from === "user"
+                        ? "bg-[#D4AF37]/20"
+                        : "bg-black/5"
+                    }`}
+                  >
+                    {m.text}
+                  </span>
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              ))}
 
-          {isTyping && (
-            <div className="text-xs opacity-50 mt-1">Concierge is typing…</div>
-          )}
-          <div ref={endRef} />
-        </div>
+              {isTyping && (
+                <div className="text-xs opacity-60">Concierge is typing…</div>
+              )}
+              <div ref={endRef} />
+            </div>
 
-        {/* INPUT */}
-        <div className="p-4 border-t">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send()}
-            placeholder="Type your request…"
-            className="w-full px-4 py-2 rounded-full border outline-none"
-          />
-        </div>
-      </div>
-    </motion.div>
+            {/* INPUT */}
+            <div className="p-3 border-t">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && send()}
+                placeholder="Type your request…"
+                className="w-full px-4 py-2 rounded-full border text-sm outline-none"
+              />
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </ChatbotPortal>
   );
 }
