@@ -8,46 +8,36 @@ export default function ChatbotPanel() {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          exit={{ opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="
-            fixed bottom-24 right-6 z-50
+            fixed bottom-24 right-6
+            z-[2147483647]
+            pointer-events-auto
             w-[320px] h-[420px]
             rounded-2xl
-            bg-black/60 backdrop-blur-xl
+            bg-black/70 backdrop-blur-xl
             border border-[#C6A75E]/30
             shadow-2xl
             flex flex-col
           "
+          style={{ pointerEvents: "auto" }}
         >
-          {/* Header */}
-          <div className="px-4 py-3 border-b border-[#C6A75E]/20">
-            <p className="text-[#C6A75E] text-sm tracking-wide">
-              Veloria Concierge
-            </p>
+          <div className="px-4 py-3 border-b border-[#C6A75E]/20 text-[#C6A75E] text-sm">
+            Veloria Concierge
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 px-4 py-3 space-y-3 overflow-y-auto text-sm">
-            {messages.map((msg, index) => (
+          <div className="flex-1 px-4 py-3 space-y-3 overflow-y-auto text-sm text-[#F8F5F0]">
+            {messages.map((m, i) => (
               <div
-                key={index}
-                className={
-                  msg.from === "bot"
-                    ? "text-[#F8F5F0]"
-                    : "text-[#C6A75E] text-right"
-                }
+                key={i}
+                className={m.from === "bot" ? "" : "text-right text-[#C6A75E]"}
               >
-                {msg.text}
+                {m.text}
               </div>
             ))}
-          </div>
-
-          {/* Footer */}
-          <div className="px-4 py-3 border-t border-[#C6A75E]/20 text-xs text-[#9A9A9A]">
-            A private dining experience
           </div>
         </motion.div>
       )}
