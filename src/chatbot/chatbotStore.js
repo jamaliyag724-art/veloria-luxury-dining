@@ -8,11 +8,11 @@ export const useChatbotStore = create((set, get) => ({
   messages: [
     {
       from: "bot",
-      text: "Welcome to Veloria. How may I assist you today?",
+      text: "Welcome to Veloria Concierge. How may I assist you today?",
     },
     {
       from: "bot",
-      text: "You can say: track my order or check my reservation.",
+      text: "You can check your reservation or track your order.",
     },
   ],
 
@@ -29,67 +29,31 @@ export const useChatbotStore = create((set, get) => ({
     const { addMessage, setTyping } = get();
 
     setTyping(true);
+    await new Promise((r) => setTimeout(r, 800));
 
-    // slight luxury delay
-    await new Promise((r) => setTimeout(r, 900));
-
-    /* -------------------------------
-       ORDER TRACKING
-    -------------------------------- */
-    if (text.includes("order")) {
-      setTyping(false);
-      addMessage({
-        from: "bot",
-        text: "Please provide your Order ID (e.g. ORD-9001).",
-      });
-      return;
-    }
-
-    if (/^ord-\d+/i.test(text)) {
-      const orderId = text.toUpperCase();
-
-      const { data, error } = await supabase
-        .from("orders")
-        .select("order_id,status,created_at")
-        .eq("order_id", orderId)
-        .single();
-
-      setTyping(false);
-
-      if (error || !data) {
-        addMessage({
-          from: "bot",
-          text: "I couldn't find an order with that ID. Please verify and try again.",
-        });
-        return;
-      }
-
-      addMessage({
-        from: "bot",
-        text: `Order ${data.order_id} is currently ${data.status}.`,
-      });
-      return;
-    }
-
-    /* -------------------------------
-       RESERVATION TRACKING
-    -------------------------------- */
+    /* ----------------------------
+       RESERVATION FLOW
+    ----------------------------- */
     if (text.includes("reservation")) {
       setTyping(false);
       addMessage({
         from: "bot",
-        text: "Please provide your Reservation ID (e.g. RV-1024).",
+        text: "Please enter the phone number used for your reservation.",
       });
       return;
     }
 
-    if (/^rv-\d+/i.test(text)) {
-      const reservationId = text.toUpperCase();
+    if (/^\d{10}$/.test(text)) {
+      const phone = text;
 
       const { data, error } = await supabase
         .from("reservations")
-        .select("reservation_id,date,time,guests,status")
-        .eq("reservation_id", reservationId)
+        .select(
+          "name,people,reservation_date,reservation_time,address,notes"
+        )
+        .eq("phone", phone)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .single();
 
       setTyping(false);
@@ -98,29 +62,43 @@ export const useChatbotStore = create((set, get) => ({
         addMessage({
           from: "bot",
           text:
-            "I couldn't locate this reservation. Kindly check the ID and try again.",
+            "I couldn't find a reservation with this phone number. Please verify and try again.",
         });
         return;
       }
 
       addMessage({
         from: "bot",
-        text: `Reservation ${data.reservation_id} is ${data.status}.
-Date: ${data.date}
-Time: ${data.time}
-Guests: ${data.guests}`,
+        text: `Reservation found for ${data.name}.
+Date: ${data.reservation_date}
+Time: ${data.reservation_time}
+Guests: ${data.people}
+Location: ${data.address || "Veloria Restaurant"}`,
       });
       return;
     }
 
-    /* -------------------------------
+    /* ----------------------------
+       ORDER TRACKING (if exists)
+    ----------------------------- */
+    if (text.includes("order")) {
+      setTyping(false);
+      addMessage({
+        from: "bot",
+        text:
+          "Order tracking is available via the Track Order page from the menu.",
+      });
+      return;
+    }
+
+    /* ----------------------------
        FALLBACK
-    -------------------------------- */
+    ----------------------------- */
     setTyping(false);
     addMessage({
       from: "bot",
       text:
-        "I can help with order tracking or reservation status. Please let me know.",
+        "I can help you check your reservation. Just type 'reservation'.",
     });
   },
 }));
