@@ -1,52 +1,51 @@
 import { useChatbotStore } from "./chatbotStore";
 
 export default function ChatbotPanel() {
-  const isOpen = useChatbotStore((s) => s.isOpen);
-  const closeChat = useChatbotStore((s) => s.closeChat);
+  const { isOpen, closeChat, messages } = useChatbotStore();
 
   if (!isOpen) return null;
 
   return (
     <div
-      className="
-        fixed bottom-24 right-6 z-[99999]
-        w-[360px] h-[480px]
-        rounded-2xl
-        bg-white/80 backdrop-blur-xl
-        shadow-[0_30px_80px_rgba(0,0,0,0.25)]
-        flex flex-col
-      "
+      style={{
+        position: "fixed",
+        bottom: 96,
+        right: 24,
+        zIndex: 2147483647,
+        width: 360,
+        height: 480,
+        background: "rgba(255,255,255,0.9)",
+        backdropFilter: "blur(20px)",
+        borderRadius: 20,
+        boxShadow: "0 40px 100px rgba(0,0,0,0.25)",
+        display: "flex",
+        flexDirection: "column"
+      }}
     >
       {/* Header */}
-      <div className="px-5 py-4 flex justify-between items-center border-b border-black/5">
-        <span className="text-sm tracking-wide text-[#2B2B2B]">
+      <div
+        style={{
+          padding: 16,
+          borderBottom: "1px solid rgba(0,0,0,0.05)",
+          display: "flex",
+          justifyContent: "space-between"
+        }}
+      >
+        <div style={{ fontSize: 14, letterSpacing: 0.5 }}>
           Veloria Concierge
-        </span>
-        <button
-          onClick={closeChat}
-          className="opacity-60 hover:opacity-100"
-        >
+        </div>
+        <button onClick={closeChat} style={{ border: "none", background: "none" }}>
           ✕
         </button>
       </div>
 
-      {/* Message */}
-      <div className="flex-1 px-5 py-4 text-sm text-[#3A3A3A] leading-relaxed">
-        Welcome to Veloria.  
-        <br />
-        May I assist you with reservations, menu, or order tracking?
-      </div>
-
-      {/* Input */}
-      <div className="px-4 py-3 border-t border-black/5">
-        <input
-          placeholder="Type your request…"
-          className="
-            w-full rounded-full px-4 py-2 text-sm
-            border border-black/10
-            focus:outline-none
-          "
-        />
+      {/* Messages */}
+      <div style={{ flex: 1, padding: 16, fontSize: 14 }}>
+        {messages.map((m, i) => (
+          <div key={i} style={{ marginBottom: 12 }}>
+            {m.text}
+          </div>
+        ))}
       </div>
     </div>
   );
