@@ -17,6 +17,10 @@ import { MenuProvider } from "@/context/MenuContext";
 import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
+/* ✅ CHATBOT IMPORTS (ONLY ADDITION) */
+import ChatbotButton from "@/chatbot/ChatbotButton";
+import ChatbotPanel from "@/chatbot/ChatbotPanel";
+
 /* Pages */
 import Index from "@/pages/Index";
 import Menu from "@/pages/Menu";
@@ -24,7 +28,7 @@ import Reservations from "@/pages/Reservations";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
 import ReservationSuccess from "@/pages/ReservationSuccess";
-import ReservationStatus from "@/pages/ReservationStatus"; // ✅ IMPORTANT
+import ReservationStatus from "@/pages/ReservationStatus";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import TrackOrder from "@/pages/TrackOrder";
@@ -71,7 +75,7 @@ const AppContent = () => {
         <Route path="/" element={<Index />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/reservations" element={<Reservations />} />
-        <Route path="/reservation-status" element={<ReservationStatus />} /> {/* ✅ FIX */}
+        <Route path="/reservation-status" element={<ReservationStatus />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success/:orderId" element={<OrderSuccess />} />
         <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
@@ -117,6 +121,10 @@ const AppContent = () => {
         {/* FALLBACK */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      {/* ✅ CHATBOT MOUNT (ONLY ADDITION) */}
+      <ChatbotButton />
+      <ChatbotPanel />
     </>
   );
 };
