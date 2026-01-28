@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
 
-export const useChatbotStore = create((set) => ({
+export const useChatbotStore = create((set, get) => ({
   isOpen: false,
   isTyping: false,
 
@@ -9,7 +9,10 @@ export const useChatbotStore = create((set) => ({
     {
       from: "bot",
       text: "Welcome to Veloria. How may I assist you today?",
-      actions: true,
+    },
+    {
+      from: "bot",
+      text: "You can say: track my order or check my reservation.",
     },
   ],
 
@@ -17,108 +20,107 @@ export const useChatbotStore = create((set) => ({
   closeChat: () => set({ isOpen: false }),
 
   addMessage: (msg) =>
-    set((state) => ({
-      messages: [...state.messages, msg],
-    })),
+    set((state) => ({ messages: [...state.messages, msg] })),
+
+  setTyping: (val) => set({ isTyping: val }),
 
   botReply: async (input) => {
-    const text = input.toLowerCase().trim();
-    set({ isTyping: true });
+    const text = input.toLowerCase();
+    const { addMessage, setTyping } = get();
 
-    /* =========================
-       🎯 QUICK ACTIONS
-    ========================= */
-    if (text === "track_order") {
-      set((state) => ({
-        messages: [
-          ...state.messages,
-          {
-            from: "bot",
-            text: "Please provide your Order ID (e.g. ORD-9001).",
-          },
-        ],
-        isTyping: false,
-      }));
+    setTyping(true);
+
+    // slight luxury delay
+    await new Promise((r) => setTimeout(r, 900));
+
+    /* -------------------------------
+       ORDER TRACKING
+    -------------------------------- */
+    if (text.includes("order")) {
+      setTyping(false);
+      addMessage({
+        from: "bot",
+        text: "Please provide your Order ID (e.g. ORD-9001).",
+      });
       return;
     }
 
-    if (text === "check_reservation") {
-      set((state) => ({
-        messages: [
-          ...state.messages,
-          {
-            from: "bot",
-            text: "Please provide your Reservation ID (e.g. RV-1024).",
-          },
-        ],
-        isTyping: false,
-      }));
-      return;
-    }
+    if (/^ord-\d+/i.test(text)) {
+      const orderId = text.toUpperCase();
 
-    /* =========================
-       📦 ORDER TRACKING (REAL DB)
-    ========================= */
-    if (text.startsWith("ord-")) {
       const { data, error } = await supabase
         .from("orders")
-        .select("*")
-        .eq("id", input.toUpperCase())
+        .select("order_id,status,created_at")
+        .eq("order_id", orderId)
         .single();
 
-      set((state) => ({
-        messages: [
-          ...state.messages,
-          {
-            from: "bot",
-            text: error || !data
-              ? "I couldn’t find an order with this ID."
-              : `Order ${data.id}: ${data.items} items. Current status: ${data.status}.`,
-          },
-        ],
-        isTyping: false,
-      }));
+      setTyping(false);
+
+      if (error || !data) {
+        addMessage({
+          from: "bot",
+          text: "I couldn't find an order with that ID. Please verify and try again.",
+        });
+        return;
+      }
+
+      addMessage({
+        from: "bot",
+        text: `Order ${data.order_id} is currently ${data.status}.`,
+      });
       return;
     }
 
-    /* =========================
-       📅 RESERVATION TRACKING
-    ========================= */
-    if (text.startsWith("rv-")) {
+    /* -------------------------------
+       RESERVATION TRACKING
+    -------------------------------- */
+    if (text.includes("reservation")) {
+      setTyping(false);
+      addMessage({
+        from: "bot",
+        text: "Please provide your Reservation ID (e.g. RV-1024).",
+      });
+      return;
+    }
+
+    if (/^rv-\d+/i.test(text)) {
+      const reservationId = text.toUpperCase();
+
       const { data, error } = await supabase
         .from("reservations")
-        .select("*")
-        .eq("id", input.toUpperCase())
+        .select("reservation_id,date,time,guests,status")
+        .eq("reservation_id", reservationId)
         .single();
 
-      set((state) => ({
-        messages: [
-          ...state.messages,
-          {
-            from: "bot",
-            text: error || !data
-              ? "I couldn’t find a reservation with this ID."
-              : `Reservation ${data.id}: ${data.name}, ${data.guests} guests on ${data.date} at ${data.time}. Status: ${data.status}.`,
-          },
-        ],
-        isTyping: false,
-      }));
+      setTyping(false);
+
+      if (error || !data) {
+        addMessage({
+          from: "bot",
+          text:
+            "I couldn't locate this reservation. Kindly check the ID and try again.",
+        });
+        return;
+      }
+
+      addMessage({
+        from: "bot",
+        text: `Reservation ${data.reservation_id} is ${data.status}.
+Date: ${data.date}
+Time: ${data.time}
+Guests: ${data.guests}`,
+      });
       return;
     }
 
-    /* =========================
-       ❓ FALLBACK
-    ========================= */
-    set((state) => ({
-      messages: [
-        ...state.messages,
-        {
-          from: "bot",
-          text: "Please choose an option below to continue.",
-          actions: true,
-        },
-      ],
-      isTyping: false,
-    }));
+    /* -------------------------------
+       FALLBACK
+    -------------------------------- */
+    setTyping(false);
+    addMessage({
+      from: "bot",
+      text:
+        "I can help with order tracking or reservation status. Please let me know.",
+    });
   },
 }));
