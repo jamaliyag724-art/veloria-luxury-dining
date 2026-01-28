@@ -6,17 +6,28 @@ export default function ChatbotButton() {
 
   return (
     <motion.button
-      onClick={openChat}
+      onClick={() => {
+        console.log("CHATBOT BUTTON CLICKED");
+        openChat();
+      }}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.95 }}
       transition={{ duration: 0.25 }}
-      className="
-        fixed bottom-6 right-6 z-[9999]
-        w-14 h-14 rounded-full
-        bg-[#D4AF37]
-        text-black
-        shadow-[0_20px_50px_rgba(0,0,0,0.35)]
-      "
+      style={{
+        position: "fixed",
+        bottom: 24,
+        right: 24,
+        zIndex: 2147483647, // MAX
+        pointerEvents: "auto",
+        width: 56,
+        height: 56,
+        borderRadius: "50%",
+        background: "#D4AF37",
+        color: "#000",
+        border: "none",
+        cursor: "pointer",
+        boxShadow: "0 20px 50px rgba(0,0,0,0.35)"
+      }}
       aria-label="Open concierge"
     >
       ✦
