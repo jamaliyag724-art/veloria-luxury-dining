@@ -6,7 +6,10 @@ export default function ChatbotButton() {
 
   return (
     <motion.button
-      onClick={openChat}
+      onClick={() => {
+        console.log("CHATBOT BUTTON CLICKED");
+        openChat();
+      }}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.95 }}
       style={{
@@ -20,11 +23,11 @@ export default function ChatbotButton() {
         background: "#D4AF37",
         border: "none",
         cursor: "pointer",
-        boxShadow: "0 20px 50px rgba(0,0,0,0.35)"
+        boxShadow: "0 20px 50px rgba(0,0,0,0.35)",
       }}
       aria-label="Open concierge"
     >
-      ✨
+      ✦
     </motion.button>
   );
 }
