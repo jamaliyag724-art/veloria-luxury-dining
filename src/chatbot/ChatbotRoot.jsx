@@ -1,14 +1,22 @@
-import { useState } from "react";
+import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import ChatbotButton from "./ChatbotButton";
 import ChatbotPanel from "./ChatbotPanel";
 
 export default function ChatbotRoot() {
-  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <>
-      <ChatbotButton onClick={() => setOpen(true)} />
-      <ChatbotPanel open={open} onClose={() => setOpen(false)} />
-    </>
+      <ChatbotButton />
+      <ChatbotPanel />
+    </>,
+    document.body
   );
 }
