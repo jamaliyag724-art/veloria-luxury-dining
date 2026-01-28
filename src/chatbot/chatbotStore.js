@@ -2,8 +2,13 @@ import { create } from "zustand";
 import { reservations } from "./reservationData";
 import { orders } from "./orderData";
 
+// ✅ IMPORT YOUR REAL MENU DATA
+import { menuCategories, menuItems } from "@/data/menuData";
+
 export const useChatbotStore = create((set, get) => ({
   isOpen: false,
+  isTyping: false,
+
   messages: [
     {
       from: "bot",
@@ -14,7 +19,6 @@ export const useChatbotStore = create((set, get) => ({
       text: "I can help with reservations, reservation status, menu details, or order tracking.",
     },
   ],
-  isTyping: false,
 
   openChat: () => set({ isOpen: true }),
   closeChat: () => set({ isOpen: false }),
@@ -25,14 +29,67 @@ export const useChatbotStore = create((set, get) => ({
     })),
 
   botReply: (input) => {
-    const text = input.toLowerCase();
+    const text = input.toLowerCase().trim();
 
     set({ isTyping: true });
 
     setTimeout(() => {
       let reply = "I’m sorry, I didn’t quite understand that.";
 
-      // 🔍 RESERVATION CHECK
+      /* =========================
+         🍽️ MENU ENTRY POINT
+      ========================= */
+      if (text.includes("menu")) {
+        set((state) => ({
+          messages: [
+            ...state.messages,
+            {
+              from: "bot",
+              text: "Here is our curated menu. Please choose a category.",
+              menuCategories: true,
+            },
+          ],
+          isTyping: false,
+        }));
+        return;
+      }
+
+      /* =========================
+         🍽️ CATEGORY SELECTION
+      ========================= */
+      const category = menuCategories.find(
+        (c) => c.id.toLowerCase() === text
+      );
+
+      if (category) {
+        const items = menuItems.filter(
+          (item) => item.category === category.id
+        );
+
+        if (items.length === 0) {
+          reply = `Currently no items available in ${category.name}.`;
+        } else {
+          reply =
+            `Our ${category.name} selection:\n\n` +
+            items
+              .slice(0, 5) // luxury feel – limited items
+              .map(
+                (i) =>
+                  `• ${i.name} — ₹${i.price}\n  ${i.description}`
+              )
+              .join("\n\n");
+        }
+
+        set((state) => ({
+          messages: [...state.messages, { from: "bot", text: reply }],
+          isTyping: false,
+        }));
+        return;
+      }
+
+      /* =========================
+         📅 RESERVATION STATUS
+      ========================= */
       if (text.includes("reservation")) {
         const match = input.match(/rv-\d+/i);
 
@@ -48,7 +105,9 @@ export const useChatbotStore = create((set, get) => ({
         }
       }
 
-      // 🔍 ORDER TRACKING
+      /* =========================
+         📦 ORDER TRACKING
+      ========================= */
       if (text.includes("order")) {
         const match = input.match(/ord-\d+/i);
 
