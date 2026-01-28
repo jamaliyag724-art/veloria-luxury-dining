@@ -49,10 +49,8 @@ export const RouteLoaderProvider = ({ children }: { children: React.ReactNode })
         markBrandLoaderShown,
       }}
     >
-      {/* ✅ FIX 1: Disable pointer events ONLY when loader is active */}
-      <div className={activeLoader ? "pointer-events-none" : undefined}>
-        {children}
-      </div>
+      {/* ❗ IMPORTANT: children NEVER block clicks */}
+      {children}
     </RouteLoaderContext.Provider>
   );
 };
