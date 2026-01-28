@@ -17,9 +17,8 @@ import { MenuProvider } from "@/context/MenuContext";
 import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
-/* ✅ CHATBOT IMPORTS (ONLY ADDITION) */
-import ChatbotButton from "@/chatbot/ChatbotButton";
-import ChatbotPanel from "@/chatbot/ChatbotPanel";
+/* ✅ CHATBOT (ONLY ROOT SHOULD BE USED) */
+import ChatbotRoot from "@/chatbot/ChatbotRoot";
 
 /* Pages */
 import Index from "@/pages/Index";
@@ -122,9 +121,8 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* ✅ CHATBOT MOUNT (ONLY ADDITION) */}
-      <ChatbotButton />
-      <ChatbotPanel />
+      {/* ✅ CHATBOT ROOT (THIS WAS MISSING) */}
+      <ChatbotRoot />
     </>
   );
 };
