@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { reservations } from "./reservationData";
+import { orders } from "./orderData";
 
 export const useChatbotStore = create((set, get) => ({
-  /* ------------------ UI STATE ------------------ */
+  /* ---------------- UI STATE ---------------- */
   isOpen: false,
   isTyping: false,
 
@@ -13,18 +14,19 @@ export const useChatbotStore = create((set, get) => ({
     }
   ],
 
-  /* ------------------ BOOKING FLOW STATE ------------------ */
-  reservationStep: null, // "date" | "guests" | "time" | null
+  /* ---------------- BOOKING FLOW ---------------- */
+  reservationStep: null,
   reservationData: {
     date: "",
     guests: "",
     time: ""
   },
 
-  /* ------------------ STATUS FLOW STATE ------------------ */
+  /* ---------------- STATUS MODES ---------------- */
   statusMode: false,
+  orderMode: false,
 
-  /* ------------------ UI ACTIONS ------------------ */
+  /* ---------------- BASIC ACTIONS ---------------- */
   openChat: () => set({ isOpen: true }),
   closeChat: () => set({ isOpen: false }),
 
@@ -33,10 +35,9 @@ export const useChatbotStore = create((set, get) => ({
       messages: [...state.messages, msg]
     })),
 
-  /* ========================================================
-     BOOKING FLOW
-  ======================================================== */
-
+  /* =================================================
+     RESERVATION BOOKING
+  ================================================= */
   startReservation: () => {
     set({
       reservationStep: "date",
@@ -77,13 +78,13 @@ export const useChatbotStore = create((set, get) => ({
     });
   },
 
-  /* ========================================================
-     STATUS FLOW
-  ======================================================== */
-
+  /* =================================================
+     RESERVATION STATUS
+  ================================================= */
   startStatusCheck: () => {
     set({
       statusMode: true,
+      orderMode: false,
       messages: [
         ...get().messages,
         {
@@ -98,13 +99,9 @@ export const useChatbotStore = create((set, get) => ({
     const id = input.trim().toUpperCase();
     const data = reservations[id];
 
-    let reply;
-    if (!data) {
-      reply =
-        "I’m unable to locate a reservation with that ID. Please verify and try again.";
-    } else {
-      reply = `Your reservation for ${data.guests} guests on ${data.date} at ${data.time} is currently ${data.status}.`;
-    }
+    const reply = data
+      ? `Your reservation for ${data.guests} guests on ${data.date} at ${data.time} is currently ${data.status}.`
+      : "I’m unable to locate a reservation with that ID. Please verify and try again.";
 
     set((state) => ({
       statusMode: false,
@@ -112,67 +109,59 @@ export const useChatbotStore = create((set, get) => ({
     }));
   },
 
-  /* ========================================================
-     MAIN BOT INTELLIGENCE (FIXED PRIORITY LOGIC)
-  ======================================================== */
+  /* =================================================
+     ORDER TRACKING
+  ================================================= */
+  startOrderTracking: () => {
+    set({
+      orderMode: true,
+      statusMode: false,
+      messages: [
+        ...get().messages,
+        {
+          from: "bot",
+          text: "Please provide your order ID (e.g., OD-7781)."
+        }
+      ]
+    });
+  },
 
+  handleOrderInput: (input) => {
+    const id = input.trim().toUpperCase();
+    const data = orders[id];
+
+    const reply = data
+      ? `Your order #${id} (${data.items}) is currently ${data.status}.`
+      : "I’m unable to locate an order with that ID. Please verify and try again.";
+
+    set((state) => ({
+      orderMode: false,
+      messages: [...state.messages, { from: "bot", text: reply }]
+    }));
+  },
+
+  /* =================================================
+     MAIN INTELLIGENCE (PRIORITY SAFE)
+  ================================================= */
   botReply: (userText) => {
     const raw = userText.trim();
     const text = raw.toLowerCase();
 
-    /* 1️⃣ Direct reservation ID → STATUS (highest priority) */
+    /* 1️⃣ Direct IDs */
     if (/^rv-\d+/i.test(raw)) {
       get().handleStatusInput(raw);
       return;
     }
 
-    /* 2️⃣ Ongoing booking flow */
+    if (/^od-\d+/i.test(raw)) {
+      get().handleOrderInput(raw);
+      return;
+    }
+
+    /* 2️⃣ Active flows */
     if (get().reservationStep) {
       get().handleReservationInput(raw);
       return;
     }
 
-    /* 3️⃣ Ongoing status flow */
     if (get().statusMode) {
-      get().handleStatusInput(raw);
-      return;
-    }
-
-    set({ isTyping: true });
-
-    setTimeout(() => {
-      /* 4️⃣ Explicit status intent */
-      if (text.includes("check") || text.includes("status")) {
-        get().startStatusCheck();
-        set({ isTyping: false });
-        return;
-      }
-
-      /* 5️⃣ New booking intent */
-      if (text.includes("book") || text.includes("reserve")) {
-        get().startReservation();
-        set({ isTyping: false });
-        return;
-      }
-
-      /* 6️⃣ Other intents */
-      let reply =
-        "May I assist you with reservations, reservation status, menu details, or order tracking?";
-
-      if (text.includes("menu")) {
-        reply =
-          "Our menu features curated European cuisine. Would you like vegetarian or chef’s specials?";
-      }
-
-      if (text.includes("order")) {
-        reply =
-          "Please share your order ID to track your order status.";
-      }
-
-      set((state) => ({
-        isTyping: false,
-        messages: [...state.messages, { from: "bot", text: reply }]
-      }));
-    }, 900);
-  }
-}));
