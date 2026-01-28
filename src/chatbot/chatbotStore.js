@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { reservations } from "./reservationData";
 
 export const useChatbotStore = create((set, get) => ({
+  /* ------------------ UI STATE ------------------ */
   isOpen: false,
   isTyping: false,
 
@@ -12,17 +13,18 @@ export const useChatbotStore = create((set, get) => ({
     }
   ],
 
-  // Reservation booking flow
-  reservationStep: null,
+  /* ------------------ BOOKING FLOW STATE ------------------ */
+  reservationStep: null, // "date" | "guests" | "time" | null
   reservationData: {
     date: "",
     guests: "",
     time: ""
   },
 
-  // Reservation status flow
+  /* ------------------ STATUS FLOW STATE ------------------ */
   statusMode: false,
 
+  /* ------------------ UI ACTIONS ------------------ */
   openChat: () => set({ isOpen: true }),
   closeChat: () => set({ isOpen: false }),
 
@@ -31,7 +33,10 @@ export const useChatbotStore = create((set, get) => ({
       messages: [...state.messages, msg]
     })),
 
-  // ---------- BOOKING FLOW ----------
+  /* ========================================================
+     BOOKING FLOW
+  ======================================================== */
+
   startReservation: () => {
     set({
       reservationStep: "date",
@@ -72,7 +77,10 @@ export const useChatbotStore = create((set, get) => ({
     });
   },
 
-  // ---------- STATUS FLOW ----------
+  /* ========================================================
+     STATUS FLOW
+  ======================================================== */
+
   startStatusCheck: () => {
     set({
       statusMode: true,
@@ -87,7 +95,8 @@ export const useChatbotStore = create((set, get) => ({
   },
 
   handleStatusInput: (input) => {
-    const data = reservations[input.toUpperCase()];
+    const id = input.trim().toUpperCase();
+    const data = reservations[id];
 
     let reply;
     if (!data) {
@@ -103,39 +112,52 @@ export const useChatbotStore = create((set, get) => ({
     }));
   },
 
-  // ---------- MAIN BOT LOGIC ----------
-  botReply: (userText) => {
-    const text = userText.toLowerCase();
+  /* ========================================================
+     MAIN BOT INTELLIGENCE (FIXED PRIORITY LOGIC)
+  ======================================================== */
 
-    // Active booking flow
-    if (get().reservationStep) {
-      get().handleReservationInput(userText);
+  botReply: (userText) => {
+    const raw = userText.trim();
+    const text = raw.toLowerCase();
+
+    /* 1️⃣ Direct reservation ID → STATUS (highest priority) */
+    if (/^rv-\d+/i.test(raw)) {
+      get().handleStatusInput(raw);
       return;
     }
 
-    // Active status flow
+    /* 2️⃣ Ongoing booking flow */
+    if (get().reservationStep) {
+      get().handleReservationInput(raw);
+      return;
+    }
+
+    /* 3️⃣ Ongoing status flow */
     if (get().statusMode) {
-      get().handleStatusInput(userText);
+      get().handleStatusInput(raw);
       return;
     }
 
     set({ isTyping: true });
 
     setTimeout(() => {
-      let reply =
-        "May I assist you with reservations, menu details, or order tracking?";
+      /* 4️⃣ Explicit status intent */
+      if (text.includes("check") || text.includes("status")) {
+        get().startStatusCheck();
+        set({ isTyping: false });
+        return;
+      }
 
-      if (text.includes("reservation") || text.includes("book")) {
+      /* 5️⃣ New booking intent */
+      if (text.includes("book") || text.includes("reserve")) {
         get().startReservation();
         set({ isTyping: false });
         return;
       }
 
-      if (text.includes("status") || text.includes("check")) {
-        get().startStatusCheck();
-        set({ isTyping: false });
-        return;
-      }
+      /* 6️⃣ Other intents */
+      let reply =
+        "May I assist you with reservations, reservation status, menu details, or order tracking?";
 
       if (text.includes("menu")) {
         reply =
@@ -151,6 +173,6 @@ export const useChatbotStore = create((set, get) => ({
         isTyping: false,
         messages: [...state.messages, { from: "bot", text: reply }]
       }));
-    }, 1000);
+    }, 900);
   }
 }));
