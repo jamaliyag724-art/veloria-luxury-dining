@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { reservations } from "./reservationData";
 
 export const useChatbotStore = create((set, get) => ({
   isOpen: false,
@@ -11,13 +12,16 @@ export const useChatbotStore = create((set, get) => ({
     }
   ],
 
-  // reservation flow state
-  reservationStep: null, // date | guests | time | confirm
+  // Reservation booking flow
+  reservationStep: null,
   reservationData: {
     date: "",
     guests: "",
     time: ""
   },
+
+  // Reservation status flow
+  statusMode: false,
 
   openChat: () => set({ isOpen: true }),
   closeChat: () => set({ isOpen: false }),
@@ -27,13 +31,17 @@ export const useChatbotStore = create((set, get) => ({
       messages: [...state.messages, msg]
     })),
 
+  // ---------- BOOKING FLOW ----------
   startReservation: () => {
     set({
       reservationStep: "date",
       reservationData: { date: "", guests: "", time: "" },
       messages: [
         ...get().messages,
-        { from: "bot", text: "Certainly. For which date would you like to reserve a table?" }
+        {
+          from: "bot",
+          text: "Certainly. For which date would you like to reserve a table?"
+        }
       ]
     });
   },
@@ -44,20 +52,16 @@ export const useChatbotStore = create((set, get) => ({
     let botText = "";
 
     if (reservationStep === "date") {
+      reservationData.date = input;
       nextStep = "guests";
       botText = "And how many guests will be joining you?";
-      reservationData.date = input;
-    }
-
-    if (reservationStep === "guests") {
+    } else if (reservationStep === "guests") {
+      reservationData.guests = input;
       nextStep = "time";
       botText = "At what time would you prefer?";
-      reservationData.guests = input;
-    }
-
-    if (reservationStep === "time") {
-      nextStep = "confirm";
+    } else if (reservationStep === "time") {
       reservationData.time = input;
+      nextStep = null;
       botText = `Thank you. Your reservation for ${reservationData.guests} guests on ${reservationData.date} at ${reservationData.time} has been noted.`;
     }
 
@@ -68,12 +72,50 @@ export const useChatbotStore = create((set, get) => ({
     });
   },
 
+  // ---------- STATUS FLOW ----------
+  startStatusCheck: () => {
+    set({
+      statusMode: true,
+      messages: [
+        ...get().messages,
+        {
+          from: "bot",
+          text: "Please provide your reservation ID (e.g., RV-1024)."
+        }
+      ]
+    });
+  },
+
+  handleStatusInput: (input) => {
+    const data = reservations[input.toUpperCase()];
+
+    let reply;
+    if (!data) {
+      reply =
+        "I’m unable to locate a reservation with that ID. Please verify and try again.";
+    } else {
+      reply = `Your reservation for ${data.guests} guests on ${data.date} at ${data.time} is currently ${data.status}.`;
+    }
+
+    set((state) => ({
+      statusMode: false,
+      messages: [...state.messages, { from: "bot", text: reply }]
+    }));
+  },
+
+  // ---------- MAIN BOT LOGIC ----------
   botReply: (userText) => {
     const text = userText.toLowerCase();
 
-    // if reservation flow active
+    // Active booking flow
     if (get().reservationStep) {
       get().handleReservationInput(userText);
+      return;
+    }
+
+    // Active status flow
+    if (get().statusMode) {
+      get().handleStatusInput(userText);
       return;
     }
 
@@ -89,6 +131,12 @@ export const useChatbotStore = create((set, get) => ({
         return;
       }
 
+      if (text.includes("status") || text.includes("check")) {
+        get().startStatusCheck();
+        set({ isTyping: false });
+        return;
+      }
+
       if (text.includes("menu")) {
         reply =
           "Our menu features curated European cuisine. Would you like vegetarian or chef’s specials?";
@@ -96,7 +144,7 @@ export const useChatbotStore = create((set, get) => ({
 
       if (text.includes("order")) {
         reply =
-          "You may track your order by sharing the order ID.";
+          "Please share your order ID to track your order status.";
       }
 
       set((state) => ({
