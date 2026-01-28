@@ -6,18 +6,14 @@ export default function ChatbotButton() {
 
   return (
     <motion.button
-      onClick={() => {
-        console.log("CHATBOT CLICKED"); // 👈 DEBUG
-        openChat();
-      }}
+      onClick={openChat}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.95 }}
       style={{
         position: "fixed",
         bottom: "24px",
         right: "24px",
-        zIndex: 2147483647,
-        pointerEvents: "auto",
+        zIndex: 999999,
         width: "56px",
         height: "56px",
         borderRadius: "50%",
@@ -26,8 +22,9 @@ export default function ChatbotButton() {
         cursor: "pointer",
         boxShadow: "0 20px 50px rgba(0,0,0,0.35)"
       }}
+      aria-label="Open concierge"
     >
-      ✦
+      ✨
     </motion.button>
   );
 }
