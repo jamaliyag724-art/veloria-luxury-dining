@@ -1,22 +1,53 @@
-import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
-import ChatbotButton from "./ChatbotButton";
-import ChatbotPanel from "./ChatbotPanel";
+import { useState } from "react";
 
 export default function ChatbotRoot() {
-  const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
-  return createPortal(
+  return (
     <>
-      <ChatbotButton />
-      <ChatbotPanel />
-    </>,
-    document.body
+      {/* BUTTON */}
+      <div
+        onClick={() => {
+          console.log("CHATBOT CLICKED");
+          setOpen((v) => !v);
+        }}
+        style={{
+          position: "fixed",
+          bottom: 20,
+          right: 20,
+          zIndex: 999999,
+          background: "gold",
+          color: "black",
+          padding: "14px",
+          borderRadius: "50%",
+          cursor: "pointer",
+        }}
+      >
+        ✦
+      </div>
+
+      {/* PANEL */}
+      {open && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 80,
+            right: 20,
+            zIndex: 999999,
+            width: 300,
+            height: 200,
+            background: "black",
+            color: "white",
+            padding: 16,
+            borderRadius: 12,
+          }}
+        >
+          CHATBOT PANEL OPEN  
+          <br />
+          <br />
+          Agar ye dikh raha hai → React kaam kar raha hai.
+        </div>
+      )}
+    </>
   );
 }
