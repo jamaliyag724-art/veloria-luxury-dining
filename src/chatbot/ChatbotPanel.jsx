@@ -15,7 +15,7 @@ export default function ChatbotPanel() {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  // auto scroll to bottom
+  // auto scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
@@ -23,7 +23,6 @@ export default function ChatbotPanel() {
   const sendMessage = () => {
     if (!input.trim()) return;
 
-    // 🔊 soft send sound (correct path)
     const sound = new Audio("/sound/soft-send.mp3");
     sound.volume = 0.12;
     sound.play().catch(() => {});
@@ -83,14 +82,46 @@ export default function ChatbotPanel() {
                     msg.from === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  <div
-                    className={`max-w-[78%] px-4 py-2 rounded-2xl ${
-                      msg.from === "user"
-                        ? "bg-[#D4AF37]/20 text-black"
-                        : "bg-black/5 text-black"
-                    }`}
-                  >
-                    {msg.text}
+                  <div className="max-w-[78%]">
+                    <div
+                      className={`px-4 py-2 rounded-2xl ${
+                        msg.from === "user"
+                          ? "bg-[#D4AF37]/20 text-black"
+                          : "bg-black/5 text-black"
+                      }`}
+                    >
+                      {msg.text}
+                    </div>
+
+                    {/* 🍽️ MENU CATEGORY BUTTONS */}
+                    {msg.menuCategories && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {[
+                          "starters",
+                          "brunch",
+                          "lunch",
+                          "main-course",
+                          "desserts",
+                          "wine-beverages",
+                        ].map((c) => (
+                          <button
+                            key={c}
+                            onClick={() => {
+                              addMessage({ from: "user", text: c });
+                              botReply(c);
+                            }}
+                            className="
+                              px-4 py-1 rounded-full text-xs
+                              bg-[#D4AF37]/20
+                              hover:bg-[#D4AF37]/30
+                              transition
+                            "
+                          >
+                            {c.replace("-", " ").toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}
