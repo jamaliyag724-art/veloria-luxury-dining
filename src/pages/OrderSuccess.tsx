@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
@@ -13,15 +13,39 @@ import { QRCodeSVG } from "qrcode.react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
-import { useOrders } from "@/context/OrderContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const OrderSuccess: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
-  const { getOrderById } = useOrders();
-  const [cartOpen, setCartOpen] = useState(false);
 
-  const order = orderId ? getOrderById(orderId) : null;
+  const [cartOpen, setCartOpen] = useState(false);
+  const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  /* ------------------ FETCH ORDER FROM SUPABASE ------------------ */
+  useEffect(() => {
+    if (!orderId) return;
+
+    const fetchOrder = async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("order_id", orderId)
+        .single();
+
+      if (error) {
+        console.error("Order fetch failed:", error);
+        setOrder(null);
+      } else {
+        setOrder(data);
+      }
+
+      setLoading(false);
+    };
+
+    fetchOrder();
+  }, [orderId]);
 
   /* ------------------ QR DOWNLOAD ------------------ */
   const handleDownloadQR = () => {
@@ -50,7 +74,7 @@ const OrderSuccess: React.FC = () => {
 
   /* ------------------ STATUS ICON ------------------ */
   const getStatusIcon = () => {
-    switch (order?.orderStatus) {
+    switch (order?.status) {
       case "Preparing":
         return <ChefHat className="w-5 h-5 text-amber-600" />;
       case "Completed":
@@ -62,18 +86,29 @@ const OrderSuccess: React.FC = () => {
     }
   };
 
+  /* ------------------ LOADING ------------------ */
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading order details…</p>
+      </div>
+    );
+  }
+
   /* ------------------ NOT FOUND ------------------ */
   if (!order) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar onCartClick={() => setCartOpen(true)} />
         <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+
         <main className="pt-32 pb-24 text-center">
           <h1 className="font-serif text-3xl mb-4">Order Not Found</h1>
           <button onClick={() => navigate("/menu")} className="btn-gold">
             Browse Menu
           </button>
         </main>
+
         <Footer />
       </div>
     );
@@ -90,14 +125,12 @@ const OrderSuccess: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="section-container max-w-2xl mx-auto text-center"
         >
-          {/* Success Icon */}
+          {/* SUCCESS ICON */}
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
 
-          <h1 className="font-serif text-3xl mb-2">
-            Order Confirmed!
-          </h1>
+          <h1 className="font-serif text-3xl mb-2">Order Confirmed!</h1>
           <p className="text-muted-foreground mb-8">
             Your order is placed & being prepared
           </p>
@@ -106,14 +139,14 @@ const OrderSuccess: React.FC = () => {
           <div className="glass-card p-6 mb-8">
             <p className="text-sm text-muted-foreground mb-1">Order ID</p>
             <p className="font-serif text-3xl text-primary mb-6">
-              {order.orderId}
+              {order.order_id}
             </p>
 
-            {/* QR */}
+            {/* QR CODE */}
             <div className="bg-white p-4 rounded-xl inline-block shadow mb-4">
               <QRCodeSVG
                 id="order-qr"
-                value={`VELORIA-${order.orderId}`}
+                value={`VELORIA-${order.order_id}`}
                 size={150}
                 level="H"
               />
@@ -131,7 +164,7 @@ const OrderSuccess: React.FC = () => {
             <div className="flex items-center justify-center gap-2 bg-primary/10 p-3 rounded-xl mb-6">
               {getStatusIcon()}
               <span className="font-medium text-primary">
-                {order.orderStatus}
+                {order.status}
               </span>
             </div>
 
@@ -139,7 +172,7 @@ const OrderSuccess: React.FC = () => {
             <div className="text-left border-t pt-4">
               <h3 className="font-serif mb-3">Order Summary</h3>
 
-              {order.items.map((item: any, i: number) => (
+              {order.items?.map((item: any, i: number) => (
                 <div key={i} className="flex justify-between text-sm mb-1">
                   <span>{item.name} × {item.quantity}</span>
                   <span>₹{item.price * item.quantity}</span>
@@ -158,7 +191,7 @@ const OrderSuccess: React.FC = () => {
                 <div className="flex justify-between font-serif text-lg mt-2">
                   <span>Total</span>
                   <span className="text-primary">
-                    ₹{order.totalAmount}
+                    ₹{order.total_amount}
                   </span>
                 </div>
               </div>
@@ -167,7 +200,7 @@ const OrderSuccess: React.FC = () => {
             {/* DELIVERY */}
             <div className="text-left border-t pt-4 mt-4 text-sm">
               <h3 className="font-serif mb-2">Delivery Details</h3>
-              <p>{order.fullName}</p>
+              <p>{order.full_name}</p>
               <p>{order.address}</p>
               <p>{order.city} - {order.pincode}</p>
               <p>{order.mobile}</p>
@@ -180,16 +213,16 @@ const OrderSuccess: React.FC = () => {
             <button onClick={() => navigate("/menu")} className="btn-gold">
               Order More
             </button>
-<Link to={`/track-order?orderId=${order.orderId}`}>
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    className="btn-outline-gold"
-  >
-    Track Your Order
-  </motion.button>
-</Link>
 
+            <Link to={`/track-order?orderId=${order.order_id}`}>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn-outline-gold"
+              >
+                Track Your Order
+              </motion.button>
+            </Link>
           </div>
         </motion.div>
       </main>
