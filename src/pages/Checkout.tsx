@@ -20,12 +20,12 @@ import { formatINR } from "@/lib/currency";
 
 /* -------------------- VALIDATION -------------------- */
 const checkoutSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  mobile: z.string().regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
-  address: z.string().min(5, "Address too short"),
-  city: z.string().min(2, "City too short"),
-  pincode: z.string().regex(/^\d{6}$/, "Invalid pincode"),
+  fullName: z.string().min(2),
+  email: z.string().email(),
+  mobile: z.string().regex(/^[6-9]\d{9}$/),
+  address: z.string().min(5),
+  city: z.string().min(2),
+  pincode: z.string().regex(/^\d{6}$/),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -34,7 +34,7 @@ const TAX_RATE = 0.1;
 
 const Checkout: React.FC = () => {
   const { items, totalPrice, clearCart } = useCart();
-  const { addOrder } = useOrders();
+  const { addOrderFake } = useOrders();
   const navigate = useNavigate();
 
   const [cartOpen, setCartOpen] = useState(false);
@@ -50,10 +50,6 @@ const Checkout: React.FC = () => {
     pincode: "",
   });
 
-  const [touched, setTouched] = useState<
-    Partial<Record<keyof CheckoutFormData, boolean>>
-  >({});
-
   /* -------------------- PRICE -------------------- */
   const subtotal = totalPrice;
   const taxAmount = subtotal * TAX_RATE;
@@ -64,14 +60,10 @@ const Checkout: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setTouched({ ...touched, [e.target.name]: true });
-  };
-
-  const isFormValid = () =>
+  const isFormValid =
     checkoutSchema.safeParse(formData).success && items.length > 0;
 
-  /* -------------------- PAYMENT -------------------- */
+  /* -------------------- FAKE PAYMENT -------------------- */
   const handlePayment = async () => {
     const validation = checkoutSchema.safeParse(formData);
     if (!validation.success || items.length === 0) return;
@@ -79,7 +71,7 @@ const Checkout: React.FC = () => {
     setStep("processing");
 
     try {
-      const orderId = await addOrder({
+      const orderId = await addOrderFake({
         fullName: validation.data.fullName,
         email: validation.data.email,
         mobile: validation.data.mobile,
@@ -94,20 +86,21 @@ const Checkout: React.FC = () => {
 
       confetti({ particleCount: 120, spread: 80 });
       clearCart();
+
       navigate(`/order-success/${orderId}`);
-    } catch (error) {
-      console.error("Order failed:", error);
+    } catch (err) {
+      console.error("Fake payment failed:", err);
       setStep("payment");
     }
   };
 
-  /* -------------------- PROCESSING (LOCAL ONLY) -------------------- */
+  /* -------------------- PROCESSING -------------------- */
   if (step === "processing") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+          transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
           className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full"
         />
       </div>
@@ -153,7 +146,6 @@ const Checkout: React.FC = () => {
                       name={key}
                       value={(formData as any)[key]}
                       onChange={handleChange}
-                      onBlur={handleBlur}
                       className="luxury-input"
                     />
                   </div>
@@ -165,7 +157,6 @@ const Checkout: React.FC = () => {
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    onBlur={handleBlur}
                     className="luxury-input"
                   />
                 </div>
@@ -176,45 +167,8 @@ const Checkout: React.FC = () => {
                     name="pincode"
                     value={formData.pincode}
                     onChange={handleChange}
-                    onBlur={handleBlur}
                     className="luxury-input"
                   />
-                </div>
-              </div>
-
-              {/* SUMMARY */}
-              <h2 className="font-serif text-xl mt-8 mb-4">
-                Order Summary
-              </h2>
-
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between text-sm mb-2"
-                >
-                  <span>
-                    {item.name} × {item.quantity}
-                  </span>
-                  <span>
-                    {formatINR(item.price * item.quantity)}
-                  </span>
-                </div>
-              ))}
-
-              <div className="border-t mt-4 pt-4 space-y-2">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>{formatINR(subtotal)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Tax (10%)</span>
-                  <span>{formatINR(taxAmount)}</span>
-                </div>
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span className="text-primary">
-                    {formatINR(totalAmount)}
-                  </span>
                 </div>
               </div>
             </div>
@@ -244,7 +198,7 @@ const Checkout: React.FC = () => {
               ))}
 
               <button
-                disabled={!isFormValid()}
+                disabled={!isFormValid}
                 onClick={handlePayment}
                 className="btn-gold w-full mt-6 disabled:opacity-50"
               >
