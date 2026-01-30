@@ -19,11 +19,11 @@ const OrderSuccess: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
 
-  const [cartOpen, setCartOpen] = useState(false);
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [cartOpen, setCartOpen] = useState(false);
 
-  /* ------------------ FETCH ORDER FROM SUPABASE ------------------ */
+  /* ---------------- FETCH ORDER FROM SUPABASE ---------------- */
   useEffect(() => {
     if (!orderId) return;
 
@@ -34,11 +34,22 @@ const OrderSuccess: React.FC = () => {
         .eq("order_id", orderId)
         .single();
 
-      if (error) {
-        console.error("Order fetch failed:", error);
-        setOrder(null);
-      } else {
-        setOrder(data);
+      if (!error && data) {
+        setOrder({
+          orderId: data.order_id,
+          fullName: data.full_name,
+          email: data.email,
+          mobile: data.mobile,
+          address: data.address,
+          city: data.city,
+          pincode: data.pincode,
+          items: data.items || [],
+          subtotal: data.subtotal,
+          tax: data.tax,
+          totalAmount: data.total_amount,
+          orderStatus: data.order_status,
+          paymentStatus: data.payment_status,
+        });
       }
 
       setLoading(false);
@@ -47,7 +58,47 @@ const OrderSuccess: React.FC = () => {
     fetchOrder();
   }, [orderId]);
 
-  /* ------------------ QR DOWNLOAD ------------------ */
+  /* ---------------- LOADING ---------------- */
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading order...
+      </div>
+    );
+  }
+
+  /* ---------------- NOT FOUND ---------------- */
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar onCartClick={() => setCartOpen(true)} />
+        <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+        <main className="pt-32 text-center">
+          <h1 className="font-serif text-3xl mb-4">Order Not Found</h1>
+          <button onClick={() => navigate("/menu")} className="btn-gold">
+            Browse Menu
+          </button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  /* ---------------- STATUS ICON ---------------- */
+  const getStatusIcon = () => {
+    switch (order.orderStatus) {
+      case "Preparing":
+        return <ChefHat className="w-5 h-5 text-amber-600" />;
+      case "Completed":
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case "Cancelled":
+        return <Package className="w-5 h-5 text-red-600" />;
+      default:
+        return <Clock className="w-5 h-5 text-blue-600" />;
+    }
+  };
+
+  /* ---------------- QR DOWNLOAD ---------------- */
   const handleDownloadQR = () => {
     const svg = document.getElementById("order-qr");
     if (!svg) return;
@@ -65,54 +116,12 @@ const OrderSuccess: React.FC = () => {
       const png = canvas.toDataURL("image/png");
       const a = document.createElement("a");
       a.href = png;
-      a.download = `veloria-${orderId}.png`;
+      a.download = `veloria-${order.orderId}.png`;
       a.click();
     };
 
     img.src = "data:image/svg+xml;base64," + btoa(svgData);
   };
-
-  /* ------------------ STATUS ICON ------------------ */
-  const getStatusIcon = () => {
-    switch (order?.status) {
-      case "Preparing":
-        return <ChefHat className="w-5 h-5 text-amber-600" />;
-      case "Completed":
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case "Cancelled":
-        return <Package className="w-5 h-5 text-red-600" />;
-      default:
-        return <Clock className="w-5 h-5 text-blue-600" />;
-    }
-  };
-
-  /* ------------------ LOADING ------------------ */
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading order details…</p>
-      </div>
-    );
-  }
-
-  /* ------------------ NOT FOUND ------------------ */
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar onCartClick={() => setCartOpen(true)} />
-        <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
-
-        <main className="pt-32 pb-24 text-center">
-          <h1 className="font-serif text-3xl mb-4">Order Not Found</h1>
-          <button onClick={() => navigate("/menu")} className="btn-gold">
-            Browse Menu
-          </button>
-        </main>
-
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,7 +134,6 @@ const OrderSuccess: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="section-container max-w-2xl mx-auto text-center"
         >
-          {/* SUCCESS ICON */}
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
@@ -135,18 +143,16 @@ const OrderSuccess: React.FC = () => {
             Your order is placed & being prepared
           </p>
 
-          {/* ORDER CARD */}
           <div className="glass-card p-6 mb-8">
-            <p className="text-sm text-muted-foreground mb-1">Order ID</p>
+            <p className="text-sm mb-1">Order ID</p>
             <p className="font-serif text-3xl text-primary mb-6">
-              {order.order_id}
+              {order.orderId}
             </p>
 
-            {/* QR CODE */}
             <div className="bg-white p-4 rounded-xl inline-block shadow mb-4">
               <QRCodeSVG
                 id="order-qr"
-                value={`VELORIA-${order.order_id}`}
+                value={`VELORIA-${order.orderId}`}
                 size={150}
                 level="H"
               />
@@ -160,19 +166,17 @@ const OrderSuccess: React.FC = () => {
               Download QR Code
             </button>
 
-            {/* STATUS */}
             <div className="flex items-center justify-center gap-2 bg-primary/10 p-3 rounded-xl mb-6">
               {getStatusIcon()}
               <span className="font-medium text-primary">
-                {order.status}
+                {order.orderStatus}
               </span>
             </div>
 
-            {/* ORDER SUMMARY */}
             <div className="text-left border-t pt-4">
               <h3 className="font-serif mb-3">Order Summary</h3>
 
-              {order.items?.map((item: any, i: number) => (
+              {order.items.map((item: any, i: number) => (
                 <div key={i} className="flex justify-between text-sm mb-1">
                   <span>{item.name} × {item.quantity}</span>
                   <span>₹{item.price * item.quantity}</span>
@@ -191,37 +195,22 @@ const OrderSuccess: React.FC = () => {
                 <div className="flex justify-between font-serif text-lg mt-2">
                   <span>Total</span>
                   <span className="text-primary">
-                    ₹{order.total_amount}
+                    ₹{order.totalAmount}
                   </span>
                 </div>
               </div>
             </div>
-
-            {/* DELIVERY */}
-            <div className="text-left border-t pt-4 mt-4 text-sm">
-              <h3 className="font-serif mb-2">Delivery Details</h3>
-              <p>{order.full_name}</p>
-              <p>{order.address}</p>
-              <p>{order.city} - {order.pincode}</p>
-              <p>{order.mobile}</p>
-              <p>{order.email}</p>
-            </div>
           </div>
 
-          {/* ACTIONS */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={() => navigate("/menu")} className="btn-gold">
               Order More
             </button>
 
-            <Link to={`/track-order?orderId=${order.order_id}`}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="btn-outline-gold"
-              >
+            <Link to={`/track-order?orderId=${order.orderId}`}>
+              <button className="btn-outline-gold">
                 Track Your Order
-              </motion.button>
+              </button>
             </Link>
           </div>
         </motion.div>
