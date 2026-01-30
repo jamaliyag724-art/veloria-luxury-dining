@@ -2,112 +2,70 @@ import React, {
   createContext,
   useContext,
   useState,
+  useEffect,
   ReactNode,
 } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-/* ---------------- TYPES ---------------- */
-
-export interface OrderItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
-}
-
-export type OrderStatus = "Pending" | "Preparing" | "Completed" | "Cancelled";
-export type PaymentStatus = "Paid" | "Unpaid" | "Refunded";
-
-export interface Order {
-  orderId: string;
-  fullName: string;
-  email: string;
-  mobile: string;
-  address: string;
-  city: string;
-  pincode: string;
-  items: OrderItem[];
-  subtotal: number;
-  tax: number;
-  totalAmount: number;
-  paymentStatus: PaymentStatus;
-  orderStatus: OrderStatus;
-  createdAt: string;
-}
-
-interface OrderContextType {
-  orders: Order[];
-  addOrderFake: (
-    order: Omit<
-      Order,
-      "orderId" | "createdAt" | "orderStatus" | "paymentStatus"
-    >
-  ) => Promise<string>;
-  getOrderById: (orderId: string) => Order | undefined;
-}
-
-const OrderContext = createContext<OrderContextType | null>(null);
-
-/* ---------------- HELPERS ---------------- */
+const OrderContext = createContext<any>(null);
 
 const generateOrderId = () => {
   return "ORD-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 };
 
-/* ---------------- PROVIDER ---------------- */
-
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  /* ✅ FAKE PAYMENT ORDER (NO SUPABASE TOUCH) */
-  const addOrderFake = async (
-    orderData: Omit<
-      Order,
-      "orderId" | "createdAt" | "orderStatus" | "paymentStatus"
-    >
-  ): Promise<string> => {
+  const fetchOrders = async () => {
+    const { data } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    setOrders(data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  /* -------- ADD ORDER (FAKE PAYMENT WORKING) -------- */
+  const addOrder = async (order: any) => {
     const orderId = generateOrderId();
 
-    // Fake payment delay
-    await new Promise((res) => setTimeout(res, 2000));
+    const { error } = await supabase.from("orders").insert([
+      {
+        order_id: orderId,
+        full_name: order.fullName,
+        email: order.email,
+        mobile: order.mobile,
+        address: order.address,
+        city: order.city,
+        pincode: order.pincode,
+        items: order.items,
+        subtotal: order.subtotal,
+        tax: order.tax,
+        total_amount: order.totalAmount,
+        payment_status: "Paid",
+        order_status: "Preparing",
+      },
+    ]);
 
-    const newOrder: Order = {
-      orderId,
-      ...orderData,
-      paymentStatus: "Paid",
-      orderStatus: "Preparing",
-      createdAt: new Date().toISOString(),
-    };
-
-    setOrders((prev) => [newOrder, ...prev]);
+    if (error) {
+      console.error(error);
+      throw new Error("Order failed");
+    }
 
     return orderId;
   };
 
-  const getOrderById = (orderId: string) => {
-    return orders.find((o) => o.orderId === orderId);
-  };
-
   return (
-    <OrderContext.Provider
-      value={{
-        orders,
-        addOrderFake,
-        getOrderById,
-      }}
-    >
+    <OrderContext.Provider value={{ orders, loading, addOrder }}>
       {children}
     </OrderContext.Provider>
   );
 };
 
-/* ---------------- HOOK ---------------- */
-
-export const useOrders = () => {
-  const ctx = useContext(OrderContext);
-  if (!ctx) {
-    throw new Error("useOrders must be used inside OrderProvider");
-  }
-  return ctx;
-};
+export const useOrders = () => useContext(OrderContext);
