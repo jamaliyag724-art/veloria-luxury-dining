@@ -34,7 +34,7 @@ const TAX_RATE = 0.1;
 
 const Checkout: React.FC = () => {
   const { items, totalPrice, clearCart } = useCart();
-  const { addOrderFake } = useOrders();
+  const { addOrder } = useOrders();
   const navigate = useNavigate();
 
   const [cartOpen, setCartOpen] = useState(false);
@@ -71,7 +71,7 @@ const Checkout: React.FC = () => {
     setStep("processing");
 
     try {
-      const orderId = await addOrderFake({
+      const orderId = await addOrder({
         fullName: validation.data.fullName,
         email: validation.data.email,
         mobile: validation.data.mobile,
