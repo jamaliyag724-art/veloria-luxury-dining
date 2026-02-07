@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
@@ -8,6 +8,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -24,6 +25,7 @@ const Contact: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -42,18 +44,27 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formRef.current) return;
     setIsSubmitting(true);
 
-    await new Promise((r) => setTimeout(r, 1500));
-
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast.success("Message sent successfully!");
-
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: "", phone: "", subject: "", message: "" });
-    }, 3000);
+    try {
+      await emailjs.sendForm(
+        "service_bf3fnya",
+        "template_3jb6ome",
+        formRef.current,
+        "yvWssWWx94ibEP33n"
+      );
+      setIsSubmitted(true);
+      toast.success("Message sent successfully!");
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: "", phone: "", subject: "", message: "" });
+      }, 3000);
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactDetails = [
@@ -143,6 +154,7 @@ const Contact: React.FC = () => {
                   ) : (
                     <motion.form
                       key="form"
+                      ref={formRef}
                       onSubmit={handleSubmit}
                       className="space-y-6"
                     >
