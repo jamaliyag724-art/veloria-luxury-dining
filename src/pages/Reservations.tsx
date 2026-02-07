@@ -66,7 +66,16 @@ const Reservations: React.FC = () => {
     setLoading(true);
 
     try {
-      const id = await addReservation(result.data);
+      const data = result.data;
+      const id = await addReservation({
+        fullName: data.fullName!,
+        email: data.email!,
+        mobile: data.mobile!,
+        guests: data.guests!,
+        date: data.date!,
+        time: data.time!,
+        specialRequest: data.specialRequest,
+      });
       navigate(`/reservation-success/${id}`);
     } catch (err) {
       console.error(err);

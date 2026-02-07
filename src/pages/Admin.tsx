@@ -83,13 +83,9 @@ const Admin: React.FC = () => {
 
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin", active: true },
-    { name: "Orders", icon: ShoppingBag, path: "/admin/orders" },
-    { name: "Reservations", icon: CalendarDays, path: "/admin/reservations" },
-    {
-      name: "Menu",
-      icon: UtensilsCrossed,
-      path: "/admin/menu",
-    },
+    { name: "Orders", icon: ShoppingBag, path: "/admin/orders", active: false },
+    { name: "Reservations", icon: CalendarDays, path: "/admin/reservations", active: false },
+    { name: "Menu", icon: UtensilsCrossed, path: "/admin/menu", active: false },
   ];
 
   return (
@@ -130,14 +126,11 @@ const Admin: React.FC = () => {
           {navItems.map((item) => (
             <Link
               key={item.name}
-              to={item.disabled ? "#" : item.path}
-              onClick={(e) => item.disabled && e.preventDefault()}
+              to={item.path}
               className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-medium transition-all
                 ${
                   item.active
                     ? "bg-primary text-primary-foreground shadow-gold"
-                    : item.disabled
-                    ? "bg-muted text-muted-foreground opacity-50 cursor-not-allowed"
                     : "bg-white border border-border hover:bg-secondary"
                 }`}
             >
