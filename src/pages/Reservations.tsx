@@ -20,19 +20,23 @@ const Reservations = () => {
   const [selectedTime, setSelectedTime] = useState("");
 
   /* ---------------- FETCH SLOTS ---------------- */
-  const fetchSlots = async (date: string) => {
-    const { data, error } = await supabase
-      .from("table_availability")
-      .select("*")
-      .eq("date", date);
+ const fetchSlots = async (date: string) => {
+  const formattedDate = new Date(date).toISOString().split("T")[0];
 
-    if (!error && data) {
-      setTimeSlots(data);
-    } else {
-      setTimeSlots([]);
-    }
-  };
+  const { data, error } = await supabase
+    .from("table_availability")
+    .select("*")
+    .eq("date", formattedDate)
+    .order("time_slot", { ascending: true });
 
+  if (error) {
+    console.error(error);
+    setTimeSlots([]);
+    return;
+  }
+
+  setTimeSlots(data || []);
+};
   return (
     <div className="relative min-h-screen overflow-hidden">
       
