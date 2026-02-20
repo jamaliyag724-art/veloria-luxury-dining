@@ -11,30 +11,23 @@
   :root {
     --background: 40 33% 97%;
     --foreground: 25 25% 15%;
-
     --card: 40 40% 98%;
     --card-foreground: 25 25% 15%;
-
     --primary: 38 60% 55%;
     --primary-foreground: 40 33% 98%;
-
     --secondary: 35 30% 92%;
     --secondary-foreground: 25 25% 15%;
     --muted: 35 20% 90%;
     --muted-foreground: 25 15% 45%;
-
     --accent: 350 45% 45%;
     --accent-foreground: 40 33% 98%;
     --border: 35 25% 88%;
     --input: 35 25% 88%;
     --ring: 38 60% 55%;
-
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-
     --popover: 40 40% 98%;
     --popover-foreground: 25 25% 15%;
-
     --radius: 0.75rem;
 
     --cream: 40 33% 97%;
@@ -58,27 +51,21 @@
   .dark {
     --background: 0 0% 6%;
     --foreground: 0 0% 92%;
-
     --card: 0 0% 9%;
     --card-foreground: 0 0% 92%;
-
     --primary: 43 76% 52%;
     --primary-foreground: 0 0% 6%;
-
     --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 92%;
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
-
     --accent: 350 45% 50%;
     --accent-foreground: 0 0% 92%;
     --border: 0 0% 16%;
     --input: 0 0% 16%;
     --ring: 43 76% 52%;
-
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 92%;
 
@@ -100,7 +87,6 @@
     --shadow-lift: 0 12px 40px -12px hsl(0 0% 0% / 0.5);
   }
 
-  /* 🌑 Dark Background Upgrade */
   .dark body {
     background: radial-gradient(
         circle at 20% 10%,
@@ -165,7 +151,6 @@
     box-shadow: var(--shadow-soft);
   }
 
-  /* 🌑 Dark Glass Refinement */
   .dark .glass-card {
     background: hsl(0 0% 100% / 0.04);
     backdrop-filter: blur(18px);
@@ -183,7 +168,6 @@
     box-shadow: 0 0 25px -5px hsl(43 76% 52% / 0.4);
   }
 
-  /* 🌑 Luxury Input Refinement */
   .luxury-input {
     @apply w-full px-4 py-3 rounded-xl border outline-none transition;
     border-color: hsl(var(--border));
@@ -224,6 +208,11 @@
 
   .font-sans {
     font-family: 'Nunito Sans', sans-serif;
+  }
+
+  /* 🔥 3D Perspective Utility */
+  .perspective-1000 {
+    perspective: 1000px;
   }
 }
 
