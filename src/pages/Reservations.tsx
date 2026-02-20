@@ -20,13 +20,11 @@ const Reservations = () => {
   const [selectedTime, setSelectedTime] = useState("");
 
   /* ---------------- FETCH SLOTS ---------------- */
- const fetchSlots = async (date: string) => {
-  const formattedDate = new Date(date).toISOString().split("T")[0];
-
+const fetchSlots = async (date: string) => {
   const { data, error } = await supabase
     .from("table_availability")
     .select("*")
-    .eq("date", formattedDate)
+    .eq("date", date) // 🔥 direct use karo
     .order("time_slot", { ascending: true });
 
   if (error) {
@@ -34,6 +32,8 @@ const Reservations = () => {
     setTimeSlots([]);
     return;
   }
+
+  console.log("Fetched slots:", data); // debug ke liye
 
   setTimeSlots(data || []);
 };
