@@ -97,13 +97,13 @@ const Reservations: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover"
           alt=""
         />
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative z-10 w-full max-w-3xl 
-                     bg-white/95 backdrop-blur-xl
+                     glass-card
                      rounded-[32px] shadow-2xl p-10"
         >
           {/* HEADER */}
@@ -194,7 +194,6 @@ const Reservations: React.FC = () => {
             </motion.button>
           </form>
 
-          {/* ================= TRACK OPTIONS ================= */}
           <div className="mt-6 pt-6 border-t border-border text-center">
             <p className="text-sm text-muted-foreground mb-3">
               Already have a Reservation or Order ID?
