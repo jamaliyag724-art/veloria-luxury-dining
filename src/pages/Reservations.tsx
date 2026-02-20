@@ -69,20 +69,33 @@ const Reservations: React.FC = () => {
     try {
       const data = result.data;
 
+      // ✅ TIME FORMAT FIX (24h → 12h AM/PM)
+      const formattedTime = new Date(`1970-01-01T${data.time}`)
+        .toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+
+      // ✅ SAFE INCREMENT CALL
+      const { error: rpcError } = await supabase.rpc("increment_booking", {
+        p_date: data.date,
+        p_time: formattedTime,
+      });
+
+      if (rpcError) {
+        console.error("RPC Error:", rpcError);
+      }
+
+      // ✅ SAVE RESERVATION
       const id = await addReservation({
         fullName: data.fullName!,
         email: data.email!,
         mobile: data.mobile!,
         guests: data.guests!,
         date: data.date!,
-        time: data.time!,
+        time: formattedTime,
         specialRequest: data.specialRequest,
-      });
-
-      // ✅ STEP 3 — SAFE BOOKING INCREMENT
-      await supabase.rpc("increment_booking", {
-        p_date: data.date,
-        p_time: data.time,
       });
 
       navigate(`/reservation-success/${id}`);
@@ -110,9 +123,7 @@ const Reservations: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-10 w-full max-w-3xl 
-                     glass-card
-                     rounded-[32px] shadow-2xl p-10"
+          className="relative z-10 w-full max-w-3xl glass-card rounded-[32px] shadow-2xl p-10"
         >
           <div className="text-center mb-10">
             <span className="text-primary tracking-[0.25em] text-xs uppercase">
@@ -121,10 +132,6 @@ const Reservations: React.FC = () => {
             <h1 className="font-serif text-4xl mt-3 mb-2">
               Make a Reservation
             </h1>
-            <div className="inline-flex items-center gap-2 mt-2 px-4 py-1.5
-                            rounded-full bg-primary/10 text-primary text-sm">
-              Only <strong>2 tables</strong> remaining for this evening
-            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -199,30 +206,6 @@ const Reservations: React.FC = () => {
               {loading ? "Processing..." : "Confirm Reservation"}
             </motion.button>
           </form>
-
-          <div className="mt-6 pt-6 border-t border-border text-center">
-            <p className="text-sm text-muted-foreground mb-3">
-              Already have a Reservation or Order ID?
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                type="button"
-                onClick={() => navigate("/reservation-status")}
-                className="btn-outline-gold px-6 py-3 text-sm"
-              >
-                Track Reservation
-              </button>
-
-              <button
-                type="button"
-                onClick={() => navigate("/track-order")}
-                className="btn-outline-gold px-6 py-3 text-sm"
-              >
-                Track Order
-              </button>
-            </div>
-          </div>
         </motion.div>
       </main>
 
