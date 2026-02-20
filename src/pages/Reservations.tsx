@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
+import { supabase } from "@/integrations/supabase/client";
 
-interface Slot {
-  id: string;
-  time_slot: string;
-  total_tables: number;
-  booked_tables: number;
-}
-
-const Reservation: React.FC = () => {
+const Reservations: React.FC = () => {
   const [cartOpen, setCartOpen] = useState(false);
 
   const [form, setForm] = useState({
@@ -22,13 +15,13 @@ const Reservation: React.FC = () => {
     guests: 1,
     date: "",
     time: "",
-    special: "",
+    specialRequest: "",
   });
 
-  const [availability, setAvailability] = useState<Slot[]>([]);
+  const [slots, setSlots] = useState<any[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
-  /* ---------------- FETCH TIME SLOTS ---------------- */
+  /* ================= FETCH AVAILABLE TIME SLOTS ================= */
   useEffect(() => {
     if (!form.date) return;
 
@@ -42,9 +35,7 @@ const Reservation: React.FC = () => {
         .order("time_slot", { ascending: true });
 
       if (!error && data) {
-        setAvailability(data);
-      } else {
-        setAvailability([]);
+        setSlots(data);
       }
 
       setLoadingSlots(false);
@@ -53,6 +44,37 @@ const Reservation: React.FC = () => {
     fetchSlots();
   }, [form.date]);
 
+  /* ================= REALTIME UPDATE ================= */
+  useEffect(() => {
+    const channel = supabase
+      .channel("availability-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "table_availability",
+        },
+        () => {
+          if (form.date) {
+            supabase
+              .from("table_availability")
+              .select("*")
+              .eq("date", form.date)
+              .then(({ data }) => {
+                if (data) setSlots(data);
+              });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [form.date]);
+
+  /* ================= UI ================= */
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background */}
@@ -65,24 +87,22 @@ const Reservation: React.FC = () => {
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      <main className="relative z-10 pt-40 pb-32 px-4">
+      <main className="relative z-10 pt-40 pb-24 px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-3xl mx-auto bg-white/10 backdrop-blur-xl 
-                     rounded-3xl p-10 border border-white/20"
+          className="max-w-3xl mx-auto bg-white/10 backdrop-blur-2xl 
+                     border border-white/20 rounded-3xl p-10 shadow-2xl"
         >
-          <h1 className="text-center font-serif text-4xl mb-10 text-white">
+          <h1 className="text-center font-serif text-4xl text-white mb-10">
             Make a Reservation
           </h1>
 
-          {/* FORM GRID */}
           <div className="grid md:grid-cols-2 gap-6">
             <input
               type="text"
               placeholder="Full Name"
-              className="luxury-input"
-              value={form.fullName}
+              className="input-luxury"
               onChange={(e) =>
                 setForm({ ...form, fullName: e.target.value })
               }
@@ -91,106 +111,92 @@ const Reservation: React.FC = () => {
             <input
               type="email"
               placeholder="Email"
-              className="luxury-input"
-              value={form.email}
+              className="input-luxury"
               onChange={(e) =>
                 setForm({ ...form, email: e.target.value })
               }
             />
 
             <input
-              type="tel"
+              type="text"
               placeholder="Mobile"
-              className="luxury-input"
-              value={form.mobile}
+              className="input-luxury"
               onChange={(e) =>
                 setForm({ ...form, mobile: e.target.value })
               }
             />
 
             <select
-              className="luxury-input"
-              value={form.guests}
+              className="input-luxury"
               onChange={(e) =>
                 setForm({ ...form, guests: Number(e.target.value) })
               }
             >
-              {[1,2,3,4,5,6,7,8].map((g) => (
+              {[1,2,3,4,5,6].map((g) => (
                 <option key={g} value={g}>
                   {g} Guest{g > 1 && "s"}
                 </option>
               ))}
             </select>
 
+            {/* DATE */}
             <input
               type="date"
-              className="luxury-input md:col-span-2"
-              value={form.date}
+              className="input-luxury md:col-span-2"
               onChange={(e) =>
-                setForm({ ...form, date: e.target.value, time: "" })
+                setForm({ ...form, date: e.target.value })
+              }
+            />
+
+            {/* TIME DROPDOWN */}
+            <select
+              className="input-luxury md:col-span-2"
+              value={form.time}
+              onChange={(e) =>
+                setForm({ ...form, time: e.target.value })
+              }
+              disabled={!form.date || loadingSlots}
+            >
+              <option value="">
+                {loadingSlots
+                  ? "Loading slots..."
+                  : "Select Time"}
+              </option>
+
+              {slots.map((slot) => {
+                const available =
+                  slot.total_tables - slot.booked_tables;
+
+                const isFull = available <= 0;
+
+                return (
+                  <option
+                    key={slot.id}
+                    value={slot.time_slot}
+                    disabled={isFull}
+                  >
+                    {slot.time_slot} —{" "}
+                    {isFull
+                      ? "Fully Booked ❌"
+                      : available <= 2
+                      ? `Only ${available} left ⚠️`
+                      : "Available ✅"}
+                  </option>
+                );
+              })}
+            </select>
+
+            <textarea
+              placeholder="Special requests (optional)"
+              className="input-luxury md:col-span-2"
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  specialRequest: e.target.value,
+                })
               }
             />
           </div>
-
-          {/* TIME SLOTS */}
-          {form.date && (
-            <div className="mt-8">
-              <h3 className="text-white mb-4 font-medium">
-                Select Time
-              </h3>
-
-              {loadingSlots ? (
-                <p className="text-white/70">Loading slots...</p>
-              ) : availability.length === 0 ? (
-                <p className="text-white/70">
-                  No time slots available for this date
-                </p>
-              ) : (
-                <div className="flex flex-wrap gap-4">
-                  {availability.map((slot) => {
-                    const available =
-                      slot.total_tables - slot.booked_tables;
-
-                    const isFull = available <= 0;
-
-                    return (
-                      <button
-                        key={slot.id}
-                        type="button"
-                        disabled={isFull}
-                        onClick={() =>
-                          setForm({
-                            ...form,
-                            time: slot.time_slot,
-                          })
-                        }
-                        className={`px-5 py-2 rounded-full border transition
-                          ${
-                            form.time === slot.time_slot
-                              ? "bg-yellow-500 text-black border-yellow-500"
-                              : "border-white/30 text-white hover:border-yellow-500"
-                          }
-                          ${isFull && "opacity-40 cursor-not-allowed"}
-                        `}
-                      >
-                        {slot.time_slot}
-                        {isFull && " (Full)"}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
-          <textarea
-            placeholder="Special requests (optional)"
-            className="luxury-input mt-8 w-full"
-            value={form.special}
-            onChange={(e) =>
-              setForm({ ...form, special: e.target.value })
-            }
-          />
 
           <button className="btn-gold w-full mt-8">
             Confirm Reservation
@@ -203,4 +209,4 @@ const Reservation: React.FC = () => {
   );
 };
 
-export default Reservation;
+export default Reservations;
