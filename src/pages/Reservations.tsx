@@ -88,20 +88,24 @@ const fetchSlots = async (date: string) => {
               </div>
             </div>
 
-            {/* DATE */}
-            <div className="relative">
-              <CalendarDays className="absolute left-4 top-4 text-gold w-4 h-4 opacity-70" />
-              <input
-                type="date"
-                min={today}
-                value={selectedDate}
-                onChange={(e) => {
-                  setSelectedDate(e.target.value);
-                  fetchSlots(e.target.value);
-                }}
-                className="lux-input pl-10"
-              />
-            </div>
+           {/* DATE */}
+<div className="relative">
+  <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
+  <input
+    type="date"
+    min={today}
+    value={selectedDate}
+    onChange={(e) => {
+      const value = e.target.value;
+      setSelectedDate(value);
+
+      if (value) {
+        fetchSlots(value);
+      }
+    }}
+    className="lux-input pl-10 text-white"
+  />
+</div>
 
             {/* TIME (NOW DYNAMIC) */}
             <div className="relative">
