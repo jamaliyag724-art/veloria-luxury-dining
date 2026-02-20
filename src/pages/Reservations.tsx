@@ -8,7 +8,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { useReservations } from "@/context/ReservationContext";
-import { supabase } from "@/integrations/supabase/client"; // ✅ ADDED
 
 /* -----------------------------
    VALIDATION
@@ -56,8 +55,8 @@ const Reservations: React.FC = () => {
     const result = schema.safeParse(form);
     if (!result.success) {
       const errs: Record<string, string> = {};
-      result.error.errors.forEach((e) => {
-        errs[e.path[0]] = e.message;
+      result.error.errors.forEach((err) => {
+        errs[err.path[0]] = err.message;
       });
       setErrors(errs);
       return;
@@ -67,40 +66,19 @@ const Reservations: React.FC = () => {
     setLoading(true);
 
     try {
-      const data = result.data;
-
-      // ✅ TIME FORMAT FIX (24h → 12h AM/PM)
-      const formattedTime = new Date(`1970-01-01T${data.time}`)
-        .toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        });
-
-      // ✅ SAFE INCREMENT CALL
-      const { error: rpcError } = await supabase.rpc("increment_booking", {
-        p_date: data.date,
-        p_time: formattedTime,
-      });
-
-      if (rpcError) {
-        console.error("RPC Error:", rpcError);
-      }
-
-      // ✅ SAVE RESERVATION
       const id = await addReservation({
-        fullName: data.fullName!,
-        email: data.email!,
-        mobile: data.mobile!,
-        guests: data.guests!,
-        date: data.date!,
-        time: formattedTime,
-        specialRequest: data.specialRequest,
+        fullName: form.fullName,
+        email: form.email,
+        mobile: form.mobile,
+        guests: form.guests,
+        date: form.date,
+        time: form.time,
+        specialRequest: form.specialRequest,
       });
 
       navigate(`/reservation-success/${id}`);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       setLoading(false);
     }
   };
@@ -113,18 +91,25 @@ const Reservations: React.FC = () => {
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       <main className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-24">
+        
+        {/* Background */}
         <img
           src="/reservation-bg.webp"
           className="absolute inset-0 w-full h-full object-cover"
           alt=""
         />
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/60" />
 
+        {/* Card */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative z-10 w-full max-w-3xl glass-card rounded-[32px] shadow-2xl p-10"
+          className="relative z-10 w-full max-w-3xl 
+                     bg-black/85 backdrop-blur-md
+                     border border-primary/20
+                     rounded-[32px] shadow-2xl p-10 text-white"
         >
+          {/* HEADER */}
           <div className="text-center mb-10">
             <span className="text-primary tracking-[0.25em] text-xs uppercase">
               Book a Table
@@ -134,16 +119,23 @@ const Reservations: React.FC = () => {
             </h1>
           </div>
 
+          {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Name + Email */}
             <div className="grid md:grid-cols-2 gap-4">
               <Input label="Full Name" name="fullName" value={form.fullName} onChange={handleChange} error={errors.fullName} />
               <Input label="Email" name="email" value={form.email} onChange={handleChange} error={errors.email} />
+            </div>
+
+            {/* Mobile + Guests */}
+            <div className="grid md:grid-cols-2 gap-4">
               <Input label="Mobile" name="mobile" value={form.mobile} onChange={handleChange} error={errors.mobile} />
 
               <div>
                 <label className="label">Guests</label>
                 <div className="relative">
-                  <Users className="icon-left" />
+                  <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                   <select
                     name="guests"
                     value={form.guests}
@@ -151,18 +143,19 @@ const Reservations: React.FC = () => {
                     className="luxury-input pl-10"
                   >
                     {[1,2,3,4,5,6,8,10].map(n => (
-                      <option key={n}>{n}</option>
+                      <option key={n} value={n}>{n}</option>
                     ))}
                   </select>
                 </div>
               </div>
             </div>
 
+            {/* Date + Time */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="label">Date</label>
                 <div className="relative">
-                  <CalendarDays className="icon-left" />
+                  <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                   <input
                     type="date"
                     min={today}
@@ -177,18 +170,23 @@ const Reservations: React.FC = () => {
               <div>
                 <label className="label">Time</label>
                 <div className="relative">
-                  <Clock className="icon-left" />
-                  <input
-                    type="time"
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                  <select
                     name="time"
                     value={form.time}
                     onChange={handleChange}
                     className="luxury-input pl-10"
-                  />
+                  >
+                    <option value="">Select Time</option>
+                    <option value="7:00 PM">7:00 PM</option>
+                    <option value="8:00 PM">8:00 PM</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                  </select>
                 </div>
               </div>
             </div>
 
+            {/* Special Request */}
             <textarea
               name="specialRequest"
               placeholder="Special requests (optional)"
@@ -197,6 +195,7 @@ const Reservations: React.FC = () => {
               className="luxury-input"
             />
 
+            {/* Submit */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
@@ -206,6 +205,21 @@ const Reservations: React.FC = () => {
               {loading ? "Processing..." : "Confirm Reservation"}
             </motion.button>
           </form>
+
+          {/* Track Section */}
+          <div className="mt-8 pt-6 border-t border-white/10 text-center">
+            <p className="text-sm text-gray-400 mb-4">
+              Already have a Reservation ID?
+            </p>
+
+            <button
+              type="button"
+              onClick={() => navigate("/reservation-status")}
+              className="btn-outline-gold px-6 py-3 text-sm"
+            >
+              Track Reservation
+            </button>
+          </div>
         </motion.div>
       </main>
 
@@ -224,7 +238,7 @@ const Input = ({ label, error, ...props }: any) => (
     <label className="label">{label}</label>
     <input {...props} className="luxury-input" />
     {error && (
-      <p className="error-text flex items-center gap-1">
+      <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
         <AlertCircle className="w-4 h-4" /> {error}
       </p>
     )}
