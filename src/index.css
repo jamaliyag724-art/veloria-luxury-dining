@@ -37,7 +37,6 @@
 
     --radius: 0.75rem;
 
-    /* Custom Veloria tokens */
     --cream: 40 33% 97%;
     --ivory: 40 40% 98%;
     --champagne: 38 60% 55%;
@@ -50,7 +49,6 @@
     --charcoal: 25 25% 15%;
     --warm-gray: 25 10% 60%;
 
-    /* Shadows */
     --shadow-soft: 0 4px 20px -4px hsl(25 25% 15% / 0.08);
     --shadow-medium: 0 8px 30px -8px hsl(25 25% 15% / 0.12);
     --shadow-gold: 0 4px 20px -4px hsl(38 60% 55% / 0.25);
@@ -101,6 +99,16 @@
     --shadow-gold: 0 4px 20px -4px hsl(43 76% 52% / 0.2);
     --shadow-lift: 0 12px 40px -12px hsl(0 0% 0% / 0.5);
   }
+
+  /* 🌑 Dark Background Upgrade */
+  .dark body {
+    background: radial-gradient(
+        circle at 20% 10%,
+        hsl(43 76% 52% / 0.05),
+        transparent 40%
+      ),
+      linear-gradient(180deg, #0c0c0c 0%, #111111 100%);
+  }
 }
 
 @layer base {
@@ -123,7 +131,6 @@
 ================================ */
 @layer components {
 
-  /* GOLD BUTTON */
   .btn-gold {
     @apply relative overflow-hidden bg-primary text-primary-foreground px-8 py-3 rounded-full font-medium transition-all duration-300;
     box-shadow: var(--shadow-gold);
@@ -153,38 +160,55 @@
     box-shadow: var(--shadow-lift);
   }
 
-  /* GLASS CARD */
   .glass-card {
     @apply bg-card/80 backdrop-blur-md rounded-2xl border border-border/50 transition-all;
     box-shadow: var(--shadow-soft);
   }
 
+  /* 🌑 Dark Glass Refinement */
   .dark .glass-card {
-    background: hsl(0 0% 100% / 0.05);
-    border-color: hsl(0 0% 100% / 0.08);
+    background: hsl(0 0% 100% / 0.04);
+    backdrop-filter: blur(18px);
+    border: 1px solid hsl(43 76% 52% / 0.15);
+    box-shadow:
+      0 10px 40px hsl(0 0% 0% / 0.6),
+      inset 0 1px 0 hsl(0 0% 100% / 0.05);
   }
 
   .glass-card:hover {
     box-shadow: var(--shadow-medium);
   }
 
-  /* DARK MODE BUTTON GLOW */
   .dark .btn-gold:hover {
     box-shadow: 0 0 25px -5px hsl(43 76% 52% / 0.4);
   }
 
-  /* INPUT */
+  /* 🌑 Luxury Input Refinement */
   .luxury-input {
-    @apply w-full px-4 py-3 rounded-xl border border-border bg-background
-           focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition;
+    @apply w-full px-4 py-3 rounded-xl border outline-none transition;
+    border-color: hsl(var(--border));
+    background: hsl(var(--background));
   }
 
-  /* OUTLINE BUTTON */
+  .dark .luxury-input {
+    background: hsl(0 0% 100% / 0.03);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+    color: hsl(var(--foreground));
+  }
+
+  .dark .luxury-input::placeholder {
+    color: hsl(0 0% 70%);
+  }
+
+  .dark .luxury-input:focus {
+    border-color: hsl(43 76% 52%);
+    box-shadow: 0 0 0 3px hsl(43 76% 52% / 0.15);
+  }
+
   .btn-outline-gold {
     @apply px-6 py-3 rounded-full border border-primary text-primary font-medium transition-all duration-300 hover:bg-primary/10;
   }
 
-  /* SECTION */
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -203,30 +227,14 @@
   }
 }
 
-/* ===============================
-   🔥 SHIMMER (SINGLE SOURCE)
-================================ */
 @keyframes shimmer-bg {
-  0% {
-    background-position: 200% 0%;
-  }
-  100% {
-    background-position: -200% 0%;
-  }
+  0% { background-position: 200% 0%; }
+  100% { background-position: -200% 0%; }
 }
 
-/* ===============================
-   EXTRA ANIMATIONS
-================================ */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-up {
