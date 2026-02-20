@@ -26,7 +26,7 @@ const ReservationSuccess = () => {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url(/main.webp)" }}
       />
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
@@ -35,7 +35,7 @@ const ReservationSuccess = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg mx-auto bg-white/95 backdrop-blur-2xl 
+          className="max-w-lg mx-auto bg-white 
                      rounded-3xl p-10 text-center shadow-2xl"
         >
           {/* ICON */}
@@ -51,40 +51,40 @@ const ReservationSuccess = () => {
             </div>
           </motion.div>
 
-          <h1 className="font-serif text-3xl mb-3">
+          {/* FIXED TEXT COLORS */}
+          <h1 className="font-serif text-3xl text-gray-900 mb-3">
             Reservation Submitted 🍷
           </h1>
 
-          <p className="text-muted-foreground mb-8">
+          <p className="text-gray-600 mb-8">
             Your reservation request has been received.
             <br />
             We’ll confirm it shortly.
           </p>
 
           {/* RESERVATION ID */}
-          <div className="bg-ivory rounded-xl p-5 mb-6 relative">
-            <p className="text-sm text-muted-foreground mb-1">
+          <div className="bg-black rounded-xl p-5 mb-6 relative">
+            <p className="text-sm text-gray-400 mb-1">
               Reservation ID
             </p>
 
-            <p className="font-serif text-2xl text-primary font-bold">
+            <p className="font-serif text-2xl text-yellow-500 font-bold tracking-wide">
               {id}
             </p>
 
             <button
               onClick={copyId}
-              className="absolute top-4 right-4 text-primary hover:opacity-80"
+              className="absolute top-4 right-4 text-yellow-500 hover:opacity-80"
               aria-label="Copy Reservation ID"
             >
               <Copy className="w-5 h-5" />
             </button>
           </div>
 
-          <p className="text-sm text-muted-foreground mb-8">
+          <p className="text-sm text-gray-500 mb-8">
             Please save this ID for future reference.
           </p>
 
-          {/* ONLY BACK HOME */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
