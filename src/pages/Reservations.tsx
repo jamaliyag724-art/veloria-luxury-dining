@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -12,6 +13,25 @@ const Reservations = () => {
   const [cartOpen, setCartOpen] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
+
+  /* ---------------- NEW STATES ---------------- */
+  const [selectedDate, setSelectedDate] = useState("");
+  const [timeSlots, setTimeSlots] = useState<any[]>([]);
+  const [selectedTime, setSelectedTime] = useState("");
+
+  /* ---------------- FETCH SLOTS ---------------- */
+  const fetchSlots = async (date: string) => {
+    const { data, error } = await supabase
+      .from("table_availability")
+      .select("*")
+      .eq("date", date);
+
+    if (!error && data) {
+      setTimeSlots(data);
+    } else {
+      setTimeSlots([]);
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -46,22 +66,13 @@ const Reservations = () => {
 
             {/* ROW 1 */}
             <div className="grid md:grid-cols-2 gap-6">
-              <input
-                placeholder="Full Name"
-                className="lux-input"
-              />
-              <input
-                placeholder="Email"
-                className="lux-input"
-              />
+              <input placeholder="Full Name" className="lux-input" />
+              <input placeholder="Email" className="lux-input" />
             </div>
 
             {/* ROW 2 */}
             <div className="grid md:grid-cols-2 gap-6">
-              <input
-                placeholder="Mobile"
-                className="lux-input"
-              />
+              <input placeholder="Mobile" className="lux-input" />
 
               <div className="relative">
                 <Users className="absolute left-4 top-4 text-gold w-4 h-4 opacity-70" />
@@ -79,18 +90,47 @@ const Reservations = () => {
               <input
                 type="date"
                 min={today}
+                value={selectedDate}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  fetchSlots(e.target.value);
+                }}
                 className="lux-input pl-10"
               />
             </div>
 
-            {/* TIME */}
+            {/* TIME (NOW DYNAMIC) */}
             <div className="relative">
               <Clock className="absolute left-4 top-4 text-gold w-4 h-4 opacity-70" />
-              <select className="lux-input pl-10">
-                <option>Select Time</option>
-                <option>7:00 PM</option>
-                <option>8:00 PM</option>
-                <option>9:00 PM</option>
+              <select
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+                className="lux-input pl-10"
+                disabled={!selectedDate}
+              >
+                <option value="">Select Time</option>
+
+                {timeSlots.length === 0 && selectedDate && (
+                  <option disabled>No slots available</option>
+                )}
+
+                {timeSlots.map((slot) => {
+                  const isFull =
+                    slot.booked_tables >= slot.total_tables;
+
+                  return (
+                    <option
+                      key={slot.id}
+                      value={slot.time_slot}
+                      disabled={isFull}
+                    >
+                      {slot.time_slot}
+                      {isFull
+                        ? " (Full)"
+                        : ` (${slot.total_tables - slot.booked_tables} left)`}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
@@ -115,6 +155,7 @@ const Reservations = () => {
                 Already have a Reservation ID?
               </p>
               <button
+                type="button"
                 onClick={() => navigate("/reservation-status")}
                 className="px-6 py-2 rounded-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
               >
