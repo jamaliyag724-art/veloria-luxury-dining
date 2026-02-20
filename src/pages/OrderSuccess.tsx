@@ -23,7 +23,6 @@ const OrderSuccess: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cartOpen, setCartOpen] = useState(false);
 
-  /* ---------------- FETCH ORDER FROM SUPABASE ---------------- */
   useEffect(() => {
     if (!orderId) return;
 
@@ -58,19 +57,17 @@ const OrderSuccess: React.FC = () => {
     fetchOrder();
   }, [orderId]);
 
-  /* ---------------- LOADING ---------------- */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
         Loading order...
       </div>
     );
   }
 
-  /* ---------------- NOT FOUND ---------------- */
   if (!order) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-black text-white">
         <Navbar onCartClick={() => setCartOpen(true)} />
         <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
         <main className="pt-32 text-center">
@@ -84,21 +81,19 @@ const OrderSuccess: React.FC = () => {
     );
   }
 
-  /* ---------------- STATUS ICON ---------------- */
   const getStatusIcon = () => {
     switch (order.orderStatus) {
       case "Preparing":
-        return <ChefHat className="w-5 h-5 text-amber-600" />;
+        return <ChefHat className="w-5 h-5 text-yellow-500" />;
       case "Completed":
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
       case "Cancelled":
-        return <Package className="w-5 h-5 text-red-600" />;
+        return <Package className="w-5 h-5 text-red-500" />;
       default:
-        return <Clock className="w-5 h-5 text-blue-600" />;
+        return <Clock className="w-5 h-5 text-blue-400" />;
     }
   };
 
-  /* ---------------- QR DOWNLOAD ---------------- */
   const handleDownloadQR = () => {
     const svg = document.getElementById("order-qr");
     if (!svg) return;
@@ -124,67 +119,76 @@ const OrderSuccess: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black text-white">
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      <main className="pt-32 pb-24">
+      <main className="pt-32 pb-24 px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="section-container max-w-2xl mx-auto text-center"
+          className="max-w-2xl mx-auto text-center"
         >
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
 
-          <h1 className="font-serif text-3xl mb-2">Order Confirmed!</h1>
-          <p className="text-muted-foreground mb-8">
+          <h1 className="font-serif text-3xl text-white mb-2">
+            Order Confirmed!
+          </h1>
+
+          <p className="text-gray-400 mb-8">
             Your order is placed & being prepared
           </p>
 
-          <div className="glass-card p-6 mb-8">
-            <p className="text-sm mb-1">Order ID</p>
-            <p className="font-serif text-3xl text-primary mb-6">
+          {/* CARD */}
+          <div className="bg-neutral-900 border border-yellow-600/30 rounded-3xl p-8 mb-10 shadow-2xl">
+            <p className="text-sm text-gray-400 mb-1">Order ID</p>
+            <p className="font-serif text-3xl text-yellow-500 mb-6 tracking-wide">
               {order.orderId}
             </p>
 
-            <div className="bg-background p-4 rounded-xl inline-block shadow mb-4">
+            <div className="bg-black p-4 rounded-xl inline-block shadow-lg mb-6">
               <QRCodeSVG
                 id="order-qr"
                 value={`VELORIA-${order.orderId}`}
                 size={150}
                 level="H"
-                bgColor="transparent"
+                bgColor="#000000"
+                fgColor="#D4AF37"
               />
             </div>
 
             <button
               onClick={handleDownloadQR}
-              className="btn-outline-gold w-full max-w-xs mx-auto mb-6 flex justify-center gap-2"
+              className="btn-outline-gold w-full max-w-xs mx-auto mb-8 flex justify-center gap-2"
             >
               <Download size={16} />
               Download QR Code
             </button>
 
-            <div className="flex items-center justify-center gap-2 bg-primary/10 p-3 rounded-xl mb-6">
+            <div className="flex items-center justify-center gap-2 bg-yellow-600/10 border border-yellow-600/30 p-3 rounded-xl mb-8">
               {getStatusIcon()}
-              <span className="font-medium text-primary">
+              <span className="font-medium text-yellow-500">
                 {order.orderStatus}
               </span>
             </div>
 
-            <div className="text-left border-t pt-4">
-              <h3 className="font-serif mb-3">Order Summary</h3>
+            <div className="text-left border-t border-gray-700 pt-6">
+              <h3 className="font-serif text-lg mb-4 text-white">
+                Order Summary
+              </h3>
 
               {order.items.map((item: any, i: number) => (
-                <div key={i} className="flex justify-between text-sm mb-1">
-                  <span>{item.name} × {item.quantity}</span>
+                <div key={i} className="flex justify-between text-sm mb-2 text-gray-300">
+                  <span>
+                    {item.name} × {item.quantity}
+                  </span>
                   <span>₹{item.price * item.quantity}</span>
                 </div>
               ))}
 
-              <div className="border-t mt-3 pt-2 text-sm">
+              <div className="border-t border-gray-700 mt-4 pt-4 text-sm text-gray-300">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>₹{order.subtotal}</span>
@@ -193,9 +197,9 @@ const OrderSuccess: React.FC = () => {
                   <span>Tax</span>
                   <span>₹{order.tax}</span>
                 </div>
-                <div className="flex justify-between font-serif text-lg mt-2">
+                <div className="flex justify-between font-serif text-lg mt-3 text-white">
                   <span>Total</span>
-                  <span className="text-primary">
+                  <span className="text-yellow-500">
                     ₹{order.totalAmount}
                   </span>
                 </div>
