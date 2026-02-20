@@ -149,12 +149,13 @@ const OrderSuccess: React.FC = () => {
               {order.orderId}
             </p>
 
-            <div className="bg-white p-4 rounded-xl inline-block shadow mb-4">
+            <div className="bg-background p-4 rounded-xl inline-block shadow mb-4">
               <QRCodeSVG
                 id="order-qr"
                 value={`VELORIA-${order.orderId}`}
                 size={150}
                 level="H"
+                bgColor="transparent"
               />
             </div>
 

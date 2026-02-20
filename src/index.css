@@ -19,14 +19,36 @@
     --primary-foreground: 40 33% 98%;
 
     --secondary: 35 30% 92%;
+    --secondary-foreground: 25 25% 15%;
     --muted: 35 20% 90%;
     --muted-foreground: 25 15% 45%;
 
     --accent: 350 45% 45%;
+    --accent-foreground: 40 33% 98%;
     --border: 35 25% 88%;
+    --input: 35 25% 88%;
     --ring: 38 60% 55%;
 
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --popover: 40 40% 98%;
+    --popover-foreground: 25 25% 15%;
+
     --radius: 0.75rem;
+
+    /* Custom Veloria tokens */
+    --cream: 40 33% 97%;
+    --ivory: 40 40% 98%;
+    --champagne: 38 60% 55%;
+    --champagne-light: 38 55% 75%;
+    --champagne-dark: 38 65% 40%;
+    --wine: 350 45% 45%;
+    --wine-light: 350 40% 55%;
+    --wine-dark: 350 50% 35%;
+    --pearl: 40 20% 95%;
+    --charcoal: 25 25% 15%;
+    --warm-gray: 25 10% 60%;
 
     /* Shadows */
     --shadow-soft: 0 4px 20px -4px hsl(25 25% 15% / 0.08);
@@ -34,11 +56,57 @@
     --shadow-gold: 0 4px 20px -4px hsl(38 60% 55% / 0.25);
     --shadow-lift: 0 12px 40px -12px hsl(25 25% 15% / 0.15);
   }
+
+  .dark {
+    --background: 0 0% 6%;
+    --foreground: 0 0% 92%;
+
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 92%;
+
+    --primary: 43 76% 52%;
+    --primary-foreground: 0 0% 6%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 92%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+
+    --accent: 350 45% 50%;
+    --accent-foreground: 0 0% 92%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 43 76% 52%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 92%;
+
+    --cream: 0 0% 9%;
+    --ivory: 0 0% 11%;
+    --champagne: 43 76% 52%;
+    --champagne-light: 43 60% 65%;
+    --champagne-dark: 43 80% 40%;
+    --wine: 350 45% 50%;
+    --wine-light: 350 40% 60%;
+    --wine-dark: 350 50% 40%;
+    --pearl: 0 0% 12%;
+    --charcoal: 0 0% 85%;
+    --warm-gray: 0 0% 50%;
+
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    --shadow-medium: 0 8px 30px -8px hsl(0 0% 0% / 0.4);
+    --shadow-gold: 0 4px 20px -4px hsl(43 76% 52% / 0.2);
+    --shadow-lift: 0 12px 40px -12px hsl(0 0% 0% / 0.5);
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 400ms ease, color 400ms ease, border-color 400ms ease, box-shadow 400ms ease;
   }
 
   body {
@@ -91,14 +159,29 @@
     box-shadow: var(--shadow-soft);
   }
 
+  .dark .glass-card {
+    background: hsl(0 0% 100% / 0.05);
+    border-color: hsl(0 0% 100% / 0.08);
+  }
+
   .glass-card:hover {
     box-shadow: var(--shadow-medium);
   }
 
+  /* DARK MODE BUTTON GLOW */
+  .dark .btn-gold:hover {
+    box-shadow: 0 0 25px -5px hsl(43 76% 52% / 0.4);
+  }
+
   /* INPUT */
   .luxury-input {
-    @apply w-full px-4 py-3 rounded-xl border border-border bg-white/70
+    @apply w-full px-4 py-3 rounded-xl border border-border bg-background
            focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition;
+  }
+
+  /* OUTLINE BUTTON */
+  .btn-outline-gold {
+    @apply px-6 py-3 rounded-full border border-primary text-primary font-medium transition-all duration-300 hover:bg-primary/10;
   }
 
   /* SECTION */
