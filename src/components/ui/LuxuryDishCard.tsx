@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 interface Props {
   image: string;
@@ -18,6 +18,13 @@ const LuxuryDishCard: React.FC<Props> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [spin, setSpin] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -25,6 +32,8 @@ const LuxuryDishCard: React.FC<Props> = ({
   const rotateY = useTransform(x, [-100, 100], [-12, 12]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (isMobile) return;
+
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
 
@@ -36,8 +45,17 @@ const LuxuryDishCard: React.FC<Props> = ({
   };
 
   const reset = () => {
-    x.set(0);
-    y.set(0);
+    if (!isMobile) {
+      x.set(0);
+      y.set(0);
+    }
+  };
+
+  const handleTouch = () => {
+    if (isMobile) {
+      setSpin(true);
+      setTimeout(() => setSpin(false), 800);
+    }
   };
 
   return (
@@ -46,14 +64,17 @@ const LuxuryDishCard: React.FC<Props> = ({
         ref={ref}
         onMouseMove={handleMouseMove}
         onMouseLeave={reset}
-        style={{ rotateX, rotateY }}
+        onClick={handleTouch}
+        style={!isMobile ? { rotateX, rotateY } : {}}
+        animate={spin ? { rotateY: 360 } : {}}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
         className="relative group rounded-3xl overflow-hidden
                    bg-card transition-transform duration-300"
       >
         <motion.div
           className="relative h-[420px] w-full"
-          whileHover={{ scale: 1.03 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          whileHover={!isMobile ? { scale: 1.03 } : {}}
+          whileTap={{ scale: 0.97 }}
         >
           <img
             src={image}
@@ -61,7 +82,6 @@ const LuxuryDishCard: React.FC<Props> = ({
             className="w-full h-full object-cover rounded-3xl"
           />
 
-          {/* Gradient Overlay */}
           <div
             className="absolute inset-0 rounded-3xl
                        bg-gradient-to-t from-black/60 via-black/20 to-transparent
@@ -69,7 +89,6 @@ const LuxuryDishCard: React.FC<Props> = ({
                        transition duration-500"
           />
 
-          {/* Info Panel */}
           <div
             className="absolute bottom-0 left-0 right-0 p-6
                        backdrop-blur-md
