@@ -13,6 +13,7 @@ import { z } from "zod";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
+import CouponInput from "@/components/checkout/CouponInput";
 
 import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrderContext";
@@ -40,6 +41,8 @@ const Checkout: React.FC = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [step, setStep] = useState<"payment" | "processing">("payment");
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
@@ -52,8 +55,9 @@ const Checkout: React.FC = () => {
 
   /* -------------------- PRICE -------------------- */
   const subtotal = totalPrice;
-  const taxAmount = subtotal * TAX_RATE;
-  const totalAmount = subtotal + taxAmount;
+  const discountedSubtotal = subtotal - couponDiscount;
+  const taxAmount = Math.round(discountedSubtotal * TAX_RATE);
+  const totalAmount = discountedSubtotal + taxAmount;
 
   /* -------------------- FORM -------------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +83,7 @@ const Checkout: React.FC = () => {
         city: validation.data.city,
         pincode: validation.data.pincode,
         items,
-        subtotal,
+        subtotal: discountedSubtotal,
         tax: taxAmount,
         totalAmount,
       });
@@ -196,6 +200,28 @@ const Checkout: React.FC = () => {
                   <m.icon className="inline mr-2" /> {m.label}
                 </button>
               ))}
+
+              <CouponInput
+                subtotal={subtotal}
+                onApply={(disc, code) => { setCouponDiscount(disc); setCouponCode(code); }}
+                onRemove={() => { setCouponDiscount(0); setCouponCode(null); }}
+                appliedCode={couponCode}
+                discount={couponDiscount}
+              />
+
+              {couponDiscount > 0 && (
+                <div className="mt-3 text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span><span>{formatINR(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-primary">
+                    <span>Discount</span><span>-{formatINR(couponDiscount)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Tax (10%)</span><span>{formatINR(taxAmount)}</span>
+                  </div>
+                </div>
+              )}
 
               <button
                 disabled={!isFormValid}

@@ -7,10 +7,13 @@ import {
   ShoppingBag,
   Utensils,
   Search,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
 import { useRouteLoader, LoaderType } from "@/context/RouteLoaderContext";
+import { useTheme } from "@/context/ThemeContext";
 
 const navLinks = [
   { name: "Home", path: "/", loader: null },
@@ -30,6 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
   const { showLoader, hideLoader } = useRouteLoader();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     setIsOpen(false);
@@ -99,6 +103,37 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
 
             {/* RIGHT ACTIONS */}
             <div className="flex items-center gap-3">
+              {/* THEME TOGGLE */}
+              <button
+                onClick={toggleTheme}
+                className="p-3 rounded-full bg-secondary/60 hover:bg-secondary transition"
+                aria-label="Toggle theme"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {theme === "light" ? (
+                    <motion.span
+                      key="moon"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Moon className="w-5 h-5" />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="sun"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Sun className="w-5 h-5" />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+
               {/* CART */}
               <button
                 onClick={onCartClick}
@@ -106,7 +141,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
               >
                 <ShoppingBag className="w-5 h-5" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
                     {totalItems}
                   </span>
                 )}

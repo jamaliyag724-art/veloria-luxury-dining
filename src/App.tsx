@@ -13,6 +13,7 @@ import { ReservationProvider } from "@/context/ReservationContext";
 import { OrderProvider } from "@/context/OrderContext";
 import { RouteLoaderProvider, useRouteLoader } from "@/context/RouteLoaderContext";
 import { MenuProvider } from "@/context/MenuContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
@@ -129,21 +130,23 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <OrderProvider>
-          <ReservationProvider>
-            <CartProvider>
-              <AdminProvider>
-                <MenuProvider>
-                  <RouteLoaderProvider>
-                    <BrowserRouter>
-                      <AppContent />
-                    </BrowserRouter>
-                  </RouteLoaderProvider>
-                </MenuProvider>
-              </AdminProvider>
-            </CartProvider>
-          </ReservationProvider>
-        </OrderProvider>
+        <ThemeProvider>
+          <OrderProvider>
+            <ReservationProvider>
+              <CartProvider>
+                <AdminProvider>
+                  <MenuProvider>
+                    <RouteLoaderProvider>
+                      <BrowserRouter>
+                        <AppContent />
+                      </BrowserRouter>
+                    </RouteLoaderProvider>
+                  </MenuProvider>
+                </AdminProvider>
+              </CartProvider>
+            </ReservationProvider>
+          </OrderProvider>
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
