@@ -8,6 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { useReservations } from "@/context/ReservationContext";
+import { supabase } from "@/integrations/supabase/client"; // ✅ ADDED
 
 /* -----------------------------
    VALIDATION
@@ -67,6 +68,7 @@ const Reservations: React.FC = () => {
 
     try {
       const data = result.data;
+
       const id = await addReservation({
         fullName: data.fullName!,
         email: data.email!,
@@ -76,6 +78,13 @@ const Reservations: React.FC = () => {
         time: data.time!,
         specialRequest: data.specialRequest,
       });
+
+      // ✅ STEP 3 — SAFE BOOKING INCREMENT
+      await supabase.rpc("increment_booking", {
+        p_date: data.date,
+        p_time: data.time,
+      });
+
       navigate(`/reservation-success/${id}`);
     } catch (err) {
       console.error(err);
@@ -91,7 +100,6 @@ const Reservations: React.FC = () => {
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       <main className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-24">
-        {/* Background */}
         <img
           src="/reservation-bg.webp"
           className="absolute inset-0 w-full h-full object-cover"
@@ -106,7 +114,6 @@ const Reservations: React.FC = () => {
                      glass-card
                      rounded-[32px] shadow-2xl p-10"
         >
-          {/* HEADER */}
           <div className="text-center mb-10">
             <span className="text-primary tracking-[0.25em] text-xs uppercase">
               Book a Table
@@ -120,7 +127,6 @@ const Reservations: React.FC = () => {
             </div>
           </div>
 
-          {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <Input label="Full Name" name="fullName" value={form.fullName} onChange={handleChange} error={errors.fullName} />
