@@ -1,278 +1,206 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { z } from "zod";
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 
-/* ---------------- VALIDATION ---------------- */
+interface Slot {
+  id: string;
+  time_slot: string;
+  total_tables: number;
+  booked_tables: number;
+}
 
-const schema = z.object({
-  fullName: z.string().min(2),
-  email: z.string().email(),
-  mobile: z.string().min(10),
-  guests: z.number().min(1),
-  date: z.string().min(1),
-  time: z.string().min(1),
-  specialRequest: z.string().optional(),
-});
-
-const Reservations: React.FC = () => {
-  const navigate = useNavigate();
-
+const Reservation: React.FC = () => {
   const [cartOpen, setCartOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [availability, setAvailability] = useState<any[]>([]);
 
   const [form, setForm] = useState({
     fullName: "",
     email: "",
     mobile: "",
-    guests: 2,
+    guests: 1,
     date: "",
     time: "",
-    specialRequest: "",
+    special: "",
   });
 
-  /* ---------------- FETCH AVAILABILITY ---------------- */
+  const [availability, setAvailability] = useState<Slot[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
+  /* ---------------- FETCH TIME SLOTS ---------------- */
   useEffect(() => {
     if (!form.date) return;
 
     const fetchSlots = async () => {
-      const { data } = await supabase
+      setLoadingSlots(true);
+
+      const { data, error } = await supabase
         .from("table_availability")
         .select("*")
         .eq("date", form.date)
         .order("time_slot", { ascending: true });
 
-      if (data) setAvailability(data);
+      if (!error && data) {
+        setAvailability(data);
+      } else {
+        setAvailability([]);
+      }
+
+      setLoadingSlots(false);
     };
 
     fetchSlots();
-
-    const channel = supabase
-      .channel("availability-live")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "table_availability",
-        },
-        (payload) => {
-          setAvailability((prev) =>
-            prev.map((slot) =>
-              slot.id === payload.new.id ? payload.new : slot
-            )
-          );
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, [form.date]);
 
-  /* ---------------- SUBMIT ---------------- */
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const result = schema.safeParse(form);
-    if (!result.success) return;
-
-    setLoading(true);
-
-    await supabase.rpc("increment_booking", {
-      p_date: form.date,
-      p_time: form.time,
-    });
-
-    const { data } = await supabase
-      .from("reservations")
-      .insert({
-        full_name: form.fullName,
-        email: form.email,
-        mobile: form.mobile,
-        guests: form.guests,
-        date: form.date,
-        time_slot: form.time,
-        special_request: form.specialRequest,
-      })
-      .select()
-      .single();
-
-    if (data) navigate(`/reservation-success/${data.id}`);
-
-    setLoading(false);
-  };
-
-  const today = new Date().toISOString().split("T")[0];
-
   return (
-    <>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url(/main.webp)" }}
+      />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      <main className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-24">
-        
-        {/* BACKGROUND IMAGE */}
-        <img
-          src="/reservation-bg.webp"
-          className="absolute inset-0 w-full h-full object-cover"
-          alt=""
-        />
-
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
+      <main className="relative z-10 pt-40 pb-32 px-4">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative z-10 w-full max-w-3xl 
-                     bg-white/10 backdrop-blur-2xl 
-                     border border-white/20
-                     rounded-[32px] shadow-2xl p-10"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-3xl mx-auto bg-white/10 backdrop-blur-xl 
+                     rounded-3xl p-10 border border-white/20"
         >
-          <h1 className="font-serif text-4xl text-white text-center mb-10">
+          <h1 className="text-center font-serif text-4xl mb-10 text-white">
             Make a Reservation
           </h1>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* FORM GRID */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="luxury-input"
+              value={form.fullName}
+              onChange={(e) =>
+                setForm({ ...form, fullName: e.target.value })
+              }
+            />
 
-            {/* BASIC FIELDS */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                placeholder="Full Name"
-                className="luxury-input"
-                value={form.fullName}
-                onChange={(e) =>
-                  setForm({ ...form, fullName: e.target.value })
-                }
-              />
-              <input
-                placeholder="Email"
-                className="luxury-input"
-                value={form.email}
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
-              />
-              <input
-                placeholder="Mobile"
-                className="luxury-input"
-                value={form.mobile}
-                onChange={(e) =>
-                  setForm({ ...form, mobile: e.target.value })
-                }
-              />
-              <select
-                className="luxury-input"
-                value={form.guests}
-                onChange={(e) =>
-                  setForm({ ...form, guests: Number(e.target.value) })
-                }
-              >
-                {[1,2,3,4,5,6,8,10].map(n => (
-                  <option key={n}>{n} Guests</option>
-                ))}
-              </select>
-            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              className="luxury-input"
+              value={form.email}
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })
+              }
+            />
 
-            {/* DATE */}
+            <input
+              type="tel"
+              placeholder="Mobile"
+              className="luxury-input"
+              value={form.mobile}
+              onChange={(e) =>
+                setForm({ ...form, mobile: e.target.value })
+              }
+            />
+
+            <select
+              className="luxury-input"
+              value={form.guests}
+              onChange={(e) =>
+                setForm({ ...form, guests: Number(e.target.value) })
+              }
+            >
+              {[1,2,3,4,5,6,7,8].map((g) => (
+                <option key={g} value={g}>
+                  {g} Guest{g > 1 && "s"}
+                </option>
+              ))}
+            </select>
+
             <input
               type="date"
-              min={today}
-              className="luxury-input"
+              className="luxury-input md:col-span-2"
               value={form.date}
               onChange={(e) =>
                 setForm({ ...form, date: e.target.value, time: "" })
               }
             />
+          </div>
 
-            {/* REAL TIME SLOTS */}
-            {form.date && (
-              <div className="space-y-3">
-                {availability.map((slot) => {
-                  const available =
-                    slot.total_tables - slot.booked_tables;
+          {/* TIME SLOTS */}
+          {form.date && (
+            <div className="mt-8">
+              <h3 className="text-white mb-4 font-medium">
+                Select Time
+              </h3>
 
-                  const isFull = available <= 0;
-                  const isLimited = available > 0 && available <= 2;
+              {loadingSlots ? (
+                <p className="text-white/70">Loading slots...</p>
+              ) : availability.length === 0 ? (
+                <p className="text-white/70">
+                  No time slots available for this date
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-4">
+                  {availability.map((slot) => {
+                    const available =
+                      slot.total_tables - slot.booked_tables;
 
-                  return (
-                    <button
-                      key={slot.id}
-                      type="button"
-                      disabled={isFull}
-                      onClick={() =>
-                        setForm({ ...form, time: slot.time_slot })
-                      }
-                      className={`w-full px-5 py-3 rounded-xl border transition text-left
-                        ${
-                          form.time === slot.time_slot
-                            ? "border-yellow-500 bg-yellow-500/10"
-                            : "border-white/20"
+                    const isFull = available <= 0;
+
+                    return (
+                      <button
+                        key={slot.id}
+                        type="button"
+                        disabled={isFull}
+                        onClick={() =>
+                          setForm({
+                            ...form,
+                            time: slot.time_slot,
+                          })
                         }
-                        ${isFull ? "opacity-40 cursor-not-allowed" : ""}
-                      `}
-                    >
-                      <div className="flex justify-between items-center">
-                        <span className="text-white">
-                          {slot.time_slot}
-                        </span>
+                        className={`px-5 py-2 rounded-full border transition
+                          ${
+                            form.time === slot.time_slot
+                              ? "bg-yellow-500 text-black border-yellow-500"
+                              : "border-white/30 text-white hover:border-yellow-500"
+                          }
+                          ${isFull && "opacity-40 cursor-not-allowed"}
+                        `}
+                      >
+                        {slot.time_slot}
+                        {isFull && " (Full)"}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
-                        {isFull && (
-                          <span className="text-red-500 text-sm">
-                            Fully Booked ❌
-                          </span>
-                        )}
+          <textarea
+            placeholder="Special requests (optional)"
+            className="luxury-input mt-8 w-full"
+            value={form.special}
+            onChange={(e) =>
+              setForm({ ...form, special: e.target.value })
+            }
+          />
 
-                        {isLimited && (
-                          <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs animate-pulse">
-                            Only {available} left
-                          </span>
-                        )}
-
-                        {!isFull && !isLimited && (
-                          <span className="text-green-400 text-sm">
-                            Available ✅
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            <textarea
-              placeholder="Special requests (optional)"
-              className="luxury-input"
-              value={form.specialRequest}
-              onChange={(e) =>
-                setForm({ ...form, specialRequest: e.target.value })
-              }
-            />
-
-            <button
-              disabled={loading || !form.time}
-              className="btn-gold w-full py-4 text-lg"
-            >
-              {loading ? "Processing..." : "Confirm Reservation"}
-            </button>
-          </form>
+          <button className="btn-gold w-full mt-8">
+            Confirm Reservation
+          </button>
         </motion.div>
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 };
 
-export default Reservations;
+export default Reservation;
