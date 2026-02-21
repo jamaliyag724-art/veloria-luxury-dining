@@ -53,13 +53,11 @@ const Checkout: React.FC = () => {
     pincode: "",
   });
 
-  /* ---------------- PRICE ---------------- */
   const subtotal = totalPrice;
   const discountedSubtotal = subtotal - couponDiscount;
   const taxAmount = Math.round(discountedSubtotal * TAX_RATE);
   const totalAmount = discountedSubtotal + taxAmount;
 
-  /* ---------------- FORM ---------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -67,7 +65,6 @@ const Checkout: React.FC = () => {
   const isFormValid =
     checkoutSchema.safeParse(formData).success && items.length > 0;
 
-  /* ---------------- PAYMENT ---------------- */
   const handlePayment = async () => {
     const validation = checkoutSchema.safeParse(formData);
     if (!validation.success || items.length === 0) return;
@@ -91,14 +88,14 @@ const Checkout: React.FC = () => {
     }
   };
 
-  /* ---------------- PROCESSING ---------------- */
+  /* ---------------- PROCESSING SCREEN ---------------- */
   if (step === "processing") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-          className="w-16 h-16 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full"
+          className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full"
         />
       </div>
     );
@@ -106,7 +103,7 @@ const Checkout: React.FC = () => {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
@@ -115,12 +112,12 @@ const Checkout: React.FC = () => {
 
           <button
             onClick={() => navigate("/menu")}
-            className="flex items-center gap-2 mb-10 text-zinc-400 hover:text-yellow-400 transition"
+            className="flex items-center gap-2 mb-10 text-muted-foreground hover:text-primary transition"
           >
             <ArrowLeft size={16} /> Back to Menu
           </button>
 
-          <h1 className="font-serif text-5xl text-center text-white mb-16">
+          <h1 className="font-serif text-5xl text-center mb-16">
             Checkout
           </h1>
 
@@ -128,10 +125,10 @@ const Checkout: React.FC = () => {
 
             {/* LEFT DELIVERY */}
             <div className="lg:col-span-2 relative">
-              <div className="absolute -inset-1 bg-yellow-400/10 blur-2xl opacity-40 rounded-3xl" />
+              <div className="absolute -inset-1 bg-primary/10 blur-2xl opacity-40 rounded-3xl" />
 
-              <div className="relative bg-white/5 backdrop-blur-2xl border border-yellow-400/20 rounded-3xl p-10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
-                <h2 className="font-serif text-2xl text-white mb-8">
+              <div className="relative bg-card backdrop-blur-2xl border border-border rounded-3xl p-10 shadow-xl">
+                <h2 className="font-serif text-2xl mb-8">
                   Delivery Details
                 </h2>
 
@@ -143,39 +140,39 @@ const Checkout: React.FC = () => {
                     ["city", "City"],
                   ].map(([key, label]) => (
                     <div key={key}>
-                      <label className="text-sm text-zinc-400 mb-1 block">
+                      <label className="text-sm text-muted-foreground mb-1 block">
                         {label}
                       </label>
                       <input
                         name={key}
                         value={(formData as any)[key]}
                         onChange={handleChange}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 outline-none transition"
+                        className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary/40 outline-none transition"
                       />
                     </div>
                   ))}
 
                   <div className="md:col-span-2">
-                    <label className="text-sm text-zinc-400 mb-1 block">
+                    <label className="text-sm text-muted-foreground mb-1 block">
                       Address
                     </label>
                     <input
                       name="address"
                       value={formData.address}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 outline-none transition"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary/40 outline-none transition"
                     />
                   </div>
 
                   <div>
-                    <label className="text-sm text-zinc-400 mb-1 block">
+                    <label className="text-sm text-muted-foreground mb-1 block">
                       Pincode
                     </label>
                     <input
                       name="pincode"
                       value={formData.pincode}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 outline-none transition"
+                      className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary/40 outline-none transition"
                     />
                   </div>
                 </div>
@@ -184,10 +181,10 @@ const Checkout: React.FC = () => {
 
             {/* RIGHT PAYMENT */}
             <div className="relative">
-              <div className="absolute -inset-1 bg-yellow-400/10 blur-2xl opacity-40 rounded-3xl" />
+              <div className="absolute -inset-1 bg-primary/10 blur-2xl opacity-40 rounded-3xl" />
 
-              <div className="relative bg-white/5 backdrop-blur-2xl border border-yellow-400/20 rounded-3xl p-8 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
-                <h2 className="font-serif text-xl text-white mb-6">
+              <div className="relative bg-card backdrop-blur-2xl border border-border rounded-3xl p-8 shadow-xl">
+                <h2 className="font-serif text-xl mb-6">
                   Payment Method
                 </h2>
 
@@ -201,11 +198,11 @@ const Checkout: React.FC = () => {
                     onClick={() => setPaymentMethod(m.id)}
                     className={`w-full mb-4 p-4 rounded-xl border transition ${
                       paymentMethod === m.id
-                        ? "border-yellow-400 bg-yellow-400/10"
-                        : "border-white/10"
+                        ? "border-primary bg-primary/10"
+                        : "border-border"
                     }`}
                   >
-                    <m.icon className="inline mr-2 text-yellow-400" />
+                    <m.icon className="inline mr-2 text-primary" />
                     {m.label}
                   </button>
                 ))}
@@ -227,7 +224,7 @@ const Checkout: React.FC = () => {
                 <button
                   disabled={!isFormValid}
                   onClick={handlePayment}
-                  className="w-full mt-8 py-4 rounded-xl font-medium bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-lg hover:shadow-yellow-400/40 transition disabled:opacity-50"
+                  className="w-full mt-8 py-4 rounded-xl font-medium bg-primary text-primary-foreground shadow-lg hover:opacity-90 transition disabled:opacity-50"
                 >
                   Pay {formatINR(totalAmount)}
                 </button>
