@@ -1,175 +1,158 @@
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send, CheckCircle, ShieldCheck } from "lucide-react";
-import { toast } from "sonner";
-import emailjs from "@emailjs/browser";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { MapPin, Phone, Clock } from "lucide-react";
 
-const subjectOptions = [
-  { value: "general", label: "General Inquiry" },
-  { value: "reservation", label: "Reservation Issue" },
-  { value: "events", label: "Private Events" },
-  { value: "order", label: "Order Support" },
-  { value: "feedback", label: "Feedback / Complaint" },
-];
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import CartModal from "@/components/cart/CartModal";
+import FloatingCart from "@/components/cart/FloatingCart";
+import ContactForm from "@/components/contact/ContactForm";
+import { restaurantInfo } from "@/data/restaurantData";
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-}
-
-const initialForm: FormData = {
-  name: "",
-  email: "",
-  phone: "",
-  subject: "",
-  message: "",
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
 };
 
-const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>(initialForm);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formRef.current) return;
-
-    setIsSubmitting(true);
-    try {
-      await emailjs.sendForm(
-        "service_bf3fnya",
-        "template_3jb6ome",
-        formRef.current,
-        "yvWssWWx94ibEP33n"
-      );
-      toast.success("Message sent successfully ✨");
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData(initialForm);
-      }, 4000);
-    } catch {
-      toast.error("Something went wrong.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const inputClass =
-    "w-full rounded-xl px-5 py-3 bg-white dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 outline-none transition-all duration-300";
+const Contact: React.FC = () => {
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <div>
-      <h2 className="font-serif text-2xl mb-8 text-zinc-900 dark:text-white">
-        Speak With Our Concierge
-      </h2>
+    <div className="relative min-h-screen bg-background text-foreground">
 
-      <AnimatePresence mode="wait">
-        {isSubmitted ? (
+      <Navbar onCartClick={() => setIsCartOpen(true)} />
+
+      <main className="pt-36 pb-36">
+        <div className="max-w-7xl mx-auto px-6">
+
+          {/* HEADER */}
           <motion.div
-            key="success"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-14"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.7 }}
+            className="text-center mb-24"
           >
-            <div className="w-20 h-20 bg-yellow-400/20 rounded-full flex items-center justify-center mx-auto mb-5">
-              <CheckCircle className="w-10 h-10 text-yellow-500" />
-            </div>
-            <h3 className="font-serif text-xl mb-2 text-zinc-900 dark:text-white">
-              Message Sent ✨
-            </h3>
-            <p className="text-zinc-500 dark:text-zinc-400">
-              Our concierge team will respond shortly.
+            <span className="text-primary tracking-[0.4em] text-xs uppercase">
+              Get in Touch
+            </span>
+
+            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6">
+              Speak With Our Concierge
+            </h1>
+
+            <div className="w-24 h-[2px] bg-primary mx-auto mb-6 rounded-full" />
+
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+              For reservations, private events, or general inquiries,
+              our team is delighted to assist you.
             </p>
           </motion.div>
-        ) : (
-          <motion.form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className="space-y-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <input
-              name="name"
-              placeholder="Full Name *"
-              value={formData.name}
-              onChange={handleChange}
-              className={inputClass}
-            />
 
-            <input
-              name="email"
-              type="email"
-              placeholder="Email Address *"
-              value={formData.email}
-              onChange={handleChange}
-              className={inputClass}
-            />
+          {/* GRID */}
+          <div className="grid lg:grid-cols-2 gap-20 items-start">
 
-            <input
-              name="phone"
-              placeholder="Phone Number (+91)"
-              value={formData.phone}
-              onChange={handleChange}
-              className={inputClass}
-            />
-
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className={inputClass}
+            {/* LEFT – FORM */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="relative"
             >
-              <option value="">Select a Subject *</option>
-              {subjectOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
+              <div className="absolute -inset-1 bg-primary/10 blur-2xl opacity-30 rounded-3xl" />
+
+              <div
+                className="
+                relative 
+                rounded-3xl p-12 
+                border 
+                backdrop-blur-2xl
+                bg-white/70 border-zinc-200 shadow-xl
+                dark:bg-white/5 dark:border-yellow-400/20 dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)]
+              "
+              >
+                <ContactForm />
+              </div>
+            </motion.div>
+
+            {/* RIGHT – INFO */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="space-y-10"
+            >
+              {[{
+                icon: MapPin,
+                title: "Visit Us",
+                lines: [restaurantInfo.address, restaurantInfo.city],
+              },{
+                icon: Phone,
+                title: "Call Us",
+                lines: [restaurantInfo.phone],
+              },{
+                icon: Clock,
+                title: "Hours",
+                lines: [
+                  restaurantInfo.hours.lunch,
+                  restaurantInfo.hours.dinner,
+                  restaurantInfo.hours.brunch,
+                ],
+              }].map((item, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ y: -6 }}
+                  className="
+                    rounded-2xl p-7 border transition-all
+                    bg-white border-zinc-200 shadow-md
+                    dark:bg-white/5 dark:border-white/10 dark:hover:border-yellow-400/40
+                  "
+                >
+                  <div className="flex gap-5">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <item.icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">
+                        {item.title}
+                      </h3>
+                      {item.lines.map((line, i) => (
+                        <p key={i} className="text-sm text-muted-foreground">
+                          {line}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
               ))}
-            </select>
 
-            <textarea
-              name="message"
-              rows={5}
-              placeholder="Your Message *"
-              value={formData.message}
-              onChange={handleChange}
-              className={`${inputClass} resize-none`}
-            />
+              {/* MAP */}
+              <div className="overflow-hidden h-[420px] rounded-3xl border border-border shadow-lg relative">
+                <span className="absolute top-4 left-4 z-10 bg-background/80 backdrop-blur px-4 py-1 rounded-full text-xs text-primary border border-border">
+                  Our Location
+                </span>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-medium shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300 disabled:opacity-50"
-            >
-              {isSubmitting ? "Sending..." : (
-                <>
-                  <Send className="inline w-4 h-4 mr-2" />
-                  Send Message
-                </>
-              )}
-            </button>
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515"
+                  width="100%"
+                  height="100%"
+                  loading="lazy"
+                  className="contrast-110"
+                />
+              </div>
 
-            <p className="flex items-center justify-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
-              <ShieldCheck size={14} />
-              Your information is kept private and secure.
-            </p>
-          </motion.form>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+      <FloatingCart onClick={() => setIsCartOpen(true)} />
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 };
 
-export default ContactForm;
+export default Contact;
