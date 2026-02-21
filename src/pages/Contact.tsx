@@ -43,22 +43,17 @@ const ContactForm: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormData]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
   };
 
-  const validate = (): boolean => {
+  const validate = () => {
     const newErrors: Partial<FormData> = {};
-
-    if (!formData.name.trim()) newErrors.name = "Full name is required.";
-    if (!formData.email.trim()) newErrors.email = "Email is required.";
-    else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email.";
+    if (!formData.name.trim()) newErrors.name = "Full name required";
+    if (!formData.email.trim()) newErrors.email = "Email required";
+    else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email";
     if (formData.phone && !phoneRegex.test(formData.phone))
-      newErrors.phone = "Invalid phone number.";
-    if (!formData.subject) newErrors.subject = "Select a subject.";
-    if (!formData.message.trim()) newErrors.message = "Message required.";
-
+      newErrors.phone = "Invalid phone";
+    if (!formData.subject) newErrors.subject = "Select subject";
+    if (!formData.message.trim()) newErrors.message = "Message required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -68,7 +63,6 @@ const ContactForm: React.FC = () => {
     if (!validate() || !formRef.current) return;
 
     setIsSubmitting(true);
-
     try {
       await emailjs.sendForm(
         "service_bf3fnya",
@@ -76,23 +70,21 @@ const ContactForm: React.FC = () => {
         formRef.current,
         "yvWssWWx94ibEP33n"
       );
-
-      toast.success("Message sent successfully ✨");
+      toast.success("Message sent ✨");
       setIsSubmitted(true);
-
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData(initialForm);
       }, 4000);
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const inputClass =
-    "w-full bg-input border border-border rounded-xl px-5 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition";
+  const inputStyle =
+    "w-full rounded-xl px-5 py-3 bg-white dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 outline-none transition";
 
   return (
     <div>
@@ -104,18 +96,17 @@ const ContactForm: React.FC = () => {
         {isSubmitted ? (
           <motion.div
             key="success"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             className="text-center py-14"
           >
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
-              <CheckCircle className="w-10 h-10 text-primary" />
+            <div className="w-20 h-20 bg-yellow-400/20 rounded-full flex items-center justify-center mx-auto mb-5">
+              <CheckCircle className="w-10 h-10 text-yellow-500" />
             </div>
             <h3 className="font-serif text-xl mb-2">
               Message Sent ✨
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-zinc-500 dark:text-zinc-400">
               Our concierge team will respond shortly.
             </p>
           </motion.div>
@@ -125,51 +116,39 @@ const ContactForm: React.FC = () => {
             ref={formRef}
             onSubmit={handleSubmit}
             className="space-y-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
           >
-            {/* Name */}
             <input
               name="name"
               placeholder="Full Name *"
               value={formData.name}
               onChange={handleChange}
-              className={inputClass}
+              className={inputStyle}
             />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
 
-            {/* Email */}
             <input
               name="email"
               placeholder="Email Address *"
               value={formData.email}
               onChange={handleChange}
-              className={inputClass}
+              className={inputStyle}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-            {/* Phone */}
             <input
               name="phone"
               placeholder="Phone Number (+91)"
               value={formData.phone}
               onChange={handleChange}
-              className={inputClass}
+              className={inputStyle}
             />
-            {errors.phone && (
-              <p className="text-sm text-destructive">{errors.phone}</p>
-            )}
+            {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
 
-            {/* Subject */}
             <select
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className={inputClass}
+              className={inputStyle}
             >
               <option value="">Select a Subject *</option>
               {subjectOptions.map((opt) => (
@@ -178,38 +157,32 @@ const ContactForm: React.FC = () => {
                 </option>
               ))}
             </select>
-            {errors.subject && (
-              <p className="text-sm text-destructive">{errors.subject}</p>
-            )}
+            {errors.subject && <p className="text-red-500 text-sm">{errors.subject}</p>}
 
-            {/* Message */}
             <textarea
               name="message"
               rows={5}
               placeholder="Your Message *"
               value={formData.message}
               onChange={handleChange}
-              className={`${inputClass} resize-none`}
+              className={`${inputStyle} resize-none`}
             />
-            {errors.message && (
-              <p className="text-sm text-destructive">{errors.message}</p>
-            )}
+            {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-gold w-full py-4 flex justify-center items-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-medium shadow-md hover:shadow-lg transition disabled:opacity-50"
             >
               {isSubmitting ? "Sending..." : (
                 <>
-                  <Send size={18} /> Send Message
+                  <Send className="inline w-4 h-4 mr-2" />
+                  Send Message
                 </>
               )}
             </button>
 
-            {/* Privacy */}
-            <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-2">
+            <p className="flex items-center justify-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
               <ShieldCheck size={14} />
               Your information is kept private and secure.
             </p>
