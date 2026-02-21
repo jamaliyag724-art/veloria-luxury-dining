@@ -14,32 +14,35 @@ const Reservations = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  /* ---------------- NEW STATES ---------------- */
   const [selectedDate, setSelectedDate] = useState("");
   const [timeSlots, setTimeSlots] = useState<any[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
-  /* ---------------- FETCH SLOTS ---------------- */
-const fetchSlots = async (date: string) => {
-  const { data, error } = await supabase
-    .from("table_availability")
-    .select("*")
-    .eq("date", date) // 🔥 direct use karo
-    .order("time_slot", { ascending: true });
+  /* ---------------- FETCH TIME SLOTS ---------------- */
+  const fetchSlots = async (date: string) => {
+    setLoadingSlots(true);
+    setSelectedTime(""); // reset time when date changes
 
-  if (error) {
-    console.error(error);
-    setTimeSlots([]);
-    return;
-  }
+    const { data, error } = await supabase
+      .from("table_availability")
+      .select("*")
+      .eq("date", date)
+      .order("time_slot", { ascending: true });
 
-  console.log("Fetched slots:", data); // debug ke liye
+    if (error) {
+      console.error("Slot fetch error:", error.message);
+      setTimeSlots([]);
+    } else {
+      setTimeSlots(data || []);
+    }
 
-  setTimeSlots(data || []);
-};
+    setLoadingSlots(false);
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden">
-      
+
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -79,7 +82,7 @@ const fetchSlots = async (date: string) => {
               <input placeholder="Mobile" className="lux-input" />
 
               <div className="relative">
-                <Users className="absolute left-4 top-4 text-gold w-4 h-4 opacity-70" />
+                <Users className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
                 <select className="lux-input pl-10">
                   {[1,2,3,4,5,6].map(n => (
                     <option key={n}>{n} Guest</option>
@@ -88,39 +91,38 @@ const fetchSlots = async (date: string) => {
               </div>
             </div>
 
-           {/* DATE */}
-<div className="relative">
-  <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
-  <input
-    type="date"
-    min={today}
-    value={selectedDate}
-    onChange={(e) => {
-      const value = e.target.value;
-      setSelectedDate(value);
-
-      if (value) {
-        fetchSlots(value);
-      }
-    }}
-    className="lux-input pl-10 text-white"
-  />
-</div>
-
-            {/* TIME (NOW DYNAMIC) */}
+            {/* DATE */}
             <div className="relative">
-              <Clock className="absolute left-4 top-4 text-gold w-4 h-4 opacity-70" />
+              <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
+              <input
+                type="date"
+                min={today}
+                value={selectedDate}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedDate(value);
+                  if (value) fetchSlots(value);
+                }}
+                className="lux-input pl-10 text-white"
+              />
+            </div>
+
+            {/* TIME */}
+            <div className="relative">
+              <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
               <select
                 value={selectedTime}
                 onChange={(e) => setSelectedTime(e.target.value)}
                 className="lux-input pl-10"
-                disabled={!selectedDate}
+                disabled={!selectedDate || loadingSlots}
               >
-                <option value="">Select Time</option>
-
-                {timeSlots.length === 0 && selectedDate && (
-                  <option disabled>No slots available</option>
-                )}
+                <option value="">
+                  {loadingSlots
+                    ? "Loading..."
+                    : selectedDate
+                    ? "Select Time"
+                    : "Select Date First"}
+                </option>
 
                 {timeSlots.map((slot) => {
                   const isFull =
