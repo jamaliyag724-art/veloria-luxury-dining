@@ -38,8 +38,17 @@ const ContactForm: React.FC = () => {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const formRef = useRef<HTMLFormElement>(null);
 
+  // ✅ LUXURY INPUT STYLE (Light + Dark Compatible)
   const inputStyle =
-    "w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 transition-all duration-300";
+    "w-full rounded-xl px-5 py-4 text-sm transition-all duration-300 outline-none shadow-sm " +
+
+    // LIGHT THEME
+    "bg-white border border-zinc-200 text-zinc-800 placeholder:text-zinc-400 " +
+    "focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400/30 " +
+
+    // DARK THEME
+    "dark:bg-zinc-900/60 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-500 " +
+    "dark:focus:border-yellow-400 dark:focus:ring-yellow-400/40 dark:shadow-black/40";
 
   const errorStyle =
     "border-red-400 focus:border-red-400 focus:ring-red-400/40";
@@ -103,12 +112,12 @@ const ContactForm: React.FC = () => {
 
   return (
     <div className="space-y-12">
+      {/* Header */}
       <div>
-        <h2 className="font-serif text-3xl mb-6 relative inline-block">
-  <span className="relative z-10">
-    Speak With Our Concierge
-  </span>
-        <p className="text-sm text-zinc-400">
+        <h2 className="font-serif text-3xl mb-3 text-zinc-900 dark:text-white">
+          Speak With Our Concierge
+        </h2>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
           We are delighted to assist you with reservations, events, or inquiries.
         </p>
       </div>
@@ -123,12 +132,12 @@ const ContactForm: React.FC = () => {
             className="text-center py-16"
           >
             <div className="w-24 h-24 bg-yellow-400/10 border border-yellow-400/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-12 h-12 text-yellow-400" />
+              <CheckCircle className="w-12 h-12 text-yellow-500" />
             </div>
-            <h3 className="font-serif text-xl text-white mb-2">
+            <h3 className="font-serif text-xl text-zinc-900 dark:text-white mb-2">
               Message Sent Successfully
             </h3>
-            <p className="text-zinc-400 text-sm">
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm">
               Our team will respond to you shortly.
             </p>
           </motion.div>
@@ -142,6 +151,7 @@ const ContactForm: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
+            {/* Inputs */}
             <div>
               <input
                 name="name"
@@ -219,17 +229,18 @@ const ContactForm: React.FC = () => {
               )}
             </div>
 
+            {/* Button */}
             <motion.button
               type="submit"
               disabled={isSubmitting}
               whileHover={isSubmitting ? {} : { scale: 1.02 }}
               whileTap={isSubmitting ? {} : { scale: 0.98 }}
-              className="w-full py-4 rounded-xl font-medium text-sm tracking-wide bg-yellow-400 text-black hover:bg-yellow-300 transition-all duration-300 disabled:opacity-60"
+              className="w-full py-4 rounded-xl font-medium text-sm tracking-wide bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-60"
             >
               {isSubmitting ? "Sending..." : "Send Message"}
             </motion.button>
 
-            <p className="flex items-center justify-center gap-1.5 text-zinc-500 text-xs text-center pt-2">
+            <p className="flex items-center justify-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs text-center pt-2">
               <ShieldCheck className="w-3.5 h-3.5" />
               Your information is kept private and secure.
             </p>
