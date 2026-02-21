@@ -36,8 +36,7 @@ const Contact: React.FC = () => {
             <span className="text-primary tracking-[0.4em] text-xs uppercase">
               Get in Touch
             </span>
-
-         <h2 className="font-serif text-3xl mb-6 relative inline-block">
+<h1 className="font-serif text-3xl mb-6 relative inline-block">
   <span className="relative z-10">
     Speak With Our Concierge
   </span>
@@ -51,7 +50,7 @@ const Contact: React.FC = () => {
   blur-[2px]
   dark:via-primary"
 />
-</h2>
+</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               For reservations, private events, or general inquiries,
               our team is delighted to assist you.
