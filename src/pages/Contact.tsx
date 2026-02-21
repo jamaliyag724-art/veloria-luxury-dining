@@ -37,16 +37,21 @@ const Contact: React.FC = () => {
               Get in Touch
             </span>
 
-            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6">
-              Speak With Our Concierge
-            </h1>
-<div className="w-32 h-[4px] mx-auto mb-6 rounded-full 
-  bg-gradient-to-r 
-  from-transparent 
-  via-primary 
-  to-transparent 
-  shadow-[0_0_20px_hsl(var(--primary)/0.4)]
-  dark:via-champagne" />
+         <h2 className="font-serif text-3xl mb-6 relative inline-block">
+  <span className="relative z-10">
+    Speak With Our Concierge
+  </span>
+
+<span className="absolute left-0 -bottom-2 w-full h-[6px]
+  bg-gradient-to-r
+  from-transparent
+  via-champagne
+  to-transparent
+  opacity-90
+  blur-[2px]
+  dark:via-primary"
+/>
+</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               For reservations, private events, or general inquiries,
               our team is delighted to assist you.
