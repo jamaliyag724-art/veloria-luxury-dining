@@ -1,154 +1,223 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { MapPin, Phone, Clock } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, CheckCircle, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
 
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import CartModal from "@/components/cart/CartModal";
-import FloatingCart from "@/components/cart/FloatingCart";
-import ContactForm from "@/components/contact/ContactForm";
-import { restaurantInfo } from "@/data/restaurantData";
+const subjectOptions = [
+  { value: "general", label: "General Inquiry" },
+  { value: "reservation", label: "Reservation Issue" },
+  { value: "events", label: "Private Events" },
+  { value: "order", label: "Order Support" },
+  { value: "feedback", label: "Feedback / Complaint" },
+];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
+const phoneRegex = /^(\+91[\s-]?)?[6-9]\d{9}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+const initialForm: FormData = {
+  name: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
 };
 
-const Contact: React.FC = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+const ContactForm: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState<FormData>(initialForm);
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof FormData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validate = (): boolean => {
+    const newErrors: Partial<FormData> = {};
+
+    if (!formData.name.trim()) newErrors.name = "Full name is required.";
+    if (!formData.email.trim()) newErrors.email = "Email is required.";
+    else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email.";
+    if (formData.phone && !phoneRegex.test(formData.phone))
+      newErrors.phone = "Invalid phone number.";
+    if (!formData.subject) newErrors.subject = "Select a subject.";
+    if (!formData.message.trim()) newErrors.message = "Message required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate() || !formRef.current) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.sendForm(
+        "service_bf3fnya",
+        "template_3jb6ome",
+        formRef.current,
+        "yvWssWWx94ibEP33n"
+      );
+
+      toast.success("Message sent successfully ✨");
+      setIsSubmitted(true);
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData(initialForm);
+      }, 4000);
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const inputClass =
+    "w-full bg-input border border-border rounded-xl px-5 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none transition";
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div>
+      <h2 className="font-serif text-2xl mb-8">
+        Speak With Our Concierge
+      </h2>
 
-      {/* Soft luxury gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/20 pointer-events-none" />
-
-      <Navbar onCartClick={() => setIsCartOpen(true)} />
-
-      <main className="relative z-10 pt-40 pb-40">
-        <div className="max-w-7xl mx-auto px-6">
-
-          {/* HEADER */}
+      <AnimatePresence mode="wait">
+        {isSubmitted ? (
           <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ duration: 0.7 }}
-            className="text-center mb-28"
+            key="success"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center py-14"
           >
-            <span className="text-primary tracking-[0.35em] text-xs uppercase">
-              Get in Touch
-            </span>
-
-            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6 leading-tight">
-              Speak With Our Concierge
-            </h1>
-
-            <div className="w-20 h-[2px] bg-primary mx-auto mb-6 rounded-full" />
-
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              For reservations, private events, or general inquiries,
-              our team is delighted to assist you.
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
+              <CheckCircle className="w-10 h-10 text-primary" />
+            </div>
+            <h3 className="font-serif text-xl mb-2">
+              Message Sent ✨
+            </h3>
+            <p className="text-muted-foreground">
+              Our concierge team will respond shortly.
             </p>
           </motion.div>
+        ) : (
+          <motion.form
+            key="form"
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {/* Name */}
+            <input
+              name="name"
+              placeholder="Full Name *"
+              value={formData.name}
+              onChange={handleChange}
+              className={inputClass}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name}</p>
+            )}
 
-          {/* GRID */}
-          <div className="grid lg:grid-cols-2 gap-24 items-start">
+            {/* Email */}
+            <input
+              name="email"
+              placeholder="Email Address *"
+              value={formData.email}
+              onChange={handleChange}
+              className={inputClass}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">{errors.email}</p>
+            )}
 
-            {/* LEFT – FORM */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="relative"
+            {/* Phone */}
+            <input
+              name="phone"
+              placeholder="Phone Number (+91)"
+              value={formData.phone}
+              onChange={handleChange}
+              className={inputClass}
+            />
+            {errors.phone && (
+              <p className="text-sm text-destructive">{errors.phone}</p>
+            )}
+
+            {/* Subject */}
+            <select
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              className={inputClass}
             >
-              {/* soft glow */}
-              <div className="absolute -inset-2 bg-primary/5 blur-3xl opacity-40 rounded-[40px]" />
+              <option value="">Select a Subject *</option>
+              {subjectOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            {errors.subject && (
+              <p className="text-sm text-destructive">{errors.subject}</p>
+            )}
 
-              <div className="relative bg-card border border-border rounded-[36px] p-14 shadow-[0_25px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
-                <ContactForm />
-              </div>
-            </motion.div>
+            {/* Message */}
+            <textarea
+              name="message"
+              rows={5}
+              placeholder="Your Message *"
+              value={formData.message}
+              onChange={handleChange}
+              className={`${inputClass} resize-none`}
+            />
+            {errors.message && (
+              <p className="text-sm text-destructive">{errors.message}</p>
+            )}
 
-            {/* RIGHT – INFO */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="space-y-10"
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn-gold w-full py-4 flex justify-center items-center gap-2 disabled:opacity-50"
             >
-              {/* Info Cards */}
-              <div className="space-y-6">
+              {isSubmitting ? "Sending..." : (
+                <>
+                  <Send size={18} /> Send Message
+                </>
+              )}
+            </button>
 
-                {[{
-                  icon: MapPin,
-                  title: "Visit Us",
-                  lines: [restaurantInfo.address, restaurantInfo.city],
-                },{
-                  icon: Phone,
-                  title: "Call Us",
-                  lines: [restaurantInfo.phone],
-                },{
-                  icon: Clock,
-                  title: "Hours",
-                  lines: [
-                    restaurantInfo.hours.lunch,
-                    restaurantInfo.hours.dinner,
-                    restaurantInfo.hours.brunch,
-                  ],
-                }].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ y: -6 }}
-                    className="bg-card border border-border rounded-2xl p-7 transition-all hover:border-primary/40 hover:shadow-lg"
-                  >
-                    <div className="flex gap-5">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <item.icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium mb-2">
-                          {item.title}
-                        </h3>
-                        {item.lines.map((line, i) => (
-                          <p key={i} className="text-sm text-muted-foreground">
-                            {line}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-
-              </div>
-
-              {/* MAP */}
-              <div className="overflow-hidden h-[430px] rounded-[36px] border border-border shadow-lg relative bg-card">
-                <span className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur px-4 py-1 rounded-full text-xs text-primary border border-border">
-                  Our Location
-                </span>
-
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515"
-                  width="100%"
-                  height="100%"
-                  loading="lazy"
-                  className="contrast-110"
-                />
-              </div>
-
-            </motion.div>
-          </div>
-        </div>
-      </main>
-
-      <Footer />
-      <FloatingCart onClick={() => setIsCartOpen(true)} />
-      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+            {/* Privacy */}
+            <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-2">
+              <ShieldCheck size={14} />
+              Your information is kept private and secure.
+            </p>
+          </motion.form>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-export default Contact;
+export default ContactForm;
