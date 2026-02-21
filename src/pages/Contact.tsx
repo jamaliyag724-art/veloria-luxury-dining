@@ -33,10 +33,10 @@ const Contact: React.FC = () => {
             transition={{ duration: 0.7 }}
             className="text-center mb-24"
           >
-            <span className="text-primary tracking-[0.4em] text-xs uppercase">
-              Get in Touch
-            </span>
-<h1 className="font-serif text-3xl mb-6 relative inline-block">
+            <span className="text-primary tracking-[0.4em] text-xs uppercase block mb-4">
+  Get in Touch
+</span>
+<h1 className="font-serif text-5xl md:text-6xl mt-2 mb-8 leading-tight">
   <span className="relative z-10">
     Speak With Our Concierge
   </span>
