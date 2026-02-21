@@ -18,26 +18,24 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { VeloriaBrandLoader, RouteLoaderRenderer } from "@/components/ui/loaders";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
-
-/* Pages */
-import Index from "@/pages/Index";
-import Menu from "@/pages/Menu";
-import Reservations from "@/pages/Reservations";
-import Checkout from "@/pages/Checkout";
-import OrderSuccess from "@/pages/OrderSuccess";
-import ReservationSuccess from "@/pages/ReservationSuccess";
-import ReservationStatus from "@/pages/ReservationStatus";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact";
-import TrackOrder from "@/pages/TrackOrder";
-import NotFound from "@/pages/NotFound";
+import Index from "./pages/Index";
+import Menu from "./pages/Menu";
+import Reservations from "./pages/Reservations";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
+import ReservationSuccess from "./pages/ReservationSuccess";
+import ReservationStatus from "./pages/ReservationStatus";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import TrackOrder from "./pages/TrackOrder";
+import NotFound from "./pages/NotFound";
 
 /* Admin */
-import Admin from "@/pages/Admin";
-import AdminOrders from "@/pages/AdminOrders";
-import AdminReservations from "@/pages/AdminReservations";
-import AdminLogin from "@/pages/AdminLogin";
-import AdminMenu from "@/pages/AdminMenu";
+import Admin from "./pages/Admin";
+import AdminOrders from "./pages/AdminOrders";
+import AdminReservations from "./pages/AdminReservations";
+import AdminLogin from "./pages/AdminLogin";
+import AdminMenu from "./pages/AdminMenu";
 
 const queryClient = new QueryClient();
 
