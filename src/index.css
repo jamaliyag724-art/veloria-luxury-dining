@@ -4,9 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===============================
-   ROOT THEME VARIABLES
-================================ */
 @layer base {
   :root {
     --background: 40 33% 97%;
@@ -47,19 +44,6 @@
     --border: 0 0% 18%;
     --input: 0 0% 18%;
     --ring: 43 76% 52%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 92%;
-  }
-
-  .dark body {
-    background: radial-gradient(
-        circle at 20% 10%,
-        hsl(43 76% 52% / 0.05),
-        transparent 40%
-      ),
-      linear-gradient(180deg, #0c0c0c 0%, #111111 100%);
   }
 
   * {
@@ -72,105 +56,70 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,h2,h3,h4,h5,h6 {
     @apply font-serif tracking-tight;
   }
 }
 
-/* ===============================
-   COMPONENTS
-================================ */
+/* ================= COMPONENTS ================= */
+
 @layer components {
 
-  /* GOLD BUTTON */
   .btn-gold {
     @apply relative overflow-hidden bg-primary text-primary-foreground px-8 py-3 rounded-full font-medium transition-all duration-300;
   }
 
-  .btn-gold:hover {
-    transform: scale(1.05);
-    box-shadow: 0 12px 40px -12px hsl(43 76% 52% / 0.4);
-  }
-
-  /* OUTLINE BUTTON */
   .btn-outline-gold {
     @apply px-6 py-3 rounded-full border border-primary text-primary font-medium transition-all duration-300;
   }
 
-  .btn-outline-gold:hover {
-    @apply bg-primary text-primary-foreground;
-  }
-
-  /* GLASS CARD */
   .glass-card {
     @apply bg-card/80 backdrop-blur-md rounded-2xl border border-border/50;
-    box-shadow: 0 10px 40px hsl(0 0% 0% / 0.15);
   }
 
-  .dark .glass-card {
-    background: hsl(0 0% 100% / 0.04);
-    backdrop-filter: blur(18px);
-    border: 1px solid hsl(43 76% 52% / 0.15);
-    box-shadow:
-      0 10px 40px hsl(0 0% 0% / 0.6),
-      inset 0 1px 0 hsl(0 0% 100% / 0.05);
+  /* ✅ FIXED INPUT CLASS (IMPORTANT) */
+  .lux-input {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white;
+    outline: none;
+    transition: all 0.3s ease;
   }
 
-  /* ===== FIXED LUXURY INPUT ===== */
-.lux-input {
-  width: 100%;
-  padding: 14px 20px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: white;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.lux-input::placeholder {
-  color: rgba(255,255,255,0.6);
-}
-
-.lux-input:focus {
-  border-color: #facc15;
-  box-shadow: 0 0 0 3px rgba(250,204,21,0.2);
-}
-
-  /* DARK MODE INPUT FIX */
-  .dark .luxury-input {
-    background: hsl(0 0% 100% / 0.05);
-    border: 1px solid hsl(0 0% 100% / 0.12);
-    color: hsl(0 0% 92%);
+  .lux-input::placeholder {
+    color: rgba(255,255,255,0.6);
   }
 
-  .dark .luxury-input::placeholder {
-    color: hsl(0 0% 65%);
+  .lux-input:focus {
+    border-color: #facc15;
+    box-shadow: 0 0 0 3px rgba(250,204,21,0.2);
   }
 
-  .dark .luxury-input:focus {
-    border-color: hsl(43 76% 52%);
-    box-shadow: 0 0 0 3px hsl(43 76% 52% / 0.2);
+  /* ✅ DARK FIX */
+  .dark .lux-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: white;
   }
 
-  /* FIX SELECT DROPDOWN TEXT */
-  select.luxury-input option {
+  /* ✅ SELECT DROPDOWN FIX (THIS WAS BREAKING IT) */
+  select.lux-input {
+    appearance: auto;
+    background-color: rgba(255,255,255,0.08);
+  }
+
+  select.lux-input option {
     color: black;
+    background: white;
   }
 
-  .dark select.luxury-input option {
-    color: black;
-  }
-
-  /* SECTION */
-  .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
 }
 
-/* ===============================
-   UTILITIES
-================================ */
+/* ================= UTILITIES ================= */
+
 @layer utilities {
   .font-serif {
     font-family: 'Cormorant Garamond', serif;
@@ -178,9 +127,5 @@
 
   .font-sans {
     font-family: 'Nunito Sans', sans-serif;
-  }
-
-  .perspective-1000 {
-    perspective: 1000px;
   }
 }
