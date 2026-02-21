@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock, Users } from "lucide-react";
+import { CalendarDays, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -17,38 +17,112 @@ const Reservations = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [timeSlots, setTimeSlots] = useState<any[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
-  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  /* ---------------- FETCH TIME SLOTS ---------------- */
+  /* ================= FETCH SLOTS ================= */
   const fetchSlots = async (date: string) => {
-    setLoadingSlots(true);
-    setSelectedTime(""); // reset time when date changes
+    if (!date) return;
 
-    const { data, error } = await supabase
-      .from("table_availability")
+    setLoading(true);
+
+    // Get base slot definitions
+    const { data: dailySlots } = await supabase
+      .from("daily_slots")
       .select("*")
-      .eq("date", date)
       .order("time_slot", { ascending: true });
 
-    if (error) {
-      console.error("Slot fetch error:", error.message);
-      setTimeSlots([]);
-    } else {
-      setTimeSlots(data || []);
+    // Get booked data for selected date
+    const { data: availability } = await supabase
+      .from("table_availability")
+      .select("*")
+      .eq("date", date);
+
+    const merged =
+      dailySlots?.map((slot) => {
+        const existing = availability?.find(
+          (a) => a.time_slot === slot.time_slot
+        );
+
+        return {
+          time_slot: slot.time_slot,
+          total_tables: slot.total_tables,
+          booked_tables: existing?.booked_tables ?? 0,
+        };
+      }) || [];
+
+    setTimeSlots(merged);
+    setSelectedTime("");
+    setLoading(false);
+  };
+
+  /* ================= BOOK TABLE ================= */
+  const handleReservation = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedDate || !selectedTime) {
+      alert("Please select date and time");
+      return;
     }
 
-    setLoadingSlots(false);
+    setSubmitting(true);
+
+    // Re-check latest availability
+    const { data: existing } = await supabase
+      .from("table_availability")
+      .select("*")
+      .eq("date", selectedDate)
+      .eq("time_slot", selectedTime)
+      .maybeSingle();
+
+    const selectedSlot = timeSlots.find(
+      (s) => s.time_slot === selectedTime
+    );
+
+    if (!selectedSlot) {
+      alert("Invalid slot");
+      setSubmitting(false);
+      return;
+    }
+
+    const currentBooked = existing?.booked_tables ?? 0;
+
+    if (currentBooked >= selectedSlot.total_tables) {
+      alert("Slot fully booked");
+      setSubmitting(false);
+      return;
+    }
+
+    if (existing) {
+      await supabase
+        .from("table_availability")
+        .update({
+          booked_tables: currentBooked + 1,
+        })
+        .eq("id", existing.id);
+    } else {
+      await supabase.from("table_availability").insert({
+        date: selectedDate,
+        time_slot: selectedTime,
+        total_tables: selectedSlot.total_tables,
+        booked_tables: 1,
+      });
+    }
+
+    alert("Reservation Confirmed 🎉");
+
+    await fetchSlots(selectedDate);
+    setSubmitting(false);
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url(/main.webp)" }}
       />
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
@@ -58,121 +132,76 @@ const Reservations = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-3xl mx-auto 
-                     bg-white/10 
-                     backdrop-blur-2xl 
-                     border border-white/20
-                     rounded-[40px] 
-                     p-12 
-                     shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+          bg-black/40 backdrop-blur-xl
+          border border-yellow-500/20
+          rounded-[40px] p-12 shadow-2xl"
         >
-          <h1 className="font-serif text-4xl text-white text-center mb-10">
+          <h1 className="font-serif text-4xl text-center text-white mb-10">
             Make a Reservation
           </h1>
 
-          <form className="space-y-6">
-
-            {/* ROW 1 */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <input placeholder="Full Name" className="lux-input" />
-              <input placeholder="Email" className="lux-input" />
-            </div>
-
-            {/* ROW 2 */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <input placeholder="Mobile" className="lux-input" />
-
-              <div className="relative">
-                <Users className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
-                <select className="lux-input pl-10">
-                  {[1,2,3,4,5,6].map(n => (
-                    <option key={n}>{n} Guest</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+          <form onSubmit={handleReservation} className="space-y-6">
 
             {/* DATE */}
             <div className="relative">
-              <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
+              <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4" />
               <input
                 type="date"
                 min={today}
                 value={selectedDate}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedDate(value);
-                  if (value) fetchSlots(value);
+                  setSelectedDate(e.target.value);
+                  fetchSlots(e.target.value);
                 }}
-                className="lux-input pl-10 text-white"
+                className="luxury-input pl-10"
               />
             </div>
 
             {/* TIME */}
             <div className="relative">
-              <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
+              <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4" />
               <select
                 value={selectedTime}
                 onChange={(e) => setSelectedTime(e.target.value)}
-                className="lux-input pl-10"
-                disabled={!selectedDate || loadingSlots}
+                disabled={!selectedDate || loading}
+                className="luxury-input pl-10"
               >
                 <option value="">
-                  {loadingSlots
-                    ? "Loading..."
-                    : selectedDate
-                    ? "Select Time"
-                    : "Select Date First"}
+                  {loading ? "Loading..." : "Select Time"}
                 </option>
 
                 {timeSlots.map((slot) => {
-                  const isFull =
-                    slot.booked_tables >= slot.total_tables;
+                  const remaining =
+                    slot.total_tables - slot.booked_tables;
 
                   return (
                     <option
-                      key={slot.id}
+                      key={slot.time_slot}
                       value={slot.time_slot}
-                      disabled={isFull}
+                      disabled={remaining <= 0}
                     >
-                      {slot.time_slot}
-                      {isFull
-                        ? " (Full)"
-                        : ` (${slot.total_tables - slot.booked_tables} left)`}
+                      {slot.time_slot}{" "}
+                      {remaining <= 0
+                        ? "❌ Full"
+                        : remaining <= 2
+                        ? `⚠️ Only ${remaining} left`
+                        : `✅ Available`}
                     </option>
                   );
                 })}
               </select>
             </div>
 
-            {/* MESSAGE */}
-            <textarea
-              placeholder="Special requests (optional)"
-              className="lux-input min-h-[120px]"
-            />
-
             <button
               type="submit"
+              disabled={submitting}
               className="w-full py-4 rounded-full 
-                         bg-gradient-to-r from-yellow-500 to-amber-400
-                         text-black font-semibold
-                         hover:scale-105 transition-all duration-300"
+              bg-gradient-to-r from-yellow-500 to-amber-400
+              text-black font-semibold 
+              hover:scale-105 transition"
             >
-              Confirm Reservation
+              {submitting ? "Processing..." : "Confirm Reservation"}
             </button>
-
-            <div className="text-center mt-6">
-              <p className="text-white/70 text-sm mb-2">
-                Already have a Reservation ID?
-              </p>
-              <button
-                type="button"
-                onClick={() => navigate("/reservation-status")}
-                className="px-6 py-2 rounded-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
-              >
-                Track Reservation
-              </button>
-            </div>
-
           </form>
         </motion.div>
       </main>
