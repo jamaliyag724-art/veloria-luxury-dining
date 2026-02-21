@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Navbar from "@/components/layout/Navbar";
@@ -13,20 +13,32 @@ const Reservations = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    guests: "1",
+    date: "",
+    time: "",
+    message: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedDate || !selectedTime) {
+    if (!formData.date || !formData.time) {
       alert("Please select date and time");
       return;
     }
 
-    alert(
-      `Reservation Confirmed 🎉\nDate: ${selectedDate}\nTime: ${selectedTime}`
-    );
+    alert("Reservation Confirmed 🎉");
+    console.log(formData);
   };
 
   return (
@@ -58,15 +70,64 @@ const Reservations = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
+            {/* ROW 1 */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <input
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                className="lux-input"
+                required
+              />
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                className="lux-input"
+                required
+              />
+            </div>
+
+            {/* ROW 2 */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <input
+                name="mobile"
+                placeholder="Mobile"
+                value={formData.mobile}
+                onChange={handleChange}
+                className="lux-input"
+                required
+              />
+
+              <div className="relative">
+                <Users className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
+                <select
+                  name="guests"
+                  value={formData.guests}
+                  onChange={handleChange}
+                  className="lux-input pl-10"
+                >
+                  {[1,2,3,4,5,6].map(n => (
+                    <option key={n} value={n}>{n} Guest</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {/* DATE */}
             <div className="relative">
               <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
               <input
                 type="date"
+                name="date"
                 min={today}
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                value={formData.date}
+                onChange={handleChange}
                 className="lux-input pl-10"
+                required
               />
             </div>
 
@@ -74,10 +135,12 @@ const Reservations = () => {
             <div className="relative">
               <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
               <select
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-                disabled={!selectedDate}
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                disabled={!formData.date}
                 className="lux-input pl-10"
+                required
               >
                 <option value="">Select Time</option>
                 <option>12:00 PM</option>
@@ -89,6 +152,15 @@ const Reservations = () => {
                 <option>9:00 PM</option>
               </select>
             </div>
+
+            {/* MESSAGE */}
+            <textarea
+              name="message"
+              placeholder="Special requests (optional)"
+              value={formData.message}
+              onChange={handleChange}
+              className="lux-input min-h-[120px]"
+            />
 
             <button
               type="submit"
