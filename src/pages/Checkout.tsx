@@ -19,7 +19,7 @@ import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrderContext";
 import { formatINR } from "@/lib/currency";
 
-/* -------------------- VALIDATION -------------------- */
+/* ---------------- VALIDATION ---------------- */
 const checkoutSchema = z.object({
   fullName: z.string().min(2),
   email: z.string().email(),
@@ -53,13 +53,13 @@ const Checkout: React.FC = () => {
     pincode: "",
   });
 
-  /* -------------------- PRICE -------------------- */
+  /* ---------------- PRICE ---------------- */
   const subtotal = totalPrice;
   const discountedSubtotal = subtotal - couponDiscount;
   const taxAmount = Math.round(discountedSubtotal * TAX_RATE);
   const totalAmount = discountedSubtotal + taxAmount;
 
-  /* -------------------- FORM -------------------- */
+  /* ---------------- FORM ---------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -67,7 +67,7 @@ const Checkout: React.FC = () => {
   const isFormValid =
     checkoutSchema.safeParse(formData).success && items.length > 0;
 
-  /* -------------------- FAKE PAYMENT -------------------- */
+  /* ---------------- PAYMENT ---------------- */
   const handlePayment = async () => {
     const validation = checkoutSchema.safeParse(formData);
     if (!validation.success || items.length === 0) return;
@@ -76,12 +76,7 @@ const Checkout: React.FC = () => {
 
     try {
       const orderId = await addOrder({
-        fullName: validation.data.fullName,
-        email: validation.data.email,
-        mobile: validation.data.mobile,
-        address: validation.data.address,
-        city: validation.data.city,
-        pincode: validation.data.pincode,
+        ...validation.data,
         items,
         subtotal: discountedSubtotal,
         tax: taxAmount,
@@ -90,147 +85,155 @@ const Checkout: React.FC = () => {
 
       confetti({ particleCount: 120, spread: 80 });
       clearCart();
-
       navigate(`/order-success/${orderId}`);
-    } catch (err) {
-      console.error("Fake payment failed:", err);
+    } catch {
       setStep("payment");
     }
   };
 
-  /* -------------------- PROCESSING -------------------- */
+  /* ---------------- PROCESSING ---------------- */
   if (step === "processing") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-black">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-          className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full"
+          className="w-16 h-16 border-4 border-yellow-400/20 border-t-yellow-400 rounded-full"
         />
       </div>
     );
   }
 
-  /* -------------------- UI -------------------- */
+  /* ---------------- UI ---------------- */
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black">
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      <main className="pt-24 pb-24">
-        <div className="section-container max-w-5xl mx-auto">
+      <main className="pt-32 pb-32">
+        <div className="max-w-6xl mx-auto px-6">
+
           <button
             onClick={() => navigate("/menu")}
-            className="flex items-center gap-2 mb-6 text-muted-foreground hover:text-primary"
+            className="flex items-center gap-2 mb-10 text-zinc-400 hover:text-yellow-400 transition"
           >
             <ArrowLeft size={16} /> Back to Menu
           </button>
 
-          <h1 className="font-serif text-4xl text-center mb-10">
+          <h1 className="font-serif text-5xl text-center text-white mb-16">
             Checkout
           </h1>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* DELIVERY FORM */}
-            <div className="lg:col-span-2 glass-card p-6">
-              <h2 className="font-serif text-xl mb-6">
-                Delivery Details
-              </h2>
+          <div className="grid lg:grid-cols-3 gap-10 items-start">
 
-              <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  ["fullName", "Full Name"],
-                  ["email", "Email"],
-                  ["mobile", "Mobile"],
-                  ["city", "City"],
-                ].map(([key, label]) => (
-                  <div key={key}>
-                    <label className="text-sm">{label}</label>
+            {/* LEFT DELIVERY */}
+            <div className="lg:col-span-2 relative">
+              <div className="absolute -inset-1 bg-yellow-400/10 blur-2xl opacity-40 rounded-3xl" />
+
+              <div className="relative bg-white/5 backdrop-blur-2xl border border-yellow-400/20 rounded-3xl p-10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
+                <h2 className="font-serif text-2xl text-white mb-8">
+                  Delivery Details
+                </h2>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[
+                    ["fullName", "Full Name"],
+                    ["email", "Email"],
+                    ["mobile", "Mobile"],
+                    ["city", "City"],
+                  ].map(([key, label]) => (
+                    <div key={key}>
+                      <label className="text-sm text-zinc-400 mb-1 block">
+                        {label}
+                      </label>
+                      <input
+                        name={key}
+                        value={(formData as any)[key]}
+                        onChange={handleChange}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 outline-none transition"
+                      />
+                    </div>
+                  ))}
+
+                  <div className="md:col-span-2">
+                    <label className="text-sm text-zinc-400 mb-1 block">
+                      Address
+                    </label>
                     <input
-                      name={key}
-                      value={(formData as any)[key]}
+                      name="address"
+                      value={formData.address}
                       onChange={handleChange}
-                      className="luxury-input"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 outline-none transition"
                     />
                   </div>
-                ))}
 
-                <div className="md:col-span-2">
-                  <label className="text-sm">Address</label>
-                  <input
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    className="luxury-input"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm">Pincode</label>
-                  <input
-                    name="pincode"
-                    value={formData.pincode}
-                    onChange={handleChange}
-                    className="luxury-input"
-                  />
+                  <div>
+                    <label className="text-sm text-zinc-400 mb-1 block">
+                      Pincode
+                    </label>
+                    <input
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 outline-none transition"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* PAYMENT */}
-            <div className="glass-card p-6 h-fit">
-              <h2 className="font-serif text-xl mb-6">
-                Payment Method
-              </h2>
+            {/* RIGHT PAYMENT */}
+            <div className="relative">
+              <div className="absolute -inset-1 bg-yellow-400/10 blur-2xl opacity-40 rounded-3xl" />
 
-              {[
-                { id: "card", icon: CreditCard, label: "Card" },
-                { id: "upi", icon: Smartphone, label: "UPI" },
-                { id: "wallet", icon: Wallet, label: "Wallet" },
-              ].map((m) => (
+              <div className="relative bg-white/5 backdrop-blur-2xl border border-yellow-400/20 rounded-3xl p-8 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
+                <h2 className="font-serif text-xl text-white mb-6">
+                  Payment Method
+                </h2>
+
+                {[
+                  { id: "card", icon: CreditCard, label: "Card" },
+                  { id: "upi", icon: Smartphone, label: "UPI" },
+                  { id: "wallet", icon: Wallet, label: "Wallet" },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setPaymentMethod(m.id)}
+                    className={`w-full mb-4 p-4 rounded-xl border transition ${
+                      paymentMethod === m.id
+                        ? "border-yellow-400 bg-yellow-400/10"
+                        : "border-white/10"
+                    }`}
+                  >
+                    <m.icon className="inline mr-2 text-yellow-400" />
+                    {m.label}
+                  </button>
+                ))}
+
+                <CouponInput
+                  subtotal={subtotal}
+                  onApply={(disc, code) => {
+                    setCouponDiscount(disc);
+                    setCouponCode(code);
+                  }}
+                  onRemove={() => {
+                    setCouponDiscount(0);
+                    setCouponCode(null);
+                  }}
+                  appliedCode={couponCode}
+                  discount={couponDiscount}
+                />
+
                 <button
-                  key={m.id}
-                  onClick={() => setPaymentMethod(m.id)}
-                  className={`w-full mb-3 p-3 rounded-xl border ${
-                    paymentMethod === m.id
-                      ? "border-primary bg-primary/5"
-                      : "border-border"
-                  }`}
+                  disabled={!isFormValid}
+                  onClick={handlePayment}
+                  className="w-full mt-8 py-4 rounded-xl font-medium bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-lg hover:shadow-yellow-400/40 transition disabled:opacity-50"
                 >
-                  <m.icon className="inline mr-2" /> {m.label}
+                  Pay {formatINR(totalAmount)}
                 </button>
-              ))}
-
-              <CouponInput
-                subtotal={subtotal}
-                onApply={(disc, code) => { setCouponDiscount(disc); setCouponCode(code); }}
-                onRemove={() => { setCouponDiscount(0); setCouponCode(null); }}
-                appliedCode={couponCode}
-                discount={couponDiscount}
-              />
-
-              {couponDiscount > 0 && (
-                <div className="mt-3 text-sm space-y-1">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span><span>{formatINR(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-primary">
-                    <span>Discount</span><span>-{formatINR(couponDiscount)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Tax (10%)</span><span>{formatINR(taxAmount)}</span>
-                  </div>
-                </div>
-              )}
-
-              <button
-                disabled={!isFormValid}
-                onClick={handlePayment}
-                className="btn-gold w-full mt-6 disabled:opacity-50"
-              >
-                Pay {formatINR(totalAmount)}
-              </button>
+              </div>
             </div>
+
           </div>
         </div>
       </main>
