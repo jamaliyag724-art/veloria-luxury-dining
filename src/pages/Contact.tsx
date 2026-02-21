@@ -40,66 +40,79 @@ const Contact: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-hidden">
+
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(250,204,21,0.08),transparent_40%)]" />
+
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-      <main className="pt-28 pb-28">
+      <main className="relative z-10 pt-32 pb-32">
         <div className="section-container">
+
           {/* HEADER */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="visible"
             transition={{ duration: 0.7 }}
-            className="text-center mb-20"
+            className="text-center mb-24"
           >
-            <span className="text-primary tracking-[0.3em] text-xs uppercase">
+            <span className="text-yellow-400 tracking-[0.35em] text-xs uppercase">
               Get in Touch
             </span>
-            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6">
+
+            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6 text-white">
               Contact Us
             </h1>
-            <div className="w-20 h-[2px] bg-primary mx-auto mb-6 rounded-full" />
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+
+            <div className="w-24 h-[2px] bg-yellow-400 mx-auto mb-6 rounded-full" />
+
+            <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
               For reservations, private events, or general inquiries,
               our team is happy to assist you.
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-16">
-            {/* FORM */}
+          <div className="grid lg:grid-cols-2 gap-20">
+
+            {/* FORM SIDE */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               transition={{ duration: 0.7, delay: 0.1 }}
+              className="bg-white/5 backdrop-blur-xl border border-yellow-400/10 rounded-3xl p-10 shadow-2xl"
             >
               <ContactForm />
             </motion.div>
 
-            {/* INFO + MAP */}
+            {/* INFO SIDE */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="space-y-10"
+              className="space-y-12"
             >
-              <div className="grid sm:grid-cols-2 gap-5">
+              <div className="grid sm:grid-cols-2 gap-6">
                 {contactDetails.map((item) => (
                   <motion.div
                     key={item.title}
-                    whileHover={{ y: -4 }}
-                    className="glass-card p-6 rounded-2xl"
+                    whileHover={{ y: -6 }}
+                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 transition-all hover:border-yellow-400/30"
                   >
                     <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <item.icon className="w-5 h-5 text-primary" />
+                      <div className="w-12 h-12 bg-yellow-400/10 rounded-full flex items-center justify-center">
+                        <item.icon className="w-5 h-5 text-yellow-400" />
                       </div>
                       <div>
-                        <h3 className="font-medium mb-1">{item.title}</h3>
+                        <h3 className="font-medium mb-2 text-white">
+                          {item.title}
+                        </h3>
                         {item.lines.map((line, i) => (
-                          <p key={i} className="text-sm text-muted-foreground">
+                          <p key={i} className="text-sm text-zinc-400">
                             {line}
                           </p>
                         ))}
@@ -110,8 +123,8 @@ const Contact: React.FC = () => {
               </div>
 
               {/* MAP */}
-              <div className="glass-card overflow-hidden h-[420px] rounded-3xl relative">
-                <span className="absolute top-4 left-4 z-10 bg-card/90 backdrop-blur px-4 py-1 rounded-full text-xs">
+              <div className="overflow-hidden h-[420px] rounded-3xl border border-yellow-400/10 shadow-xl relative">
+                <span className="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur px-4 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/20">
                   Our Location
                 </span>
                 <iframe
@@ -119,25 +132,30 @@ const Contact: React.FC = () => {
                   width="100%"
                   height="100%"
                   loading="lazy"
+                  className="grayscale contrast-125"
                 />
               </div>
 
-              <div className="glass-card p-8 rounded-2xl">
-                <h3 className="font-serif text-lg mb-3">
+              {/* EVENT CARD */}
+              <div className="bg-gradient-to-br from-yellow-400/10 to-transparent border border-yellow-400/20 p-8 rounded-3xl">
+                <h3 className="font-serif text-xl mb-4 text-white">
                   Planning a Private Event?
                 </h3>
-                <p className="text-muted-foreground text-sm mb-4">
+
+                <p className="text-zinc-400 text-sm mb-6">
                   Our elegant dining space is perfect for celebrations
                   and corporate gatherings.
                 </p>
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
-                  className="btn-outline-gold text-sm px-6 py-2.5"
+                  className="btn-gold text-sm px-6 py-2.5"
                 >
                   Inquire About Events
                 </motion.button>
               </div>
+
             </motion.div>
           </div>
         </div>
