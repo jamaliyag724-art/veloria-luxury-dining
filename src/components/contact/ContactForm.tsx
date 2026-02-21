@@ -104,9 +104,10 @@ const ContactForm: React.FC = () => {
   return (
     <div className="space-y-12">
       <div>
-        <h2 className="font-serif text-3xl text-white mb-3">
-          Speak With Our Concierge
-        </h2>
+        <h2 className="font-serif text-3xl mb-6 relative inline-block">
+  <span className="relative z-10">
+    Speak With Our Concierge
+  </span>
         <p className="text-sm text-zinc-400">
           We are delighted to assist you with reservations, events, or inquiries.
         </p>
