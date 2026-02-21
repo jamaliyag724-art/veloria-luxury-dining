@@ -132,26 +132,26 @@ const Reservations = () => {
             </div>
 
             {/* TIME */}
-            <div className="relative">
-              <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
-              <select
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                disabled={!formData.date}
-                className="lux-input pl-10"
-                required
-              >
-                <option value="">Select Time</option>
-                <option>12:00 PM</option>
-                <option>1:00 PM</option>
-                <option>2:00 PM</option>
-                <option>6:00 PM</option>
-                <option>7:00 PM</option>
-                <option>8:00 PM</option>
-                <option>9:00 PM</option>
-              </select>
-            </div>
+<div className="relative">
+  <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
+
+  <select
+    value={selectedTime}
+    onChange={(e) => setSelectedTime(e.target.value)}
+    disabled={!selectedDate}
+    className="lux-input pl-10 cursor-pointer"
+    required
+  >
+    <option value="">Select Time</option>
+    <option value="12:00 PM">12:00 PM</option>
+    <option value="1:00 PM">1:00 PM</option>
+    <option value="2:00 PM">2:00 PM</option>
+    <option value="6:00 PM">6:00 PM</option>
+    <option value="7:00 PM">7:00 PM</option>
+    <option value="8:00 PM">8:00 PM</option>
+    <option value="9:00 PM">9:00 PM</option>
+  </select>
+</div>
 
             {/* MESSAGE */}
             <textarea
