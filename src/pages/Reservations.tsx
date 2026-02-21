@@ -23,27 +23,18 @@ const Reservations = () => {
     message: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-
-    if (!formData.date || !formData.time) {
-      alert("Please select date and time");
-      return;
-    }
-
-    alert("Reservation Confirmed 🎉");
-    console.log(formData);
+    alert("Reservation Submitted ✅");
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      
+
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -59,10 +50,12 @@ const Reservations = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-3xl mx-auto 
-          bg-white/10 backdrop-blur-2xl 
-          border border-white/20
-          rounded-[40px] p-12 
-          shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+                     bg-white/10 
+                     backdrop-blur-2xl 
+                     border border-white/20
+                     rounded-[40px] 
+                     p-12 
+                     shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
         >
           <h1 className="font-serif text-4xl text-white text-center mb-10">
             Make a Reservation
@@ -70,7 +63,7 @@ const Reservations = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            {/* ROW 1 */}
+            {/* Name + Email */}
             <div className="grid md:grid-cols-2 gap-6">
               <input
                 name="name"
@@ -91,7 +84,7 @@ const Reservations = () => {
               />
             </div>
 
-            {/* ROW 2 */}
+            {/* Mobile + Guests */}
             <div className="grid md:grid-cols-2 gap-6">
               <input
                 name="mobile"
@@ -117,9 +110,9 @@ const Reservations = () => {
               </div>
             </div>
 
-            {/* DATE */}
+            {/* Date */}
             <div className="relative">
-              <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
+              <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
               <input
                 type="date"
                 name="date"
@@ -131,29 +124,28 @@ const Reservations = () => {
               />
             </div>
 
-            {/* TIME */}
-<div className="relative">
-  <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-80" />
+            {/* Time */}
+            <div className="relative">
+              <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
+              <select
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                className="lux-input pl-10 cursor-pointer"
+                required
+              >
+                <option value="">Select Time</option>
+                <option value="12:00 PM">12:00 PM</option>
+                <option value="1:00 PM">1:00 PM</option>
+                <option value="2:00 PM">2:00 PM</option>
+                <option value="6:00 PM">6:00 PM</option>
+                <option value="7:00 PM">7:00 PM</option>
+                <option value="8:00 PM">8:00 PM</option>
+                <option value="9:00 PM">9:00 PM</option>
+              </select>
+            </div>
 
-  <select
-    value={selectedTime}
-    onChange={(e) => setSelectedTime(e.target.value)}
-    disabled={!selectedDate}
-    className="lux-input pl-10 cursor-pointer"
-    required
-  >
-    <option value="">Select Time</option>
-    <option value="12:00 PM">12:00 PM</option>
-    <option value="1:00 PM">1:00 PM</option>
-    <option value="2:00 PM">2:00 PM</option>
-    <option value="6:00 PM">6:00 PM</option>
-    <option value="7:00 PM">7:00 PM</option>
-    <option value="8:00 PM">8:00 PM</option>
-    <option value="9:00 PM">9:00 PM</option>
-  </select>
-</div>
-
-            {/* MESSAGE */}
+            {/* Message */}
             <textarea
               name="message"
               placeholder="Special requests (optional)"
@@ -165,9 +157,9 @@ const Reservations = () => {
             <button
               type="submit"
               className="w-full py-4 rounded-full 
-              bg-gradient-to-r from-yellow-500 to-amber-400
-              text-black font-semibold
-              hover:scale-105 transition-all duration-300"
+                         bg-gradient-to-r from-yellow-500 to-amber-400
+                         text-black font-semibold
+                         hover:scale-105 transition-all duration-300"
             >
               Confirm Reservation
             </button>
