@@ -38,6 +38,12 @@ const ContactForm: React.FC = () => {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const formRef = useRef<HTMLFormElement>(null);
 
+  const inputBase =
+    "w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/40 transition-all duration-300";
+
+  const errorStyle =
+    "border-red-400 focus:border-red-400 focus:ring-red-400/40";
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -52,18 +58,24 @@ const ContactForm: React.FC = () => {
     const newErrors: Partial<FormData> = {};
 
     if (!formData.name.trim()) newErrors.name = "Full name is required.";
-    else if (formData.name.trim().length > 100) newErrors.name = "Name is too long.";
+    else if (formData.name.trim().length > 100)
+      newErrors.name = "Name is too long.";
 
-    if (!formData.email.trim()) newErrors.email = "Email address is required.";
-    else if (!emailRegex.test(formData.email.trim())) newErrors.email = "Please enter a valid email.";
+    if (!formData.email.trim())
+      newErrors.email = "Email address is required.";
+    else if (!emailRegex.test(formData.email.trim()))
+      newErrors.email = "Please enter a valid email.";
 
     if (formData.phone.trim() && !phoneRegex.test(formData.phone.trim()))
       newErrors.phone = "Enter a valid Indian phone number.";
 
-    if (!formData.subject) newErrors.subject = "Please select a subject.";
+    if (!formData.subject)
+      newErrors.subject = "Please select a subject.";
 
-    if (!formData.message.trim()) newErrors.message = "Message cannot be empty.";
-    else if (formData.message.trim().length > 1000) newErrors.message = "Message is too long (max 1000 chars).";
+    if (!formData.message.trim())
+      newErrors.message = "Message cannot be empty.";
+    else if (formData.message.trim().length > 1000)
+      newErrors.message = "Message is too long (max 1000 chars).";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -72,6 +84,7 @@ const ContactForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate() || !formRef.current) return;
+
     setIsSubmitting(true);
 
     try {
@@ -81,8 +94,10 @@ const ContactForm: React.FC = () => {
         formRef.current,
         "yvWssWWx94ibEP33n"
       );
+
       setIsSubmitted(true);
       toast.success("Message sent successfully ✨");
+
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData(initialForm);
@@ -95,12 +110,11 @@ const ContactForm: React.FC = () => {
     }
   };
 
-  const fieldClass = (field: keyof FormData) =>
-    `luxury-input ${errors[field] ? "!border-accent ring-1 ring-accent/30" : ""}`;
-
   return (
-    <div className="glass-card p-10 rounded-3xl">
-      <h2 className="font-serif text-2xl mb-8">Speak With Our Concierge</h2>
+    <div className="space-y-10">
+      <h2 className="font-serif text-3xl text-white tracking-wide">
+        Speak With Our Concierge
+      </h2>
 
       <AnimatePresence mode="wait">
         {isSubmitted ? (
@@ -109,18 +123,17 @@ const ContactForm: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="text-center py-14"
+            className="text-center py-16"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 12 }}
-              className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5"
-            >
-              <CheckCircle className="w-10 h-10 text-primary" />
-            </motion.div>
-            <h3 className="font-serif text-xl mb-2">Message Sent ✨</h3>
-            <p className="text-muted-foreground">
+            <div className="w-24 h-24 bg-yellow-400/10 border border-yellow-400/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-12 h-12 text-yellow-400" />
+            </div>
+
+            <h3 className="font-serif text-xl text-white mb-2">
+              Message Sent ✨
+            </h3>
+
+            <p className="text-zinc-400 text-sm">
               Our concierge team will respond to you shortly.
             </p>
           </motion.div>
@@ -129,7 +142,7 @@ const ContactForm: React.FC = () => {
             key="form"
             ref={formRef}
             onSubmit={handleSubmit}
-            className="space-y-5"
+            className="space-y-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -142,9 +155,13 @@ const ContactForm: React.FC = () => {
                 value={formData.name}
                 onChange={handleChange}
                 maxLength={100}
-                className={fieldClass("name")}
+                className={`${inputBase} ${errors.name ? errorStyle : ""}`}
               />
-              {errors.name && <p className="text-accent text-xs mt-1">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.name}
+                </p>
+              )}
             </div>
 
             {/* Email */}
@@ -156,9 +173,13 @@ const ContactForm: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 maxLength={255}
-                className={fieldClass("email")}
+                className={`${inputBase} ${errors.email ? errorStyle : ""}`}
               />
-              {errors.email && <p className="text-accent text-xs mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             {/* Phone */}
@@ -168,9 +189,13 @@ const ContactForm: React.FC = () => {
                 placeholder="Phone Number (+91)"
                 value={formData.phone}
                 onChange={handleChange}
-                className={fieldClass("phone")}
+                className={`${inputBase} ${errors.phone ? errorStyle : ""}`}
               />
-              {errors.phone && <p className="text-accent text-xs mt-1">{errors.phone}</p>}
+              {errors.phone && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.phone}
+                </p>
+              )}
             </div>
 
             {/* Subject */}
@@ -179,7 +204,9 @@ const ContactForm: React.FC = () => {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
-                className={`${fieldClass("subject")} cursor-pointer`}
+                className={`${inputBase} cursor-pointer ${
+                  errors.subject ? errorStyle : ""
+                }`}
               >
                 <option value="">Select a Subject *</option>
                 {subjectOptions.map((opt) => (
@@ -188,7 +215,12 @@ const ContactForm: React.FC = () => {
                   </option>
                 ))}
               </select>
-              {errors.subject && <p className="text-accent text-xs mt-1">{errors.subject}</p>}
+
+              {errors.subject && (
+                <p className="text-red-400 text-xs mt-1">
+                  {errors.subject}
+                </p>
+              )}
             </div>
 
             {/* Message */}
@@ -200,11 +232,17 @@ const ContactForm: React.FC = () => {
                 value={formData.message}
                 onChange={handleChange}
                 maxLength={1000}
-                className={`${fieldClass("message")} resize-none`}
+                className={`${inputBase} resize-none ${
+                  errors.message ? errorStyle : ""
+                }`}
               />
-              <div className="flex justify-between">
-                {errors.message && <p className="text-accent text-xs mt-1">{errors.message}</p>}
-                <span className="text-muted-foreground text-xs ml-auto">
+              <div className="flex justify-between items-center mt-1">
+                {errors.message && (
+                  <p className="text-red-400 text-xs">
+                    {errors.message}
+                  </p>
+                )}
+                <span className="text-zinc-500 text-xs ml-auto">
                   {formData.message.length}/1000
                 </span>
               </div>
@@ -216,27 +254,12 @@ const ContactForm: React.FC = () => {
               disabled={isSubmitting}
               whileHover={isSubmitting ? {} : { scale: 1.03 }}
               whileTap={isSubmitting ? {} : { scale: 0.97 }}
-              className="btn-gold w-full py-4 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-4 rounded-xl font-medium text-sm tracking-wide bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-lg hover:shadow-yellow-400/40 transition-all duration-300 disabled:opacity-60"
             >
-              {isSubmitting ? (
-                <span className="flex items-center gap-2">
-                  <motion.span
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="inline-block w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full"
-                  />
-                  Sending…
-                </span>
-              ) : (
-                <>
-                  <Send className="w-5 h-5" />
-                  Send Message
-                </>
-              )}
+              {isSubmitting ? "Sending..." : "Send Message"}
             </motion.button>
 
-            {/* Privacy note */}
-            <p className="flex items-center justify-center gap-1.5 text-muted-foreground text-xs text-center pt-1">
+            <p className="flex items-center justify-center gap-1.5 text-zinc-500 text-xs text-center pt-2">
               <ShieldCheck className="w-3.5 h-3.5" />
               We respect your privacy. Your information is never shared.
             </p>
