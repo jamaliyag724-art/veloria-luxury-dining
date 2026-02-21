@@ -18,10 +18,14 @@ const Contact: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+    <div className="relative min-h-screen bg-background text-foreground">
+
+      {/* Soft luxury gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/20 pointer-events-none" />
+
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-      <main className="relative z-10 pt-36 pb-36">
+      <main className="relative z-10 pt-40 pb-40">
         <div className="max-w-7xl mx-auto px-6">
 
           {/* HEADER */}
@@ -30,17 +34,17 @@ const Contact: React.FC = () => {
             initial="hidden"
             animate="visible"
             transition={{ duration: 0.7 }}
-            className="text-center mb-24"
+            className="text-center mb-28"
           >
-            <span className="text-primary tracking-[0.4em] text-xs uppercase">
+            <span className="text-primary tracking-[0.35em] text-xs uppercase">
               Get in Touch
             </span>
 
-            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6">
+            <h1 className="font-serif text-5xl md:text-6xl mt-6 mb-6 leading-tight">
               Speak With Our Concierge
             </h1>
 
-            <div className="w-24 h-[2px] bg-primary mx-auto mb-6 rounded-full" />
+            <div className="w-20 h-[2px] bg-primary mx-auto mb-6 rounded-full" />
 
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               For reservations, private events, or general inquiries,
@@ -49,7 +53,7 @@ const Contact: React.FC = () => {
           </motion.div>
 
           {/* GRID */}
-          <div className="grid lg:grid-cols-2 gap-20 items-start">
+          <div className="grid lg:grid-cols-2 gap-24 items-start">
 
             {/* LEFT – FORM */}
             <motion.div
@@ -59,9 +63,10 @@ const Contact: React.FC = () => {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="relative"
             >
-              <div className="absolute -inset-1 bg-primary/10 blur-2xl opacity-40 rounded-3xl" />
+              {/* soft glow */}
+              <div className="absolute -inset-2 bg-primary/5 blur-3xl opacity-40 rounded-[40px]" />
 
-              <div className="relative bg-card backdrop-blur-2xl border border-border rounded-3xl p-12 shadow-xl">
+              <div className="relative bg-card border border-border rounded-[36px] p-14 shadow-[0_25px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
                 <ContactForm />
               </div>
             </motion.div>
@@ -72,75 +77,56 @@ const Contact: React.FC = () => {
               initial="hidden"
               animate="visible"
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="space-y-12"
+              className="space-y-10"
             >
-              <div className="grid grid-cols-1 gap-6">
+              {/* Info Cards */}
+              <div className="space-y-6">
 
-                {/* Visit */}
-                <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/40 transition-all">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-primary" />
+                {[{
+                  icon: MapPin,
+                  title: "Visit Us",
+                  lines: [restaurantInfo.address, restaurantInfo.city],
+                },{
+                  icon: Phone,
+                  title: "Call Us",
+                  lines: [restaurantInfo.phone],
+                },{
+                  icon: Clock,
+                  title: "Hours",
+                  lines: [
+                    restaurantInfo.hours.lunch,
+                    restaurantInfo.hours.dinner,
+                    restaurantInfo.hours.brunch,
+                  ],
+                }].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ y: -6 }}
+                    className="bg-card border border-border rounded-2xl p-7 transition-all hover:border-primary/40 hover:shadow-lg"
+                  >
+                    <div className="flex gap-5">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                        <item.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium mb-2">
+                          {item.title}
+                        </h3>
+                        {item.lines.map((line, i) => (
+                          <p key={i} className="text-sm text-muted-foreground">
+                            {line}
+                          </p>
+                        ))}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-medium mb-2">
-                        Visit Us
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {restaurantInfo.address}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {restaurantInfo.city}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Call */}
-                <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/40 transition-all">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium mb-2">
-                        Call Us
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {restaurantInfo.phone}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Hours */}
-                <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/40 transition-all">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium mb-2">
-                        Hours
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {restaurantInfo.hours.lunch}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {restaurantInfo.hours.dinner}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {restaurantInfo.hours.brunch}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  </motion.div>
+                ))}
 
               </div>
 
-              {/* THEME SAFE MAP */}
-              <div className="overflow-hidden h-[420px] rounded-3xl border border-border shadow-xl relative">
-                <span className="absolute top-4 left-4 z-10 bg-card/80 backdrop-blur px-4 py-1 rounded-full text-xs text-primary border border-border">
+              {/* MAP */}
+              <div className="overflow-hidden h-[430px] rounded-[36px] border border-border shadow-lg relative bg-card">
+                <span className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur px-4 py-1 rounded-full text-xs text-primary border border-border">
                   Our Location
                 </span>
 
