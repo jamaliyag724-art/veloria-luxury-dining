@@ -52,75 +52,91 @@ const AppContent = () => {
   };
 
   return (
-    <>
-      {/* Brand Loader (first visit only) */}
-      <AnimatePresence>
-        {showBrandLoader && (
-          <VeloriaBrandLoader onComplete={handleBrandLoaderComplete} />
-        )}
-      </AnimatePresence>
+    <div className="relative min-h-screen bg-[#0c0c0f] overflow-hidden">
 
-      {/* Route specific loaders */}
-      <RouteLoaderRenderer />
+      {/* Luxury Gold Pattern Background */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.05]">
+        <div className="absolute inset-0 bg-[url('/gold-pattern.svg')] bg-repeat bg-[length:110px_110px]" />
+      </div>
 
-      <Toaster />
-      <Sonner position="top-center" />
+      {/* Main Content Layer */}
+      <div className="relative z-10">
 
-      <Routes>
-        {/* PUBLIC */}
-        <Route path="/" element={<Index />} />
-        <Route path="/menu" element={<Menu />} />
-        <Route path="/reservations" element={<Reservations />} />
-        <Route path="/reservation-status" element={<ReservationStatus />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-        <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/track-order" element={<TrackOrder />} />
+        {/* Brand Loader (first visit only) */}
+        <AnimatePresence>
+          {showBrandLoader && (
+            <VeloriaBrandLoader onComplete={handleBrandLoaderComplete} />
+          )}
+        </AnimatePresence>
 
-        {/* ADMIN */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedAdminRoute>
-              <Admin />
-            </ProtectedAdminRoute>
-          }
-        />
-        <Route
-          path="/admin/orders"
-          element={
-            <ProtectedAdminRoute>
-              <AdminOrders />
-            </ProtectedAdminRoute>
-          }
-        />
-        <Route
-          path="/admin/reservations"
-          element={
-            <ProtectedAdminRoute>
-              <AdminReservations />
-            </ProtectedAdminRoute>
-          }
-        />
-        <Route
-          path="/admin/menu"
-          element={
-            <ProtectedAdminRoute>
-              <AdminMenu />
-            </ProtectedAdminRoute>
-          }
-        />
+        {/* Route Loaders */}
+        <RouteLoaderRenderer />
 
-        {/* FALLBACK */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
+        {/* Toasts */}
+        <Toaster />
+        <Sonner position="top-center" />
+
+        {/* Routes */}
+        <Routes>
+          {/* PUBLIC */}
+          <Route path="/" element={<Index />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/reservations" element={<Reservations />} />
+          <Route path="/reservation-status" element={<ReservationStatus />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+          <Route path="/reservation-success/:id" element={<ReservationSuccess />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/track-order" element={<TrackOrder />} />
+
+          {/* ADMIN */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedAdminRoute>
+                <Admin />
+              </ProtectedAdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedAdminRoute>
+                <AdminOrders />
+              </ProtectedAdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/reservations"
+            element={
+              <ProtectedAdminRoute>
+                <AdminReservations />
+              </ProtectedAdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/menu"
+            element={
+              <ProtectedAdminRoute>
+                <AdminMenu />
+              </ProtectedAdminRoute>
+            }
+          />
+
+          {/* FALLBACK */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+
+      </div>
+    </div>
   );
 };
-
 /* ---------------------------------------
    ROOT APP
 ---------------------------------------- */
