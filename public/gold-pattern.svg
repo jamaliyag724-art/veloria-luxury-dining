@@ -1,0 +1,23 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <g stroke="#D4AF37" stroke-width="1.2" opacity="0.6">
+
+    <!-- Wine Glass -->
+    <path d="M20 20 Q30 10 40 20 Q35 35 30 35 Q25 35 20 20Z"/>
+    <line x1="30" y1="35" x2="30" y2="50"/>
+    <line x1="22" y1="50" x2="38" y2="50"/>
+
+    <!-- Fork -->
+    <line x1="80" y1="15" x2="80" y2="45"/>
+    <line x1="75" y1="15" x2="75" y2="25"/>
+    <line x1="85" y1="15" x2="85" y2="25"/>
+
+    <!-- Spoon -->
+    <ellipse cx="25" cy="85" rx="6" ry="8"/>
+    <line x1="25" y1="93" x2="25" y2="110"/>
+
+    <!-- Plate -->
+    <circle cx="85" cy="85" r="12"/>
+    <circle cx="85" cy="85" r="6"/>
+
+  </g>
+</svg>
