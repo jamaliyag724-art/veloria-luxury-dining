@@ -2,8 +2,7 @@
 
   <rect width="140" height="140" fill="transparent"/>
 
-  <g stroke="#C6A84F" stroke-width="2" fill="none" opacity="0.8">
-
+ <g stroke="#C6A84F" stroke-width="2" fill="none" opacity="1">
     <!-- Wine Glass -->
     <path d="M30 25 Q40 45 30 60 Q20 45 30 25 Z"/>
     <line x1="30" y1="60" x2="30" y2="75"/>
