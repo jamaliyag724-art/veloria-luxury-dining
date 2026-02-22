@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Clock } from "lucide-react";
@@ -163,5 +162,4 @@ const Contact: React.FC = () => {
     </div>
   );
 };
-
-export default Contact; ye lo changes  karke do muje jo tum ne kaha pura code 
+export default Contact; 
