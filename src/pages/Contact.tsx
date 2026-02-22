@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Clock } from "lucide-react";
@@ -19,6 +20,7 @@ const Contact: React.FC = () => {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
+
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
       <main className="pt-36 pb-36">
@@ -33,14 +35,24 @@ const Contact: React.FC = () => {
             className="text-center mb-24"
           >
             <span className="text-primary tracking-[0.4em] text-xs uppercase block mb-4">
-              Get in Touch
-            </span>
+  Get in Touch
+</span>
+<h1 className="font-serif text-3xl mb-6 relative inline-block">
+  <span className="relative z-10">
+    Speak With Our Concierge
+  </span>
 
-            <h1 className="font-serif text-3xl text-white mb-6 tracking-wide">
-              Speak With Our Concierge
-            </h1>
-
-            <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
+<span className="absolute left-0 -bottom-2 w-full h-[6px]
+  bg-gradient-to-r
+  from-transparent
+  via-champagne
+  to-transparent
+  opacity-90
+  blur-[2px]
+  dark:via-primary"
+/>
+</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               For reservations, private events, or general inquiries,
               our team is delighted to assist you.
             </p>
@@ -49,7 +61,7 @@ const Contact: React.FC = () => {
           {/* GRID */}
           <div className="grid lg:grid-cols-2 gap-20 items-start">
 
-            {/* LEFT – FORM (Luxury Card Same As Track Order) */}
+            {/* LEFT – FORM */}
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -57,26 +69,19 @@ const Contact: React.FC = () => {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="relative"
             >
-              <div
-                className="relative rounded-3xl 
-                bg-gradient-to-b from-[#1a1a1d] to-[#111113]
-                border border-yellow-500/20
-                shadow-[0_0_60px_rgba(250,204,21,0.06)]
-                p-12"
-              >
-                {/* Gold Pattern Overlay */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-5 rounded-3xl"
-                  style={{
-                    backgroundImage: "url('/gold-pattern.svg')",
-                    backgroundRepeat: "repeat",
-                    backgroundSize: "140px 140px",
-                  }}
-                />
+              <div className="absolute -inset-1 bg-primary/10 blur-2xl opacity-30 rounded-3xl" />
 
-                <div className="relative z-10">
-                  <ContactForm />
-                </div>
+              <div
+                className="
+                relative 
+                rounded-3xl p-12 
+                border 
+                backdrop-blur-2xl
+                bg-white/70 border-zinc-200 shadow-xl
+                dark:bg-white/5 dark:border-yellow-400/20 dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)]
+              "
+              >
+                <ContactForm />
               </div>
             </motion.div>
 
@@ -109,22 +114,21 @@ const Contact: React.FC = () => {
                   key={index}
                   whileHover={{ y: -6 }}
                   className="
-                    rounded-2xl p-7 border 
-                    bg-gradient-to-b from-[#1a1a1d] to-[#111113]
-                    border-yellow-500/20
-                    shadow-[0_0_40px_rgba(250,204,21,0.04)]
-                    transition-all"
+                    rounded-2xl p-7 border transition-all
+                    bg-white border-zinc-200 shadow-md
+                    dark:bg-white/5 dark:border-white/10 dark:hover:border-yellow-400/40
+                  "
                 >
                   <div className="flex gap-5">
-                    <div className="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center">
-                      <item.icon className="w-5 h-5 text-yellow-400" />
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <item.icon className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-white mb-2">
+                      <h3 className="font-medium mb-2">
                         {item.title}
                       </h3>
                       {item.lines.map((line, i) => (
-                        <p key={i} className="text-sm text-zinc-400">
+                        <p key={i} className="text-sm text-muted-foreground">
                           {line}
                         </p>
                       ))}
@@ -134,8 +138,8 @@ const Contact: React.FC = () => {
               ))}
 
               {/* MAP */}
-              <div className="overflow-hidden h-[420px] rounded-3xl border border-yellow-500/20 shadow-[0_0_40px_rgba(250,204,21,0.04)] relative">
-                <span className="absolute top-4 left-4 z-10 bg-[#111113]/80 backdrop-blur px-4 py-1 rounded-full text-xs text-yellow-400 border border-yellow-500/20">
+              <div className="overflow-hidden h-[420px] rounded-3xl border border-border shadow-lg relative">
+                <span className="absolute top-4 left-4 z-10 bg-background/80 backdrop-blur px-4 py-1 rounded-full text-xs text-primary border border-border">
                   Our Location
                 </span>
 
@@ -160,4 +164,4 @@ const Contact: React.FC = () => {
   );
 };
 
-export default Contact;
+export default Contact; ye lo changes  karke do muje jo tum ne kaha pura code 
