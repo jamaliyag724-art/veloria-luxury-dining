@@ -67,9 +67,16 @@
   }
 
   /* 🔥 GOLD PATTERN – DARK MODE ONLY */
- .dark body {
+/* 🔥 GOLD PATTERN – DARK MODE ONLY */
+.dark body {
   position: relative;
   z-index: 0;
+
+  background-color: hsl(var(--background));
+  background-image: url("/gold-pattern.svg");   /* ✅ YE MISSING THA */
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  background-attachment: fixed;
 }
 
 .dark body::before {
