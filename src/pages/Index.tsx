@@ -17,7 +17,15 @@ const Index: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
+   <div
+  className="min-h-screen bg-gradient-to-b from-[#0b0b0d] via-[#111111] to-[#0b0b0d]"
+  style={{
+    backgroundImage: "url('/gold-pattern.svg')",
+    backgroundRepeat: "repeat",
+    backgroundSize: "120px 120px",
+    backgroundBlendMode: "overlay",
+  }}
+>
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
       {/* Optional welcome popup */}
