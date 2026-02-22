@@ -1,23 +1,28 @@
-<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">
-  <g stroke="#D4AF37" stroke-width="1.2" opacity="0.6">
+<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+
+  <rect width="140" height="140" fill="transparent"/>
+
+  <g stroke="#C6A84F" stroke-width="2" fill="none" opacity="0.8">
 
     <!-- Wine Glass -->
-    <path d="M20 20 Q30 10 40 20 Q35 35 30 35 Q25 35 20 20Z"/>
-    <line x1="30" y1="35" x2="30" y2="50"/>
-    <line x1="22" y1="50" x2="38" y2="50"/>
+    <path d="M30 25 Q40 45 30 60 Q20 45 30 25 Z"/>
+    <line x1="30" y1="60" x2="30" y2="75"/>
+    <line x1="22" y1="75" x2="38" y2="75"/>
 
     <!-- Fork -->
-    <line x1="80" y1="15" x2="80" y2="45"/>
-    <line x1="75" y1="15" x2="75" y2="25"/>
-    <line x1="85" y1="15" x2="85" y2="25"/>
-
-    <!-- Spoon -->
-    <ellipse cx="25" cy="85" rx="6" ry="8"/>
-    <line x1="25" y1="93" x2="25" y2="110"/>
+    <line x1="100" y1="25" x2="100" y2="65"/>
+    <line x1="95" y1="25" x2="95" y2="35"/>
+    <line x1="100" y1="25" x2="100" y2="35"/>
+    <line x1="105" y1="25" x2="105" y2="35"/>
 
     <!-- Plate -->
-    <circle cx="85" cy="85" r="12"/>
-    <circle cx="85" cy="85" r="6"/>
+    <circle cx="40" cy="105" r="18"/>
+    <circle cx="40" cy="105" r="8"/>
+
+    <!-- Spoon -->
+    <ellipse cx="105" cy="105" rx="8" ry="14"/>
+    <line x1="105" y1="119" x2="105" y2="135"/>
 
   </g>
+
 </svg>
