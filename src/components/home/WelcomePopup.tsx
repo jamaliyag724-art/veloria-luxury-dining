@@ -28,7 +28,11 @@ const WelcomePopup: React.FC = () => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="relative max-w-lg w-[90%] rounded-3xl bg-white/90 backdrop-blur-xl shadow-2xl p-8 text-center"
+            className="relative max-w-lg w-[90%] rounded-3xl 
+            bg-gradient-to-b from-[#1a1a1d] to-[#111113] 
+            border border-yellow-500/20 
+            shadow-[0_0_60px_rgba(250,204,21,0.08)] 
+            p-8 text-center"
           >
             {/* Close */}
             <button
@@ -42,12 +46,12 @@ const WelcomePopup: React.FC = () => {
             <span className="block text-sm uppercase tracking-widest text-primary mb-3">
               Welcome to
             </span>
-
-            <h2 className="font-serif text-3xl md:text-4xl mb-4">
+            
+            <h2 className="font-serif text-3xl md:text-4xl mb-4 text-white tracking-wide">
               Veloria
             </h2>
 
-            <p className="text-muted-foreground mb-6">
+            <p className="text-zinc-400 mb-6">
               A timeless fine-dining experience where every detail is crafted
               with elegance, flavor & passion.
             </p>
