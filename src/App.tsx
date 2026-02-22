@@ -42,6 +42,11 @@ const queryClient = new QueryClient();
 /* ---------------------------------------
    INNER APP
 ---------------------------------------- */
+<img
+  src="/gold-pattern.svg"
+  alt="test"
+  className="w-40 border border-red-500"
+/>
 const AppContent = () => {
   const { hasShownBrandLoader, markBrandLoaderShown } = useRouteLoader();
   const [showBrandLoader, setShowBrandLoader] = useState(!hasShownBrandLoader);
