@@ -78,135 +78,150 @@ const About: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar onCartClick={() => setIsCartOpen(true)} />
+    <div className="relative min-h-screen bg-background text-foreground">
 
-      <main className="pt-24">
-        {/* ================= HERO ================= */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="section-container">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-16"
-            >
-              <span className="text-primary text-sm tracking-wider uppercase">
-                Our Story
-              </span>
-              <h1 className="font-serif text-4xl md:text-6xl mt-4 mb-6">
-                A Legacy of Culinary Excellence
-              </h1>
-              <p className="text-muted-foreground max-w-3xl mx-auto text-lg">
-                Since 2010, Veloria has been a beacon of fine dining, where
-                tradition meets innovation and every meal becomes a memory.
-              </p>
-            </motion.div>
+      {/* 🔥 DARK MODE GOLD PATTERN ONLY */}
+      <div
+        className="hidden dark:block absolute inset-0 pointer-events-none opacity-5"
+        style={{
+          backgroundImage: "url('/gold-pattern.svg')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "140px 140px",
+        }}
+      />
 
-            {/* STORY GRID */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10">
+        <Navbar onCartClick={() => setIsCartOpen(true)} />
+
+        <main className="pt-24">
+
+          {/* ================= HERO ================= */}
+          <section className="relative py-20 overflow-hidden">
+            <div className="section-container">
               <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="space-y-6"
-              >
-                <h2 className="font-serif text-3xl">
-                  Where Every Dish Tells a Story
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Veloria was born from a dream to create a space where
-                  culinary artistry meets heartfelt hospitality.
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  Today, we continue that vision by sourcing the finest
-                  ingredients and transforming them into unforgettable
-                  experiences.
-                </p>
-
-                <div className="flex items-center gap-6 pt-4">
-                  <Stat label="Years" value="15+" />
-                  <Divider />
-                  <Stat label="Guests" value="50K+" />
-                  <Divider />
-                  <Stat label="Rating" value="5★" />
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="relative"
-              >
-                <div className="rounded-2xl overflow-hidden shadow-lift">
-                  <img
-                    src={aboutDish}
-                    alt="Signature dish"
-                    className="w-full h-[500px] object-cover"
-                  />
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* ================= VALUES ================= */}
-        <section className="py-20 bg-secondary/30">
-          <div className="section-container grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((v, i) => (
-              <motion.div
-                key={v.title}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card p-6 text-center"
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center mb-16"
               >
-                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <v.icon className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="font-serif text-xl mb-2">{v.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {v.description}
+                <span className="text-primary text-sm tracking-wider uppercase">
+                  Our Story
+                </span>
+                <h1 className="font-serif text-4xl md:text-6xl mt-4 mb-6">
+                  A Legacy of Culinary Excellence
+                </h1>
+                <p className="text-muted-foreground max-w-3xl mx-auto text-lg">
+                  Since 2010, Veloria has been a beacon of fine dining, where
+                  tradition meets innovation and every meal becomes a memory.
                 </p>
               </motion.div>
-            ))}
-          </div>
-        </section>
 
-        {/* ================= TEAM ================= */}
-        <section className="py-20">
-          <div className="section-container grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((m, i) => (
-              <motion.div
-                key={m.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card overflow-hidden"
-              >
-                <img
-                  src={m.image}
-                  alt={m.name}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-5">
-                  <h3 className="font-serif text-lg">{m.name}</h3>
-                  <p className="text-primary text-sm">{m.role}</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {m.description}
+              {/* STORY GRID */}
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="space-y-6"
+                >
+                  <h2 className="font-serif text-3xl">
+                    Where Every Dish Tells a Story
+                  </h2>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Veloria was born from a dream to create a space where
+                    culinary artistry meets heartfelt hospitality.
                   </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      </main>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Today, we continue that vision by sourcing the finest
+                    ingredients and transforming them into unforgettable
+                    experiences.
+                  </p>
 
-      <Footer />
-      <FloatingCart onClick={() => setIsCartOpen(true)} />
-      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+                  <div className="flex items-center gap-6 pt-4">
+                    <Stat label="Years" value="15+" />
+                    <Divider />
+                    <Stat label="Guests" value="50K+" />
+                    <Divider />
+                    <Stat label="Rating" value="5★" />
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  <div className="rounded-2xl overflow-hidden shadow-lift">
+                    <img
+                      src={aboutDish}
+                      alt="Signature dish"
+                      className="w-full h-[500px] object-cover"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </section>
+
+          {/* ================= VALUES ================= */}
+          <section className="py-20 bg-secondary/30">
+            <div className="section-container grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {values.map((v, i) => (
+                <motion.div
+                  key={v.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="glass-card p-6 text-center"
+                >
+                  <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <v.icon className="w-7 h-7 text-primary" />
+                  </div>
+                  <h3 className="font-serif text-xl mb-2">{v.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {v.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* ================= TEAM ================= */}
+          <section className="py-20">
+            <div className="section-container grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {teamMembers.map((m, i) => (
+                <motion.div
+                  key={m.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="glass-card overflow-hidden"
+                >
+                  <img
+                    src={m.image}
+                    alt={m.name}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-5">
+                    <h3 className="font-serif text-lg">{m.name}</h3>
+                    <p className="text-primary text-sm">{m.role}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {m.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+        </main>
+
+        <Footer />
+        <FloatingCart onClick={() => setIsCartOpen(true)} />
+        <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      </div>
     </div>
   );
 };
