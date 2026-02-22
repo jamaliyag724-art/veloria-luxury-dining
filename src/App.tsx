@@ -52,12 +52,20 @@ const AppContent = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0c0c0f] overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-b from-[#0c0c0f] via-[#111111] to-[#0c0c0f] overflow-hidden">
 
-      {/* Luxury Gold Pattern Background */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05]">
-        <div className="absolute inset-0 bg-[url('/gold-pattern.svg')] bg-repeat bg-[length:110px_110px]" />
-      </div>
+  {/* GOLD PATTERN BACKGROUND */}
+  <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: "url('/gold-pattern.svg')",
+        backgroundRepeat: "repeat",
+        backgroundSize: "110px 110px",
+      }}
+    />
+  </div>
+
 
       {/* Main Content Layer */}
       <div className="relative z-10">
