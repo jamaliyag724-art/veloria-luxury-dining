@@ -11,6 +11,7 @@ import LocationSection from "@/components/home/LocationSection";
 import FAQSection from "@/components/home/FAQSection";
 import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
+import RecommendedDishes from "@/components/home/RecommendedDishes";
 import WelcomePopup from "@/components/home/WelcomePopup";
 
 const Index: React.FC = () => {
@@ -28,6 +29,7 @@ const Index: React.FC = () => {
         <ChefRecommendations />
         <AboutSection />
         <PopularDishes />
+        <RecommendedDishes />
         <ReservationCTA />
         <TestimonialsSection />
         <LocationSection />

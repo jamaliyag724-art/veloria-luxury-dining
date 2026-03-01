@@ -69,11 +69,17 @@ const Checkout: React.FC = () => {
     const validation = checkoutSchema.safeParse(formData);
     if (!validation.success || items.length === 0) return;
 
+    const validData = validation.data;
     setStep("processing");
 
     try {
       const orderId = await addOrder({
-        ...validation.data,
+        fullName: validData.fullName,
+        email: validData.email,
+        mobile: validData.mobile,
+        address: validData.address,
+        city: validData.city,
+        pincode: validData.pincode,
         items,
         subtotal: discountedSubtotal,
         tax: taxAmount,
