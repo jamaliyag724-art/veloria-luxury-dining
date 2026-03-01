@@ -1,37 +1,7 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
-export const useAvailability = (date: string) => {
-  const [slots, setSlots] = useState<any[]>([]);
-
-  const fetchSlots = async () => {
-    if (!date) return;
-
-    const { data } = await supabase
-      .from("table_availability")
-      .select("*")
-      .eq("date", date)
-      .order("time_slot");
-
-    setSlots(data || []);
-  };
-
-  useEffect(() => {
-    fetchSlots();
-
-    const channel = supabase
-      .channel("availability-updates")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "table_availability" },
-        fetchSlots
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [date]);
-
+// table_availability table doesn't exist yet - stub hook for future use
+export const useAvailability = (_date: string) => {
+  const [slots] = useState<any[]>([]);
   return slots;
 };
