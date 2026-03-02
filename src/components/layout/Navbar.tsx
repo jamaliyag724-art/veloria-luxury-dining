@@ -9,6 +9,7 @@ import {
   Search,
   Sun,
   Moon,
+  Boxes,
 } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
@@ -91,6 +92,18 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                   {link.name}
                 </button>
               ))}
+
+              <button
+                onClick={() => handleNavigate("/table-layout", null)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition ${
+                  isActive("/table-layout")
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-primary/10 text-primary hover:bg-primary/20"
+                }`}
+              >
+                <Boxes className="w-4 h-4" />
+                3D Tables
+              </button>
 
               <button
                 onClick={() => handleNavigate("/track-order", null)}
@@ -191,6 +204,12 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick = () => {} }) => {
                 className="block w-full text-left py-3 text-lg"
               >
                 Track Order
+              </button>
+              <button
+                onClick={() => handleNavigate("/table-layout", null)}
+                className="block w-full text-left py-3 text-lg text-primary"
+              >
+                🪑 3D Table View
               </button>
             </div>
           </motion.div>

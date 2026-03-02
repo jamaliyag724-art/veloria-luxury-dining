@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
@@ -29,6 +29,10 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import TrackOrder from "./pages/TrackOrder";
 import NotFound from "./pages/NotFound";
+
+/* Lazy loaded */
+import { lazy } from "react";
+const TableLayout = lazy(() => import("./pages/TableLayout"));
 
 /* Admin */
 import Admin from "./pages/Admin";
@@ -98,6 +102,7 @@ const AppContent = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/track-order" element={<TrackOrder />} />
+          <Route path="/table-layout" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="w-12 h-12 border-2 border-primary/20 border-t-primary rounded-full animate-spin" /></div>}><TableLayout /></Suspense>} />
 
           {/* ADMIN */}
           <Route path="/admin/login" element={<AdminLogin />} />
