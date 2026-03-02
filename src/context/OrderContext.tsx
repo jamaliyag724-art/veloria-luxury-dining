@@ -7,6 +7,7 @@ import React, {
   ReactNode,
 } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sendEmail } from "@/lib/email";
 
 /* ---------------- TYPES ---------------- */
 export type OrderStatus = "Pending" | "Preparing" | "Completed" | "Cancelled";
@@ -135,6 +136,22 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
       throw new Error("Order failed");
     }
 
+    // Send confirmation email (non-blocking)
+    const siteUrl = window.location.origin;
+    sendEmail({
+      type: "order_confirmation",
+      data: {
+        orderId,
+        fullName: orderData.fullName,
+        email: orderData.email,
+        items: orderData.items,
+        subtotal: orderData.subtotal,
+        tax: orderData.tax,
+        totalAmount: orderData.totalAmount,
+        trackingLink: `${siteUrl}/track-order?orderId=${orderId}`,
+      },
+    }).catch(() => {}); // silent fail
+
     return orderId;
   };
 
@@ -148,6 +165,22 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     if (error) {
       console.error(error);
       throw new Error("Failed to update order status");
+    }
+
+    // Send status update email (non-blocking)
+    const order = orders.find((o) => o.orderId === orderId);
+    if (order) {
+      const siteUrl = window.location.origin;
+      sendEmail({
+        type: "order_status_update",
+        data: {
+          orderId,
+          fullName: order.fullName,
+          email: order.email,
+          status,
+          trackingLink: `${siteUrl}/track-order?orderId=${orderId}`,
+        },
+      }).catch(() => {});
     }
   };
 
