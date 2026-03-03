@@ -40,6 +40,7 @@ const Checkout: React.FC = () => {
 
   const [cartOpen, setCartOpen] = useState(false);
   const [step, setStep] = useState<"payment" | "processing">("payment");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [couponDiscount, setCouponDiscount] = useState(0);
@@ -71,8 +72,10 @@ const Checkout: React.FC = () => {
 
     const validData = validation.data;
     setStep("processing");
+    setPaymentError(null);
 
     try {
+      // addOrder handles DB insert + fake payment delay
       const orderId = await addOrder({
         fullName: validData.fullName,
         email: validData.email,
@@ -86,18 +89,19 @@ const Checkout: React.FC = () => {
         totalAmount,
       });
 
-      // Premium payment success sound
+      // Only play sound & celebrate AFTER successful DB insert
       const audio = new Audio("/sounds/payment-success.mp3");
       audio.volume = 0.6;
       audio.play().catch(() => {});
 
-      // Haptic feedback on mobile
       if (navigator.vibrate) navigator.vibrate(100);
 
       confetti({ particleCount: 120, spread: 80 });
       clearCart();
       navigate(`/order-success/${orderId}`);
-    } catch {
+    } catch (err) {
+      console.error("Payment Error:", err);
+      setPaymentError("Payment failed. Please try again.");
       setStep("payment");
     }
   };
@@ -234,6 +238,10 @@ const Checkout: React.FC = () => {
                   appliedCode={couponCode}
                   discount={couponDiscount}
                 />
+
+                {paymentError && (
+                  <p className="mt-4 text-sm text-destructive text-center">{paymentError}</p>
+                )}
 
                 <button
                   disabled={!isFormValid}
