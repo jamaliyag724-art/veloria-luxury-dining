@@ -18,7 +18,7 @@ const Index: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-   <div className="min-h-screen bg-background">
+   <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
       {/* Optional welcome popup */}

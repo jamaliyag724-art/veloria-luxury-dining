@@ -86,6 +86,14 @@ const Checkout: React.FC = () => {
         totalAmount,
       });
 
+      // Premium payment success sound
+      const audio = new Audio("/sounds/payment-success.mp3");
+      audio.volume = 0.6;
+      audio.play().catch(() => {});
+
+      // Haptic feedback on mobile
+      if (navigator.vibrate) navigator.vibrate(100);
+
       confetti({ particleCount: 120, spread: 80 });
       clearCart();
       navigate(`/order-success/${orderId}`);
