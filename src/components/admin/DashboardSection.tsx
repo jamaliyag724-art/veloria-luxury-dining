@@ -1,7 +1,7 @@
 import React from "react";
-import RevenueCard from "../RevenueCard";
-import OrdersChart from "../OrdersChart";
-import RevenueChart from "../RevenueChart";
+import RevenueCard from "./RevenueCard";
+import OrdersChart from "./OrdersChart";
+import RevenueChart from "./RevenueChart";
 
 const DashboardSection = () => {
 
