@@ -24,56 +24,84 @@ const RevenueCard: React.FC<RevenueCardProps> = ({
   subtitle,
   loading = false,
   isCurrency = false,
-  accentClass = "bg-primary/10 text-primary",
+  accentClass = "bg-[#1a1a1a] text-[#D4AF37]",
   index = 0,
 }) => {
+
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl p-7 shadow-soft border border-border/40">
+      <div className="bg-[#151515] rounded-2xl p-7 border border-[#222] shadow-lg">
+
         <div className="flex justify-between mb-5">
-          <Skeleton className="w-12 h-12 rounded-2xl" />
-          <Skeleton className="w-16 h-5 rounded-full" />
+
+          <Skeleton className="w-12 h-12 rounded-xl bg-[#222]" />
+
+          <Skeleton className="w-16 h-5 rounded-full bg-[#222]" />
+
         </div>
-        <Skeleton className="w-24 h-8 mb-2" />
-        <Skeleton className="w-32 h-4" />
+
+        <Skeleton className="w-24 h-8 mb-2 bg-[#222]" />
+
+        <Skeleton className="w-32 h-4 bg-[#222]" />
+
       </div>
     );
   }
 
   const displayValue = isCurrency ? formatPrice(value as number) : value;
+
   const isPositive = trend && trend > 0;
 
   return (
+
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.5 }}
-      className="bg-white rounded-3xl p-7 shadow-soft border border-border/40 hover:shadow-gold/10 transition-shadow duration-300"
+      className="bg-[#151515] rounded-2xl p-7 border border-[#222] hover:border-[#D4AF37]/30 hover:shadow-lg transition-all duration-300"
     >
+
       <div className="flex justify-between mb-5">
-        <div className={`p-3 rounded-2xl ${accentClass}`}>
+
+        <div className={`p-3 rounded-xl ${accentClass}`}>
           <Icon className="w-5 h-5" />
         </div>
+
         {trend !== undefined && (
           <span
             className={`flex items-center gap-1 text-sm font-medium ${
-              isPositive ? "text-green-600" : "text-red-500"
+              isPositive ? "text-green-400" : "text-red-400"
             }`}
           >
+
             {isPositive ? (
               <TrendingUp className="w-4 h-4" />
             ) : (
               <TrendingDown className="w-4 h-4" />
             )}
+
             {isPositive ? "+" : ""}
             {trend}%
+
           </span>
         )}
+
       </div>
 
-      <h3 className="text-2xl font-serif font-semibold">{displayValue}</h3>
-      <p className="text-sm text-muted-foreground">{title}</p>
-      {subtitle && <p className="text-xs text-primary mt-1">{subtitle}</p>}
+      <h3 className="text-2xl font-serif font-semibold text-white">
+        {displayValue}
+      </h3>
+
+      <p className="text-sm text-gray-400">
+        {title}
+      </p>
+
+      {subtitle && (
+        <p className="text-xs text-[#D4AF37] mt-1">
+          {subtitle}
+        </p>
+      )}
+
     </motion.div>
   );
 };
