@@ -1,49 +1,51 @@
 import React from "react";
 
 const insights = [
-  {
-    title: "Peak Revenue Time",
-    description: "Most revenue is generated between 7PM - 9PM."
-  },
-  {
-    title: "Top Dish",
-    description: "Truffle Burrata is currently the most ordered item."
-  },
-  {
-    title: "Customer Pattern",
-    description: "Weekend reservations are 35% higher than weekdays."
-  }
-];
 
-const AIInsights = () => {
+{
+title:"Peak Revenue Time",
+description:"Most revenue occurs between 7PM - 9PM."
+},
 
-  return (
+{
+title:"Top Dish",
+description:"Truffle Burrata is trending this week."
+},
 
-    <div className="grid md:grid-cols-3 gap-6">
+{
+title:"Customer Pattern",
+description:"Weekend reservations are 35% higher."
+}
 
-      {insights.map((item, index) => (
+]
 
-        <div
-          key={index}
-          className="bg-card border rounded-xl p-6 hover:border-yellow-500 transition"
-        >
+const AIInsights = ()=>{
 
-          <h3 className="text-lg font-semibold mb-2">
-            {item.title}
-          </h3>
+return(
 
-          <p className="text-muted-foreground text-sm">
-            {item.description}
-          </p>
+<div className="grid md:grid-cols-3 gap-6">
 
-        </div>
+{insights.map((i,index)=>(
+<div
+key={index}
+className="bg-card border border-border rounded-xl p-6"
+>
 
-      ))}
+<h3 className="font-semibold mb-2">
+{i.title}
+</h3>
 
-    </div>
+<p className="text-sm text-muted-foreground">
+{i.description}
+</p>
 
-  );
+</div>
+))}
 
-};
+</div>
 
-export default AIInsights;
+)
+
+}
+
+export default AIInsights
