@@ -88,14 +88,14 @@
   content: "";
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,0,0,0.2) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(0,0,0,0.25) 0%, transparent 40%),
-    linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.75));
-  pointer-events: none;
-  z-index: -1;   /* 🔥 THIS IS IMPORTANT */
-}
 
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,215,0,0.05) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(255,215,0,0.04) 0%, transparent 40%);
+
+  pointer-events: none;
+  z-index: -1;
+}
   h1,h2,h3,h4,h5,h6 {
     font-family: 'Cormorant Garamond', serif;
     letter-spacing: -0.02em;
@@ -119,30 +119,28 @@
   }
 
   .lux-input {
-    width: 100%;
-    padding: 14px 20px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: white;
-    outline: none;
-    transition: all 0.3s ease;
-  }
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  outline: none;
+  transition: all 0.3s ease;
+}
 
-  .lux-input::placeholder {
-    color: rgba(255,255,255,0.6);
-  }
+.lux-input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
 
-  .lux-input:focus {
-    border-color: #facc15;
-    box-shadow: 0 0 0 3px rgba(250,204,21,0.2);
-  }
+.lux-input:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+}
 
-  .dark .lux-input {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.12);
-    color: white;
-  }
+.dark .lux-input {
+  background: hsl(var(--card));
+}
 
   select.lux-input {
     appearance: auto;
@@ -150,9 +148,9 @@
   }
 
   select.lux-input option {
-    color: black;
-    background: white;
-  }
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+}
 }
 
 /* ================= UTILITIES ================= */
@@ -164,5 +162,27 @@
 
   .font-sans {
     font-family: 'Nunito Sans', sans-serif;
+  }
+
+    /* ⭐ Admin Premium Card */
+
+  .admin-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 22px;
+
+    box-shadow:
+      0 6px 20px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+
+    transition: all 0.3s ease;
+  }
+
+  .admin-card:hover {
+    border-color: hsl(var(--primary) / 0.4);
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 30px rgba(0,0,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.05);
   }
 }
