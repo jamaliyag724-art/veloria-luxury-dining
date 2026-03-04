@@ -15,7 +15,10 @@ import { useOrders } from "@/context/OrderContext";
 
 import RevenueCard from "@/components/admin/RevenueCard";
 import OrdersChart from "@/components/admin/OrdersChart";
+import RevenueChart from "@/components/admin/RevenueChart";
 import TopItemsChart from "@/components/admin/TopItemsChart";
+import OrderStatusChart from "@/components/admin/OrderStatusChart";
+import RecentOrders from "@/components/admin/RecentOrders";
 
 const Admin = () => {
 
@@ -28,10 +31,6 @@ const Admin = () => {
   );
 
   const totalOrders = orders.length;
-
-  const totalReservations = orders.filter(
-    (o) => o.type === "reservation"
-  ).length;
 
   const avgOrder =
     totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
@@ -63,7 +62,7 @@ const Admin = () => {
 
           <button
             onClick={logout}
-            className="px-4 py-2 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition"
+            className="px-4 py-2 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20"
           >
             <LogOut className="w-4 h-4 inline mr-2"/>
             Logout
@@ -115,14 +114,6 @@ const Admin = () => {
           />
 
           <RevenueCard
-            title="Reservations"
-            value={totalReservations}
-            icon={Users}
-            loading={loading}
-            trend={3}
-          />
-
-          <RevenueCard
             title="Avg Order Value"
             value={avgOrder}
             icon={DollarSign}
@@ -130,11 +121,20 @@ const Admin = () => {
             loading={loading}
           />
 
+          <RevenueCard
+            title="Active Customers"
+            value={orders.length}
+            icon={Users}
+            loading={loading}
+          />
+
         </div>
 
-        {/* ANALYTICS */}
+        {/* ROW 1 */}
 
         <div className="grid lg:grid-cols-2 gap-8">
+
+          <RevenueChart orders={orders} />
 
           <OrdersChart
             orders={orders}
@@ -142,12 +142,26 @@ const Admin = () => {
             loading={loading}
           />
 
+        </div>
+
+        {/* ROW 2 */}
+
+        <div className="grid lg:grid-cols-2 gap-8">
+
           <TopItemsChart
             orders={orders}
             loading={loading}
           />
 
+          <OrderStatusChart
+            orders={orders}
+          />
+
         </div>
+
+        {/* ROW 3 */}
+
+        <RecentOrders orders={orders} />
 
       </main>
 
