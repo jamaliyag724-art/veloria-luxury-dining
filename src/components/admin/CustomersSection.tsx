@@ -1,5 +1,5 @@
 import React from "react";
-import TopCustomers from "../TopCustomers";
+import TopCustomers from "./TopCustomers";
 
 const CustomersSection = () => {
 
