@@ -3,62 +3,60 @@ import {
   LayoutDashboard,
   BarChart3,
   Users,
-  ClipboardList,
-  Sparkles
+  Settings,
+  Brain
 } from "lucide-react";
 
-interface Props {
-  section: string;
-  setSection: (s: string) => void;
-}
+const menu = [
+  { id:"dashboard", label:"Dashboard", icon:LayoutDashboard },
+  { id:"analytics", label:"Analytics", icon:BarChart3 },
+  { id:"customers", label:"Customers", icon:Users },
+  { id:"ai", label:"AI Insights", icon:Brain },
+  { id:"operations", label:"Operations", icon:Settings }
+];
 
-const Sidebar: React.FC<Props> = ({ section, setSection }) => {
+const Sidebar = ({section,setSection}:any)=>{
 
-  const Item = ({
-    icon: Icon,
-    label,
-    id
-  }: any) => (
+  return(
 
-    <button
-      onClick={() => setSection(id)}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full transition
-      ${section === id
-        ? "bg-primary text-black"
-        : "hover:bg-muted"}
-      `}
-    >
+    <aside className="w-64 border-r border-border bg-card p-6">
 
-      <Icon className="w-5 h-5"/>
-
-      {label}
-
-    </button>
-
-  );
-
-  return (
-
-    <aside className="w-64 border-r border-border h-screen p-6">
-
-      <h2 className="font-serif text-xl mb-8">
+      <h1 className="text-xl font-serif mb-10">
         Veloria Admin
-      </h2>
+      </h1>
 
       <div className="space-y-2">
 
-        <Item id="dashboard" label="Dashboard" icon={LayoutDashboard}/>
-        <Item id="analytics" label="Analytics" icon={BarChart3}/>
-        <Item id="customers" label="Customers" icon={Users}/>
-        <Item id="operations" label="Operations" icon={ClipboardList}/>
-        <Item id="ai" label="AI Insights" icon={Sparkles}/>
+        {menu.map(item=>{
+
+          const Icon = item.icon
+
+          return(
+
+            <button
+            key={item.id}
+            onClick={()=>setSection(item.id)}
+            className={`flex items-center gap-3 w-full p-3 rounded-xl transition
+            ${section===item.id ? "bg-primary/10 text-primary" : "hover:bg-muted"}
+            `}
+            >
+
+              <Icon size={18}/>
+
+              {item.label}
+
+            </button>
+
+          )
+
+        })}
 
       </div>
 
     </aside>
 
-  );
+  )
 
-};
+}
 
-export default Sidebar;
+export default Sidebar
