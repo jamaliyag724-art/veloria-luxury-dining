@@ -16,14 +16,16 @@ const COLORS = [
 ];
 
 interface Props {
-  orders: Order[];
+  orders?: Order[];
 }
 
 const OrderStatusChart: React.FC<Props> = ({ orders }) => {
 
-  const paid = orders.filter(o => o.paymentStatus === "Paid").length;
-  const pending = orders.filter(o => o.paymentStatus === "Pending").length;
-  const cancelled = orders.filter(o => o.paymentStatus === "Cancelled").length;
+  const safeOrders = orders ?? [];
+
+  const paid = safeOrders.filter(o => o.paymentStatus === "Paid").length;
+  const pending = safeOrders.filter(o => o.paymentStatus === "Pending").length;
+  const cancelled = safeOrders.filter(o => o.paymentStatus === "Cancelled").length;
 
   const data = [
     { name: "Paid", value: paid },
