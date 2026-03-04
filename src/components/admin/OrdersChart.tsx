@@ -21,7 +21,6 @@ interface OrdersChartProps {
 const getFilteredOrders = (orders: Order[], dateRange: string) => {
 
   const now = new Date();
-
   let start: Date;
 
   switch (dateRange) {
@@ -31,11 +30,11 @@ const getFilteredOrders = (orders: Order[], dateRange: string) => {
       break;
 
     case "7days":
-      start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      start = new Date(now.getTime() - 7 * 86400000);
       break;
 
     case "30days":
-      start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      start = new Date(now.getTime() - 30 * 86400000);
       break;
 
     default:
@@ -69,11 +68,12 @@ const aggregateByDay = (orders: Order[]) => {
 
   });
 
-  return Array.from(map.entries()).map(([date, data]) => ({
-    date,
-    orders: data.count,
-    revenue: data.revenue,
-  }));
+  return Array.from(map.entries())
+    .map(([date, data]) => ({
+      date,
+      orders: data.count,
+      revenue: data.revenue,
+    }));
 
 };
 
@@ -86,21 +86,15 @@ const OrdersChart: React.FC<OrdersChartProps> = ({
   if (loading) {
 
     return (
-
       <div className="bg-card rounded-2xl p-7 border border-border">
-
         <Skeleton className="w-40 h-6 mb-6" />
-
         <Skeleton className="w-full h-64 rounded-xl" />
-
       </div>
-
     );
 
   }
 
   const filtered = getFilteredOrders(orders, dateRange);
-
   const data = aggregateByDay(filtered);
 
   return (
@@ -181,6 +175,8 @@ const OrdersChart: React.FC<OrdersChartProps> = ({
               stroke="hsl(38,60%,55%)"
               strokeWidth={2}
               fill="url(#goldGradient)"
+              isAnimationActive
+              animationDuration={900}
             />
 
           </AreaChart>
