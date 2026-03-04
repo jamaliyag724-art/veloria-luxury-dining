@@ -117,7 +117,7 @@ const Admin: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white">
+  <div className="min-h-screen bg-background text-foreground">
 
       {/* HEADER */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#111111]/90 border-b border-[#222]">
@@ -164,7 +164,7 @@ const Admin: React.FC = () => {
               ${
                 item.active
                   ? "bg-[#D4AF37] text-black"
-                  : "bg-[#151515] border border-[#222] hover:bg-[#1d1d1d]"
+                  : "bg-card border border-border hover:bg-[#1d1d1d]"
               }`}
             >
               <item.icon className="w-4 h-4" />
