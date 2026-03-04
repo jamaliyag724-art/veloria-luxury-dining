@@ -16,23 +16,38 @@ const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
   dateRange,
   onChange,
 }) => {
+
   return (
+
     <div className="flex gap-2 flex-wrap">
+
       {filters.map((f) => (
+
         <button
           key={f.id}
           onClick={() => onChange(f.id)}
-          className={`px-5 py-2 rounded-2xl text-sm font-medium transition-all ${
-            dateRange === f.id
-              ? "bg-primary text-primary-foreground shadow-gold"
-              : "bg-white border border-border hover:bg-secondary"
-          }`}
+          className={`
+          px-5 py-2 rounded-2xl text-sm font-medium transition-all duration-300
+
+          ${dateRange === f.id
+
+            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
+
+            : "bg-card border border-border hover:border-primary/40 hover:shadow-md"}
+
+          `}
         >
+
           {f.label}
+
         </button>
+
       ))}
+
     </div>
+
   );
+
 };
 
 export default AnalyticsFilters;
