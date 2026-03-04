@@ -3,7 +3,7 @@ import Sidebar from "@/components/admin/Sidebar";
 
 import DashboardSection from "@/components/admin/DashboardSection";
 import AnalyticsSection from "@/components/admin/AnalyticsSection";
-import CustomersSection from "@/components/admin/CustomersSection";
+
 import OperationsSection from "@/components/admin/OperationsSection";
 import AISection from "@/components/admin/AISection";
 
