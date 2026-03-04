@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "@/components/admin/Sidebar";
+
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 import DashboardSection from "@/components/admin/DashboardSection";
 import AnalyticsSection from "@/components/admin/AnalyticsSection";
@@ -15,18 +16,14 @@ const Admin = () => {
 
     <div className="flex min-h-screen bg-background text-foreground">
 
-      <Sidebar section={section} setSection={setSection}/>
+      <AdminSidebar section={section} setSection={setSection}/>
 
       <main className="flex-1 p-10">
 
         {section === "dashboard" && <DashboardSection/>}
-
         {section === "analytics" && <AnalyticsSection/>}
-
         {section === "customers" && <CustomersSection/>}
-
         {section === "operations" && <OperationsSection/>}
-
         {section === "ai" && <AISection/>}
 
       </main>
@@ -34,7 +31,6 @@ const Admin = () => {
     </div>
 
   );
-
 };
 
 export default Admin;
