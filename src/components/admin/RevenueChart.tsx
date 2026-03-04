@@ -11,14 +11,16 @@ import {
 import { Order } from "@/context/OrderContext";
 
 interface Props {
-  orders: Order[];
+  orders?: Order[];
 }
 
 const RevenueChart: React.FC<Props> = ({ orders }) => {
 
-  const map = new Map();
+  const safeOrders = orders ?? [];
 
-  orders.forEach(o => {
+  const map = new Map<string, number>();
+
+  safeOrders.forEach(o => {
 
     const day = new Date(o.createdAt).toLocaleDateString("en-IN", {
       month: "short",
