@@ -2,12 +2,14 @@ import React from "react";
 import { Order } from "@/context/OrderContext";
 
 interface Props {
-  orders: Order[];
+  orders?: Order[];
 }
 
 const RecentOrders: React.FC<Props> = ({ orders }) => {
 
-  const recent = [...orders]
+  const safeOrders = orders ?? [];
+
+  const recent = [...safeOrders]
     .sort(
       (a, b) =>
         new Date(b.createdAt).getTime() -
@@ -30,23 +32,10 @@ const RecentOrders: React.FC<Props> = ({ orders }) => {
           <thead className="text-muted-foreground">
 
             <tr>
-
-              <th className="text-left pb-3">
-                Customer
-              </th>
-
-              <th className="text-left pb-3">
-                Items
-              </th>
-
-              <th className="text-left pb-3">
-                Amount
-              </th>
-
-              <th className="text-left pb-3">
-                Status
-              </th>
-
+              <th className="text-left pb-3">Customer</th>
+              <th className="text-left pb-3">Items</th>
+              <th className="text-left pb-3">Amount</th>
+              <th className="text-left pb-3">Status</th>
             </tr>
 
           </thead>
@@ -55,10 +44,7 @@ const RecentOrders: React.FC<Props> = ({ orders }) => {
 
             {recent.map(order => (
 
-              <tr
-                key={order.id}
-                className="border-t border-border"
-              >
+              <tr key={order.id} className="border-t border-border">
 
                 <td className="py-3">
                   {order.customerName}
@@ -75,9 +61,7 @@ const RecentOrders: React.FC<Props> = ({ orders }) => {
                 <td>
 
                   <span className="px-2 py-1 rounded-lg text-xs bg-primary/10 text-primary">
-
                     {order.paymentStatus}
-
                   </span>
 
                 </td>
