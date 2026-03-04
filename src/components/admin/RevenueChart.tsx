@@ -14,7 +14,7 @@ interface Props {
   orders?: Order[];
 }
 
-const RevenueChart: React.FC<Props> = ({ orders }) => {
+const RevenueChart: React.FC<Props> = ({ orders = [] }) => {
 
   const safeOrders = orders ?? [];
 
