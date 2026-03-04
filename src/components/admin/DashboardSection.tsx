@@ -1,8 +1,13 @@
 import React from "react";
 import RevenueCard from "./RevenueCard";
+import RevenueChart from "./RevenueChart";
+import OrdersChart from "./OrdersChart";
+
 import { DollarSign, ShoppingCart, Users, BarChart3 } from "lucide-react";
 
 const DashboardSection = () => {
+
+  const orders = [];
 
   return (
 
@@ -34,6 +39,17 @@ const DashboardSection = () => {
           title="Customers"
           value={27}
           icon={Users}
+        />
+
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-8">
+
+        <RevenueChart orders={orders} />
+
+        <OrdersChart
+          orders={orders}
+          dateRange="30days"
         />
 
       </div>
