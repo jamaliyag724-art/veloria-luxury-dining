@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { Order } from "@/context/OrderContext";
 
@@ -18,13 +19,18 @@ interface TopItemsChartProps {
 }
 
 const getTopItems = (orders: Order[], limit = 8) => {
+
   const map = new Map<string, number>();
 
   orders.forEach((order) => {
+
     order.items.forEach((item) => {
+
       const count = map.get(item.name) || 0;
       map.set(item.name, count + item.quantity);
+
     });
+
   });
 
   return Array.from(map.entries())
@@ -34,6 +40,7 @@ const getTopItems = (orders: Order[], limit = 8) => {
       name: name.length > 16 ? name.slice(0, 14) + "…" : name,
       count,
     }));
+
 };
 
 const GOLD_SHADES = [
@@ -50,28 +57,36 @@ const GOLD_SHADES = [
 const TopItemsChart: React.FC<TopItemsChartProps> = ({ orders, loading }) => {
 
   if (loading) {
+
     return (
       <div className="bg-card rounded-2xl p-7 border border-border">
         <Skeleton className="w-40 h-6 mb-6" />
         <Skeleton className="w-full h-64 rounded-xl" />
       </div>
     );
+
   }
 
   const data = getTopItems(orders);
 
   return (
+
     <div className="bg-card rounded-2xl p-7 border border-border">
+
       <h2 className="font-serif text-lg mb-6 text-foreground">
         Most Ordered Items
       </h2>
 
       {data.length === 0 ? (
+
         <p className="text-muted-foreground text-sm text-center py-16">
           No order data yet
         </p>
+
       ) : (
+
         <ResponsiveContainer width="100%" height={280}>
+
           <BarChart data={data} layout="vertical" margin={{ left: 10 }}>
 
             <CartesianGrid
@@ -104,17 +119,30 @@ const TopItemsChart: React.FC<TopItemsChartProps> = ({ orders, loading }) => {
               }}
             />
 
-            <Bar dataKey="count" radius={[0, 8, 8, 0]} barSize={20}>
+            <Bar
+              dataKey="count"
+              radius={[0, 8, 8, 0]}
+              barSize={20}
+              isAnimationActive
+              animationDuration={900}
+            >
+
               {data.map((_, i) => (
                 <Cell key={i} fill={GOLD_SHADES[i % GOLD_SHADES.length]} />
               ))}
+
             </Bar>
 
           </BarChart>
+
         </ResponsiveContainer>
+
       )}
+
     </div>
+
   );
+
 };
 
 export default TopItemsChart;
