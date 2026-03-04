@@ -31,7 +31,7 @@ const STATUS_COLORS = {
 const OrderStatusPie: React.FC<OrderStatusPieProps> = ({ stats, loading }) => {
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl p-7 shadow-soft border border-border/40">
+      <div className="bg-card rounded-3xl p-7 shadow-soft border border-border/40">
         <Skeleton className="w-40 h-6 mb-6" />
         <Skeleton className="w-full h-64 rounded-full mx-auto max-w-[200px]" />
       </div>
