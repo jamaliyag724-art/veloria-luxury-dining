@@ -1,63 +1,40 @@
 import React from "react";
-import RevenueCard from "./RevenueCard";
-import RevenueChart from "./RevenueChart";
-import OrdersChart from "./OrdersChart";
 
-import { DollarSign, ShoppingCart, Users, BarChart3 } from "lucide-react";
+import RevenueCard from "./RevenueCard"
+import RevenueChart from "./RevenueChart"
+import OrdersChart from "./OrdersChart"
+import ReservationChart from "./ReservationChart"
 
-const DashboardSection = () => {
+import { DollarSign,ShoppingCart,Users,BarChart3 } from "lucide-react"
 
-  const orders = [];
+const DashboardSection = ()=>{
 
-  return (
+return(
 
-    <div className="space-y-10">
+<div className="space-y-10">
 
-      <div className="grid md:grid-cols-4 gap-6">
+<div className="grid md:grid-cols-4 gap-6">
 
-        <RevenueCard
-          title="Revenue"
-          value={5400}
-          icon={DollarSign}
-          isCurrency
-        />
+<RevenueCard title="Revenue" value={5400} icon={DollarSign} isCurrency/>
+<RevenueCard title="Orders" value={27} icon={ShoppingCart}/>
+<RevenueCard title="Avg Order" value={203} icon={BarChart3}/>
+<RevenueCard title="Customers" value={27} icon={Users}/>
 
-        <RevenueCard
-          title="Orders"
-          value={27}
-          icon={ShoppingCart}
-        />
+</div>
 
-        <RevenueCard
-          title="Avg Order"
-          value={203}
-          icon={BarChart3}
-          isCurrency
-        />
+<div className="grid lg:grid-cols-2 gap-8">
 
-        <RevenueCard
-          title="Customers"
-          value={27}
-          icon={Users}
-        />
+<RevenueChart orders={[]}/>
+<OrdersChart orders={[]} dateRange="30days"/>
 
-      </div>
+</div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+<ReservationChart/>
 
-        <RevenueChart orders={orders} />
+</div>
 
-        <OrdersChart
-          orders={orders}
-          dateRange="30days"
-        />
+)
 
-      </div>
+}
 
-    </div>
-
-  );
-
-};
-
-export default DashboardSection;
+export default DashboardSection
