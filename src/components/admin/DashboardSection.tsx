@@ -22,12 +22,11 @@ const DashboardSection = () => {
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        <RevenueChart orders={orders}/>
+        <RevenueChart orders={orders} />
 
         <OrdersChart
           orders={orders}
           dateRange="30days"
-          loading={false}
         />
 
       </div>
