@@ -1,11 +1,40 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LayoutDashboard, ShoppingBag, CalendarDays, LogOut } from "lucide-react";
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  CalendarDays,
+  LogOut,
+  DollarSign,
+  ClipboardList,
+  Users
+} from "lucide-react";
+
 import { useAdmin } from "@/context/AdminContext";
+import { useOrders } from "@/context/OrderContext";
+
+import RevenueCard from "@/components/admin/RevenueCard";
+import OrdersChart from "@/components/admin/OrdersChart";
+import TopItemsChart from "@/components/admin/TopItemsChart";
 
 const Admin = () => {
 
   const { logout } = useAdmin();
+  const { orders, loading } = useOrders();
+
+  const totalRevenue = orders.reduce(
+    (sum, o) => sum + (o.paymentStatus === "Paid" ? o.totalAmount : 0),
+    0
+  );
+
+  const totalOrders = orders.length;
+
+  const totalReservations = orders.filter(
+    (o) => o.type === "reservation"
+  ).length;
+
+  const avgOrder =
+    totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
 
   return (
 
@@ -13,33 +42,28 @@ const Admin = () => {
 
       {/* NAVBAR */}
 
-      <header className="admin-navbar sticky top-0 z-50">
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
 
         <div className="max-w-7xl mx-auto px-8 py-5 flex justify-between">
 
           <div className="flex items-center gap-4">
 
             <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center">
-
               <LayoutDashboard className="w-5 h-5 text-white"/>
-
             </div>
 
             <div>
-
               <h1 className="font-serif text-xl">Veloria Admin</h1>
-
               <p className="text-xs text-muted-foreground">
                 Restaurant Management
               </p>
-
             </div>
 
           </div>
 
           <button
             onClick={logout}
-            className="px-4 py-2 rounded-xl bg-red-500/10 text-red-500"
+            className="px-4 py-2 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition"
           >
             <LogOut className="w-4 h-4 inline mr-2"/>
             Logout
@@ -49,11 +73,11 @@ const Admin = () => {
 
       </header>
 
-      <main className="max-w-7xl mx-auto px-8 py-10">
+      <main className="max-w-7xl mx-auto px-8 py-10 space-y-10">
 
         {/* NAV TABS */}
 
-        <div className="flex gap-3 mb-10">
+        <div className="flex gap-3">
 
           <Link to="/admin" className="admin-filter admin-filter-active flex gap-2">
             <LayoutDashboard className="w-4 h-4"/> Dashboard
@@ -69,45 +93,59 @@ const Admin = () => {
 
         </div>
 
-        {/* DASHBOARD CARDS */}
+        {/* KPI CARDS */}
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-          <div className="admin-card">
+          <RevenueCard
+            title="Total Revenue"
+            value={totalRevenue}
+            icon={DollarSign}
+            isCurrency
+            loading={loading}
+            trend={12}
+          />
 
-            <p className="text-muted-foreground text-sm">
-              Total Revenue
-            </p>
+          <RevenueCard
+            title="Orders"
+            value={totalOrders}
+            icon={ClipboardList}
+            loading={loading}
+            trend={5}
+          />
 
-            <h2 className="text-3xl font-serif mt-2">
-              ₹52,363
-            </h2>
+          <RevenueCard
+            title="Reservations"
+            value={totalReservations}
+            icon={Users}
+            loading={loading}
+            trend={3}
+          />
 
-          </div>
+          <RevenueCard
+            title="Avg Order Value"
+            value={avgOrder}
+            icon={DollarSign}
+            isCurrency
+            loading={loading}
+          />
 
-          <div className="admin-card">
+        </div>
 
-            <p className="text-muted-foreground text-sm">
-              Orders
-            </p>
+        {/* ANALYTICS */}
 
-            <h2 className="text-3xl font-serif mt-2">
-              26
-            </h2>
+        <div className="grid lg:grid-cols-2 gap-8">
 
-          </div>
+          <OrdersChart
+            orders={orders}
+            dateRange="30days"
+            loading={loading}
+          />
 
-          <div className="admin-card">
-
-            <p className="text-muted-foreground text-sm">
-              Reservations
-            </p>
-
-            <h2 className="text-3xl font-serif mt-2">
-              12
-            </h2>
-
-          </div>
+          <TopItemsChart
+            orders={orders}
+            loading={loading}
+          />
 
         </div>
 
