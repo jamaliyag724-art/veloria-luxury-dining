@@ -78,9 +78,9 @@ const aggregateByDay = (orders: Order[]) => {
 };
 
 const OrdersChart: React.FC<OrdersChartProps> = ({
-  orders,
-  dateRange,
-  loading,
+  orders = [],
+  dateRange = "30days",
+  loading = false,
 }) => {
 
   if (loading) {
