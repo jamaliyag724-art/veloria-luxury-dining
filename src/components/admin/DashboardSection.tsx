@@ -3,6 +3,8 @@ import RevenueCard from "./RevenueCard";
 import OrdersChart from "./OrdersChart";
 import RevenueChart from "./RevenueChart";
 
+const orders = []; // temporary safe data
+
 const DashboardSection = () => {
 
   return (
@@ -20,9 +22,8 @@ const DashboardSection = () => {
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        <RevenueChart/>
-
-        <OrdersChart/>
+        <RevenueChart orders={orders}/>
+        <OrdersChart orders={orders}/>
 
       </div>
 
