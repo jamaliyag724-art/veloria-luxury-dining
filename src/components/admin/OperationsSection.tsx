@@ -1,5 +1,5 @@
 import React from "react";
-import RecentOrders from "../RecentOrders";
+import RecentOrders from "./RecentOrders";
 
 const OperationsSection = () => {
 
