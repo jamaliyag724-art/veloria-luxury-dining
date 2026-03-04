@@ -1,48 +1,77 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
-  LayoutDashboard,
-  BarChart3,
-  Users,
-  ClipboardList,
-  Sparkles
+LayoutDashboard,
+BarChart3,
+Users,
+CalendarDays,
+Brain,
+Settings
 } from "lucide-react";
 
-interface Props {
-  section: string;
-  setSection: (section: string) => void;
+const items = [
+{ id:"dashboard", label:"Dashboard", icon:LayoutDashboard },
+{ id:"analytics", label:"Analytics", icon:BarChart3 },
+{ id:"customers", label:"Customers", icon:Users },
+{ id:"reservations", label:"Reservations", icon:CalendarDays },
+{ id:"ai", label:"AI Insights", icon:Brain },
+{ id:"operations", label:"Operations", icon:Settings }
+];
+
+interface Props{
+active:string
+setActive:(s:string)=>void
 }
 
-const AdminSidebar: React.FC<Props> = ({ section, setSection }) => {
-  const menu = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
-    { id: "customers", label: "Customers", icon: Users },
-    { id: "operations", label: "Operations", icon: ClipboardList },
-    { id: "ai", label: "AI Insights", icon: Sparkles },
-  ];
+const AdminSidebar:React.FC<Props> = ({active,setActive})=>{
 
-  return (
-    <div className="w-64 bg-black text-white flex flex-col p-6 gap-6">
+return(
 
-      <h1 className="text-2xl font-serif mb-6">Veloria Admin</h1>
+<motion.aside
+initial={{x:-40,opacity:0}}
+animate={{x:0,opacity:1}}
+className="w-64 border-r border-border bg-card p-6"
 
-      {menu.map((item) => {
-        const Icon = item.icon;
+>
 
-        return (
-          <button
-            key={item.id}
-            onClick={() => setSection(item.id)}
-            className={`flex items-center gap-3 p-3 rounded-lg transition
-            ${section === item.id ? "bg-zinc-800" : "hover:bg-zinc-900"}`}
-          >
-            <Icon size={18} />
-            {item.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-};
+<h1 className="font-serif text-xl mb-8">
+Veloria Admin
+</h1>
 
-export default AdminSidebar;
+<div className="space-y-3">
+
+{items.map(item=>{
+
+const Icon=item.icon
+
+return(
+
+<button
+key={item.id}
+onClick={()=>setActive(item.id)}
+className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition ${
+active===item.id
+?"bg-primary/10 text-primary"
+:"hover:bg-muted"
+}`}
+
+>
+
+<Icon size={18}/>
+{item.label}
+
+</button>
+
+)
+
+})}
+
+</div>
+
+</motion.aside>
+
+)
+
+}
+
+export default AdminSidebar
