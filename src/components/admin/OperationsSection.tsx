@@ -1,7 +1,9 @@
 import React from "react";
-import RecentOrders from "./RecentOrders.tsx";
+import RecentOrders from "./RecentOrders";
 
 const OperationsSection = () => {
+
+  const orders = [];
 
   return (
 
@@ -11,7 +13,7 @@ const OperationsSection = () => {
         Operations
       </h2>
 
-      <RecentOrders/>
+      <RecentOrders orders={orders}/>
 
     </div>
 
