@@ -5,50 +5,47 @@ const ReservationCTA = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-32 bg-[#FBF7F2] text-[#1c1917] overflow-hidden">
+    <section className="relative py-32 bg-secondary overflow-hidden">
       
-      {/* Subtle Luxury Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#fbf7f2] via-[#f5efe7] to-[#efe6db]" />
-
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
         
-        <span className="text-[#c9a24d] uppercase tracking-[0.3em] text-xs">
+        <span className="text-primary uppercase tracking-[0.3em] text-xs">
           Reserve Your Experience
         </span>
 
-        <h2 className="font-serif text-5xl mt-6 mb-6">
+        <h2 className="font-serif text-5xl mt-6 mb-6 text-foreground">
           Create Unforgettable Moments
         </h2>
 
-        <p className="max-w-2xl mx-auto text-stone-600 text-lg mb-16">
-          Whether it’s an intimate dinner or a grand celebration, we curate
+        <p className="max-w-2xl mx-auto text-muted-foreground text-lg mb-16">
+          Whether it's an intimate dinner or a grand celebration, we curate
           experiences tailored to your every need.
         </p>
 
         {/* Feature Cards */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           
-          <div className="rounded-3xl bg-white shadow-md p-8">
-            <Calendar className="mx-auto text-[#c9a24d] mb-4" />
-            <h4 className="font-serif text-xl mb-2">Easy Booking</h4>
-            <p className="text-stone-500 text-sm">
+          <div className="rounded-3xl bg-card shadow-md p-8 border border-border/50">
+            <Calendar className="mx-auto text-primary mb-4" />
+            <h4 className="font-serif text-xl mb-2 text-foreground">Easy Booking</h4>
+            <p className="text-muted-foreground text-sm">
               Reserve your table in seconds
             </p>
           </div>
 
-          <div className="rounded-3xl bg-white shadow-md p-8">
-            <Clock className="mx-auto text-[#c9a24d] mb-4" />
-            <h4 className="font-serif text-xl mb-2">Flexible Timing</h4>
-            <p className="text-stone-500 text-sm">
+          <div className="rounded-3xl bg-card shadow-md p-8 border border-border/50">
+            <Clock className="mx-auto text-primary mb-4" />
+            <h4 className="font-serif text-xl mb-2 text-foreground">Flexible Timing</h4>
+            <p className="text-muted-foreground text-sm">
               Lunch & dinner slots available
             </p>
           </div>
 
-          <div className="rounded-3xl bg-white shadow-md p-8">
-            <Users className="mx-auto text-[#c9a24d] mb-4" />
-            <h4 className="font-serif text-xl mb-2">Private Events</h4>
-            <p className="text-stone-500 text-sm">
+          <div className="rounded-3xl bg-card shadow-md p-8 border border-border/50">
+            <Users className="mx-auto text-primary mb-4" />
+            <h4 className="font-serif text-xl mb-2 text-foreground">Private Events</h4>
+            <p className="text-muted-foreground text-sm">
               Perfect for celebrations & gatherings
             </p>
           </div>
@@ -58,7 +55,7 @@ const ReservationCTA = () => {
         {/* CTA Button */}
         <button
           onClick={() => navigate("/reservations")}
-          className="px-10 py-4 rounded-full bg-[#c9a24d] text-white font-medium hover:bg-[#b8923e] transition"
+          className="btn-gold px-10 py-4"
         >
           Book Your Table
         </button>

@@ -110,9 +110,9 @@ const Admin: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#faf8f4]">
+    <div className="min-h-screen bg-background text-foreground">
       {/* HEADER */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-border">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-card/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-gold">
@@ -143,7 +143,7 @@ const Admin: React.FC = () => {
               key={item.name}
               to={item.path}
               className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-medium transition-all
-                ${item.active ? "bg-primary text-primary-foreground shadow-gold" : "bg-white border border-border hover:bg-secondary"}`}
+                ${item.active ? "bg-primary text-primary-foreground shadow-gold" : "bg-card border border-border hover:bg-secondary"}`}
             >
               <item.icon className="w-4 h-4" />
               {item.name}
@@ -185,24 +185,24 @@ const Admin: React.FC = () => {
           <OrderStatusPie stats={orderStats} loading={loading} />
 
           {/* Revenue by period */}
-          <div className="bg-white rounded-3xl p-7 shadow-soft border border-border/40">
+          <div className="bg-card rounded-3xl p-7 shadow-soft border border-border/40">
             <h2 className="font-serif text-lg mb-6">Quick Insights</h2>
             <div className="space-y-4">
-              <div className="flex justify-between p-4 bg-[#faf8f4] rounded-2xl">
+              <div className="flex justify-between p-4 bg-secondary rounded-2xl">
                 <span className="text-sm text-muted-foreground">Avg Order Value</span>
                 <span className="font-serif font-semibold">
                   {formatPrice(orderStats.total > 0 ? totalRevenue / orderStats.total : 0)}
                 </span>
               </div>
-              <div className="flex justify-between p-4 bg-[#faf8f4] rounded-2xl">
+              <div className="flex justify-between p-4 bg-secondary rounded-2xl">
                 <span className="text-sm text-muted-foreground">Pending Reservations</span>
                 <span className="font-serif font-semibold">{reservationStats.pending}</span>
               </div>
-              <div className="flex justify-between p-4 bg-[#faf8f4] rounded-2xl">
+              <div className="flex justify-between p-4 bg-secondary rounded-2xl">
                 <span className="text-sm text-muted-foreground">Confirmed Reservations</span>
                 <span className="font-serif font-semibold">{reservationStats.confirmed}</span>
               </div>
-              <div className="flex justify-between p-4 bg-[#faf8f4] rounded-2xl">
+              <div className="flex justify-between p-4 bg-secondary rounded-2xl">
                 <span className="text-sm text-muted-foreground">Cancelled Orders</span>
                 <span className="font-serif font-semibold text-red-500">{orderStats.cancelled}</span>
               </div>
@@ -213,7 +213,7 @@ const Admin: React.FC = () => {
         {/* RECENT DATA */}
         <div className="grid md:grid-cols-2 gap-8">
           {/* ORDERS */}
-          <div className="bg-white rounded-3xl p-7 shadow-soft border border-border/40">
+          <div className="bg-card rounded-3xl p-7 shadow-soft border border-border/40">
             <div className="flex justify-between mb-6">
               <h2 className="font-serif text-lg">Recent Orders</h2>
               <Link to="/admin/orders" className="text-primary text-sm font-medium">
@@ -223,7 +223,7 @@ const Admin: React.FC = () => {
             {recentOrders.length ? (
               <div className="space-y-4">
                 {recentOrders.map((order) => (
-                  <div key={order.orderId} className="flex justify-between p-4 bg-[#faf8f4] rounded-2xl">
+                  <div key={order.orderId} className="flex justify-between p-4 bg-secondary rounded-2xl">
                     <div>
                       <p className="text-sm font-medium">{order.orderId}</p>
                       <p className="text-xs text-muted-foreground">{order.fullName}</p>
@@ -243,7 +243,7 @@ const Admin: React.FC = () => {
           </div>
 
           {/* RESERVATIONS */}
-          <div className="bg-white rounded-3xl p-7 shadow-soft border border-border/40">
+          <div className="bg-card rounded-3xl p-7 shadow-soft border border-border/40">
             <div className="flex justify-between mb-6">
               <h2 className="font-serif text-lg">Recent Reservations</h2>
               <Link to="/admin/reservations" className="text-primary text-sm font-medium">
@@ -253,7 +253,7 @@ const Admin: React.FC = () => {
             {recentReservations.length ? (
               <div className="space-y-4">
                 {recentReservations.map((res) => (
-                  <div key={res.reservationId} className="flex justify-between p-4 bg-[#faf8f4] rounded-2xl">
+                  <div key={res.reservationId} className="flex justify-between p-4 bg-secondary rounded-2xl">
                     <div>
                       <p className="text-sm font-medium">{res.reservationId}</p>
                       <p className="text-xs text-muted-foreground">

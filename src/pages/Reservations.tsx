@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
+import { useReservations } from "@/context/ReservationContext";
 
 const Reservations = () => {
   const navigate = useNavigate();
+  const { addReservation } = useReservations();
   const [cartOpen, setCartOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -27,9 +31,30 @@ const Reservations = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    alert("Reservation Submitted ✅");
+    if (submitting) return;
+
+    try {
+      setSubmitting(true);
+      const reservationId = await addReservation({
+        fullName: formData.name,
+        email: formData.email,
+        mobile: formData.mobile,
+        guests: parseInt(formData.guests),
+        date: formData.date,
+        time: formData.time,
+        specialRequest: formData.message || undefined,
+      });
+
+      toast.success("Reservation submitted successfully!");
+      navigate(`/reservation-success/${reservationId}`);
+    } catch (err) {
+      console.error("Reservation error:", err);
+      toast.error("Failed to submit reservation. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -104,7 +129,7 @@ const Reservations = () => {
                   className="lux-input pl-10"
                 >
                   {[1,2,3,4,5,6].map(n => (
-                    <option key={n} value={n}>{n} Guest</option>
+                    <option key={n} value={n}>{n} Guest{n > 1 ? 's' : ''}</option>
                   ))}
                 </select>
               </div>
@@ -156,12 +181,14 @@ const Reservations = () => {
 
             <button
               type="submit"
+              disabled={submitting}
               className="w-full py-4 rounded-full 
                          bg-gradient-to-r from-yellow-500 to-amber-400
                          text-black font-semibold
-                         hover:scale-105 transition-all duration-300"
+                         hover:scale-105 transition-all duration-300
+                         disabled:opacity-50 disabled:hover:scale-100"
             >
-              Confirm Reservation
+              {submitting ? "Submitting..." : "Confirm Reservation"}
             </button>
 
             <div className="text-center mt-6">
