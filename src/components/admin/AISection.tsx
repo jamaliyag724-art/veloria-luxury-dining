@@ -1,5 +1,5 @@
 import React from "react";
-import AIInsights from "../AIInsights";
+import AIInsights from "./AIInsights";
 
 const AISection = () => {
 
