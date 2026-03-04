@@ -7,24 +7,12 @@ import OrderStatusChart from "./OrderStatusChart";
 import PeakHoursChart from "./PeakHoursChart";
 import ReservationChart from "./ReservationChart";
 import ReservationHeatmap from "./ReservationHeatmap";
-import ReservationCalendar from "./ReservationCalendar"
-import DemandPrediction from "./DemandPrediction"
-import DishProfitability from "./DishProfitability"
-import RevenueForecast from "./RevenueForecast"
 
-<div className="grid lg:grid-cols-2 gap-8">
+import ReservationCalendar from "./ReservationCalendar";
+import DemandPrediction from "./DemandPrediction";
+import DishProfitability from "./DishProfitability";
+import RevenueForecast from "./RevenueForecast";
 
-<DishProfitability/>
-<RevenueForecast/>
-
-</div>
-
-<div className="grid lg:grid-cols-2 gap-8">
-
-<DemandPrediction/>
-<ReservationCalendar/>
-
-</div>
 const AnalyticsSection = () => {
 
   const { orders } = useOrders();
@@ -34,6 +22,8 @@ const AnalyticsSection = () => {
 
     <div className="space-y-10">
 
+      {/* Order Analytics */}
+
       <div className="grid lg:grid-cols-2 gap-8">
 
         <TopItemsChart orders={orders} />
@@ -41,6 +31,9 @@ const AnalyticsSection = () => {
         <OrderStatusChart orders={orders} />
 
       </div>
+
+
+      {/* Reservation Analytics */}
 
       <div className="grid lg:grid-cols-2 gap-8">
 
@@ -50,7 +43,32 @@ const AnalyticsSection = () => {
 
       </div>
 
+
+      {/* Reservation Heatmap */}
+
       <ReservationHeatmap reservations={reservations} />
+
+
+      {/* Business Analytics */}
+
+      <div className="grid lg:grid-cols-2 gap-8">
+
+        <DishProfitability />
+
+        <RevenueForecast />
+
+      </div>
+
+
+      {/* AI Insights */}
+
+      <div className="grid lg:grid-cols-2 gap-8">
+
+        <DemandPrediction />
+
+        <ReservationCalendar />
+
+      </div>
 
     </div>
 
