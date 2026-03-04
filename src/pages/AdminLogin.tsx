@@ -11,7 +11,6 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Agar pehle se login hai to admin panel bhej do
   useEffect(() => {
     const isAdmin = localStorage.getItem("veloria_admin") === "true";
     if (isAdmin) {
@@ -20,9 +19,6 @@ export default function AdminLogin() {
   }, [navigate]);
 
   const handleLogin = () => {
-    console.log("EMAIL:", email);
-    console.log("PASSWORD:", password);
-
     if (
       email.trim() === ADMIN_EMAIL &&
       password.trim() === ADMIN_PASSWORD
@@ -35,14 +31,14 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#faf7f2]">
-      <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-center mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="bg-card p-10 rounded-2xl shadow-xl border border-border w-full max-w-md">
+        <h1 className="text-2xl font-semibold text-center mb-6 text-foreground">
           Admin Login
         </h1>
 
         <input
-          className="w-full mb-4 px-4 py-3 rounded-lg border"
+          className="w-full mb-4 px-4 py-3 rounded-lg border border-border bg-background text-foreground"
           placeholder="admin@veloria.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -50,19 +46,19 @@ export default function AdminLogin() {
 
         <input
           type="password"
-          className="w-full mb-4 px-4 py-3 rounded-lg border"
+          className="w-full mb-4 px-4 py-3 rounded-lg border border-border bg-background text-foreground"
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
         {error && (
-          <p className="text-red-500 text-sm mb-3">{error}</p>
+          <p className="text-destructive text-sm mb-3">{error}</p>
         )}
 
         <button
           onClick={handleLogin}
-          className="w-full py-3 rounded-lg bg-[#d4a24c] text-white font-medium"
+          className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-medium"
         >
           Login
         </button>

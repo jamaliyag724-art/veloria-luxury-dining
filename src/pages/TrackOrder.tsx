@@ -60,49 +60,32 @@ const TrackOrder: React.FC = () => {
     setLoading(false);
   };
 
-  // Real-time subscription
   useEffect(() => {
     if (!order) return;
-
     const channel = supabase
       .channel(`track-order-${order.orderId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "orders",
-          filter: `order_id=eq.${order.orderId}`,
-        },
-        (payload) => {
-          const updated = payload.new as any;
-          setOrder((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  orderStatus: updated.order_status as OrderStatus,
-                  totalAmount: updated.total_amount,
-                }
-              : null
-          );
-        }
-      )
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "orders",
+        filter: `order_id=eq.${order.orderId}`,
+      }, (payload) => {
+        const updated = payload.new as any;
+        setOrder((prev) =>
+          prev ? { ...prev, orderStatus: updated.order_status as OrderStatus, totalAmount: updated.total_amount } : null
+        );
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [order?.orderId]);
 
   const handleTrack = () => {
     setError("");
     setSearched(true);
-
     if (!orderId.trim()) {
       setError("Please enter a valid Order ID");
       return;
     }
-
     fetchOrder(orderId);
   };
 
@@ -116,11 +99,11 @@ const TrackOrder: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative max-w-lg w-full bg-gradient-to-b from-[#1a1a1d] to-[#111113] border border-primary/20 shadow-[0_0_60px_rgba(250,204,21,0.06)] rounded-3xl p-8"
+          className="relative max-w-lg w-full bg-card border border-primary/20 shadow-xl rounded-3xl p-8"
         >
-          {/* Gold pattern overlay */}
+          {/* Gold pattern overlay (dark only) */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-5 rounded-3xl"
+            className="absolute inset-0 pointer-events-none opacity-5 rounded-3xl hidden dark:block"
             style={{
               backgroundImage: "url('/gold-pattern.svg')",
               backgroundRepeat: "repeat",
@@ -129,10 +112,10 @@ const TrackOrder: React.FC = () => {
           />
 
           <div className="relative z-10">
-            <h1 className="font-serif text-3xl text-white text-center mb-2 tracking-wide">
+            <h1 className="font-serif text-3xl text-foreground text-center mb-2 tracking-wide">
               Track Your Order
             </h1>
-            <p className="text-zinc-400 text-center mb-6">
+            <p className="text-muted-foreground text-center mb-6">
               Enter your Order ID to see live order status
             </p>
 
@@ -142,7 +125,7 @@ const TrackOrder: React.FC = () => {
                 onChange={(e) => setOrderId(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleTrack()}
                 placeholder="ORD-XXXXXX"
-                className="flex-1 px-4 py-3 rounded-xl bg-[#1c1c1f] border border-primary/20 text-white placeholder:text-zinc-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
               />
               <button onClick={handleTrack} className="btn-gold flex items-center gap-2 px-6">
                 <Search size={18} /> Track
@@ -150,11 +133,11 @@ const TrackOrder: React.FC = () => {
             </div>
 
             {error && (
-              <p className="text-red-400 text-sm text-center mt-2">{error}</p>
+              <p className="text-destructive text-sm text-center mt-2">{error}</p>
             )}
 
             {searched && !order && !error && !loading && (
-              <p className="text-red-400 text-sm text-center mt-3">
+              <p className="text-destructive text-sm text-center mt-3">
                 Order not found. Please check your Order ID.
               </p>
             )}
@@ -176,25 +159,25 @@ const TrackOrder: React.FC = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="mt-6 border-t border-primary/20 pt-6"
+                  className="mt-6 border-t border-border pt-6"
                 >
                   {/* Order Info */}
                   <div className="grid grid-cols-2 gap-3 text-sm mb-6">
                     <div>
-                      <span className="text-zinc-500">Order ID</span>
-                      <p className="text-white font-medium">{order.orderId}</p>
+                      <span className="text-muted-foreground">Order ID</span>
+                      <p className="text-foreground font-medium">{order.orderId}</p>
                     </div>
                     <div>
-                      <span className="text-zinc-500">Name</span>
-                      <p className="text-white font-medium">{order.fullName}</p>
+                      <span className="text-muted-foreground">Name</span>
+                      <p className="text-foreground font-medium">{order.fullName}</p>
                     </div>
                     <div>
-                      <span className="text-zinc-500">Total</span>
+                      <span className="text-muted-foreground">Total</span>
                       <p className="text-primary font-serif text-lg">{formatINR(order.totalAmount)}</p>
                     </div>
                     <div>
-                      <span className="text-zinc-500">Placed</span>
-                      <p className="text-white text-xs">
+                      <span className="text-muted-foreground">Placed</span>
+                      <p className="text-foreground text-xs">
                         {new Date(order.createdAt).toLocaleString("en-IN")}
                       </p>
                     </div>
@@ -202,18 +185,17 @@ const TrackOrder: React.FC = () => {
 
                   {/* Status Progress */}
                   {order.orderStatus === "Cancelled" ? (
-                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-                      <XCircle className="w-6 h-6 text-red-400" />
-                      <span className="text-red-400 font-medium">Order Cancelled</span>
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-destructive/10 border border-destructive/20">
+                      <XCircle className="w-6 h-6 text-destructive" />
+                      <span className="text-destructive font-medium">Order Cancelled</span>
                     </div>
                   ) : (
                     <div className="relative">
-                      <h3 className="text-zinc-400 text-xs uppercase tracking-wider mb-4">
+                      <h3 className="text-muted-foreground text-xs uppercase tracking-wider mb-4">
                         Live Status
                       </h3>
                       <div className="flex items-center justify-between relative">
-                        {/* Progress Line */}
-                        <div className="absolute top-5 left-[10%] right-[10%] h-0.5 bg-zinc-700">
+                        <div className="absolute top-5 left-[10%] right-[10%] h-0.5 bg-muted">
                           <motion.div
                             className="h-full bg-primary"
                             initial={{ width: "0%" }}
@@ -235,7 +217,7 @@ const TrackOrder: React.FC = () => {
                                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
                                   isActive
                                     ? "bg-primary border-primary"
-                                    : "bg-zinc-800 border-zinc-600"
+                                    : "bg-muted border-border"
                                 }`}
                                 animate={
                                   isCurrent
@@ -245,12 +227,12 @@ const TrackOrder: React.FC = () => {
                                 transition={isCurrent ? { duration: 2, repeat: Infinity } : {}}
                               >
                                 <StepIcon
-                                  className={`w-4 h-4 ${isActive ? "text-primary-foreground" : "text-zinc-500"}`}
+                                  className={`w-4 h-4 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
                                 />
                               </motion.div>
                               <span
                                 className={`text-xs font-medium ${
-                                  isActive ? "text-primary" : "text-zinc-500"
+                                  isActive ? "text-primary" : "text-muted-foreground"
                                 }`}
                               >
                                 {step.label}
@@ -264,11 +246,11 @@ const TrackOrder: React.FC = () => {
 
                   {/* Items */}
                   {order.items.length > 0 && (
-                    <div className="mt-6 border-t border-zinc-800 pt-4">
-                      <h3 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">Items</h3>
+                    <div className="mt-6 border-t border-border pt-4">
+                      <h3 className="text-muted-foreground text-xs uppercase tracking-wider mb-3">Items</h3>
                       <div className="space-y-2">
                         {order.items.map((item: any, i: number) => (
-                          <div key={i} className="flex justify-between text-sm text-zinc-300">
+                          <div key={i} className="flex justify-between text-sm text-foreground/80">
                             <span>{item.name} × {item.quantity}</span>
                             <span>{formatINR(item.price * item.quantity)}</span>
                           </div>

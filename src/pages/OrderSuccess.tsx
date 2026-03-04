@@ -59,7 +59,7 @@ const OrderSuccess: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         Loading order...
       </div>
     );
@@ -67,7 +67,7 @@ const OrderSuccess: React.FC = () => {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="min-h-screen bg-background text-foreground">
         <Navbar onCartClick={() => setCartOpen(true)} />
         <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
         <main className="pt-32 text-center">
@@ -119,7 +119,7 @@ const OrderSuccess: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar onCartClick={() => setCartOpen(true)} />
       <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
@@ -129,33 +129,33 @@ const OrderSuccess: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-2xl mx-auto text-center"
         >
-          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div className="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
           </div>
 
-          <h1 className="font-serif text-3xl text-white mb-2">
+          <h1 className="font-serif text-3xl mb-2">
             Order Confirmed!
           </h1>
 
-          <p className="text-gray-400 mb-8">
+          <p className="text-muted-foreground mb-8">
             Your order is placed & being prepared
           </p>
 
           {/* CARD */}
-          <div className="bg-neutral-900 border border-yellow-600/30 rounded-3xl p-8 mb-10 shadow-2xl">
-            <p className="text-sm text-gray-400 mb-1">Order ID</p>
-            <p className="font-serif text-3xl text-yellow-500 mb-6 tracking-wide">
+          <div className="bg-card border border-primary/30 rounded-3xl p-8 mb-10 shadow-2xl">
+            <p className="text-sm text-muted-foreground mb-1">Order ID</p>
+            <p className="font-serif text-3xl text-primary mb-6 tracking-wide">
               {order.orderId}
             </p>
 
-            <div className="bg-black p-4 rounded-xl inline-block shadow-lg mb-6">
+            <div className="bg-background p-4 rounded-xl inline-block shadow-lg mb-6">
               <QRCodeSVG
                 id="order-qr"
                 value={`VELORIA-${order.orderId}`}
                 size={150}
                 level="H"
-                bgColor="#000000"
-                fgColor="#D4AF37"
+                bgColor="transparent"
+                fgColor="hsl(43, 76%, 52%)"
               />
             </div>
 
@@ -167,20 +167,20 @@ const OrderSuccess: React.FC = () => {
               Download QR Code
             </button>
 
-            <div className="flex items-center justify-center gap-2 bg-yellow-600/10 border border-yellow-600/30 p-3 rounded-xl mb-8">
+            <div className="flex items-center justify-center gap-2 bg-primary/10 border border-primary/30 p-3 rounded-xl mb-8">
               {getStatusIcon()}
-              <span className="font-medium text-yellow-500">
+              <span className="font-medium text-primary">
                 {order.orderStatus}
               </span>
             </div>
 
-            <div className="text-left border-t border-gray-700 pt-6">
-              <h3 className="font-serif text-lg mb-4 text-white">
+            <div className="text-left border-t border-border pt-6">
+              <h3 className="font-serif text-lg mb-4">
                 Order Summary
               </h3>
 
               {order.items.map((item: any, i: number) => (
-                <div key={i} className="flex justify-between text-sm mb-2 text-gray-300">
+                <div key={i} className="flex justify-between text-sm mb-2 text-foreground/80">
                   <span>
                     {item.name} × {item.quantity}
                   </span>
@@ -188,7 +188,7 @@ const OrderSuccess: React.FC = () => {
                 </div>
               ))}
 
-              <div className="border-t border-gray-700 mt-4 pt-4 text-sm text-gray-300">
+              <div className="border-t border-border mt-4 pt-4 text-sm text-foreground/80">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>₹{order.subtotal}</span>
@@ -197,9 +197,9 @@ const OrderSuccess: React.FC = () => {
                   <span>Tax</span>
                   <span>₹{order.tax}</span>
                 </div>
-                <div className="flex justify-between font-serif text-lg mt-3 text-white">
+                <div className="flex justify-between font-serif text-lg mt-3 text-foreground">
                   <span>Total</span>
-                  <span className="text-yellow-500">
+                  <span className="text-primary">
                     ₹{order.totalAmount}
                   </span>
                 </div>

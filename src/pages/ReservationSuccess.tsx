@@ -35,7 +35,7 @@ const ReservationSuccess = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg mx-auto bg-white 
+          className="max-w-lg mx-auto bg-card 
                      rounded-3xl p-10 text-center shadow-2xl"
         >
           {/* ICON */}
@@ -45,43 +45,42 @@ const ReservationSuccess = () => {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-6"
           >
-            <div className="w-20 h-20 bg-green-100 rounded-full 
+            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full 
                             flex items-center justify-center mx-auto">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+              <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
             </div>
           </motion.div>
 
-          {/* FIXED TEXT COLORS */}
-          <h1 className="font-serif text-3xl text-gray-900 mb-3">
+          <h1 className="font-serif text-3xl text-foreground mb-3">
             Reservation Submitted 🍷
           </h1>
 
-          <p className="text-gray-600 mb-8">
+          <p className="text-muted-foreground mb-8">
             Your reservation request has been received.
             <br />
-            We’ll confirm it shortly.
+            We'll confirm it shortly.
           </p>
 
           {/* RESERVATION ID */}
-          <div className="bg-black rounded-xl p-5 mb-6 relative">
-            <p className="text-sm text-gray-400 mb-1">
+          <div className="bg-secondary rounded-xl p-5 mb-6 relative">
+            <p className="text-sm text-muted-foreground mb-1">
               Reservation ID
             </p>
 
-            <p className="font-serif text-2xl text-yellow-500 font-bold tracking-wide">
+            <p className="font-serif text-2xl text-primary font-bold tracking-wide">
               {id}
             </p>
 
             <button
               onClick={copyId}
-              className="absolute top-4 right-4 text-yellow-500 hover:opacity-80"
+              className="absolute top-4 right-4 text-primary hover:opacity-80"
               aria-label="Copy Reservation ID"
             >
               <Copy className="w-5 h-5" />
             </button>
           </div>
 
-          <p className="text-sm text-gray-500 mb-8">
+          <p className="text-sm text-muted-foreground mb-8">
             Please save this ID for future reference.
           </p>
 

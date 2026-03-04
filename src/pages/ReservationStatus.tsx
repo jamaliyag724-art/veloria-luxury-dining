@@ -20,15 +20,14 @@ import {
 
 const ReservationStatus = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams(); // ✅ FIX 1
+  const [searchParams] = useSearchParams();
   const { getReservationById } = useReservations();
 
   const [cartOpen, setCartOpen] = useState(false);
   const [reservationId, setReservationId] = useState("");
   const [searched, setSearched] = useState(false);
-  const [reservation, setReservation] = useState<any | null>(null); // ✅ FIX 2
+  const [reservation, setReservation] = useState<any | null>(null);
 
-  /* ✅ AUTO LOAD FROM URL */
   useEffect(() => {
     const idFromUrl = searchParams.get("id");
     if (idFromUrl) {
@@ -54,24 +53,24 @@ const ReservationStatus = () => {
       case "Confirmed":
         return {
           icon: CheckCircle,
-          color: "text-green-600",
-          bg: "bg-green-100",
+          color: "text-green-600 dark:text-green-400",
+          bg: "bg-green-100 dark:bg-green-900/30",
           label: "Confirmed",
           description: "Your table is reserved. See you soon!",
         };
       case "Pending":
         return {
           icon: Clock,
-          color: "text-amber-600",
-          bg: "bg-amber-100",
+          color: "text-amber-600 dark:text-amber-400",
+          bg: "bg-amber-100 dark:bg-amber-900/30",
           label: "Pending",
           description: "Your reservation is being reviewed.",
         };
       case "Waiting":
         return {
           icon: Clock,
-          color: "text-blue-600",
-          bg: "bg-blue-100",
+          color: "text-blue-600 dark:text-blue-400",
+          bg: "bg-blue-100 dark:bg-blue-900/30",
           label: "Waiting List",
           description:
             "You're on our waiting list. We'll notify you if a table opens up.",
@@ -79,8 +78,8 @@ const ReservationStatus = () => {
       case "Rejected":
         return {
           icon: XCircle,
-          color: "text-red-600",
-          bg: "bg-red-100",
+          color: "text-red-600 dark:text-red-400",
+          bg: "bg-red-100 dark:bg-red-900/30",
           label: "Rejected",
           description:
             "We're sorry, we couldn't accommodate your reservation.",
@@ -88,8 +87,8 @@ const ReservationStatus = () => {
       default:
         return {
           icon: Clock,
-          color: "text-gray-600",
-          bg: "bg-gray-100",
+          color: "text-muted-foreground",
+          bg: "bg-muted",
           label: "Unknown",
           description: "",
         };
@@ -112,14 +111,14 @@ const ReservationStatus = () => {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-lg mx-auto bg-white/95 backdrop-blur-xl rounded-[32px] p-8 shadow-2xl"
+          className="max-w-lg mx-auto bg-card backdrop-blur-xl rounded-[32px] p-8 shadow-2xl"
         >
           {/* HEADER */}
           <div className="text-center mb-8">
             <span className="text-primary uppercase tracking-widest text-sm">
               Reservation
             </span>
-            <h1 className="font-serif text-3xl mt-3">
+            <h1 className="font-serif text-3xl mt-3 text-foreground">
               Check Your Status
             </h1>
             <p className="text-muted-foreground text-sm mt-2">
@@ -137,7 +136,7 @@ const ReservationStatus = () => {
                   setReservationId(e.target.value.toUpperCase())
                 }
                 placeholder="RSV-XXXX"
-                className="luxury-input pl-12 uppercase"
+                className="w-full px-4 py-3 pl-12 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition uppercase"
               />
             </div>
             <button className="btn-gold w-full mt-4 py-3">
@@ -147,9 +146,9 @@ const ReservationStatus = () => {
 
           {/* RESULT */}
           {searched && !reservation && (
-            <div className="bg-red-50 p-6 rounded-2xl text-center">
-              <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
-              <p className="text-sm">
+            <div className="bg-destructive/10 p-6 rounded-2xl text-center">
+              <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-3" />
+              <p className="text-sm text-foreground">
                 Reservation ID not found.
               </p>
             </div>

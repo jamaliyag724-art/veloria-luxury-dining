@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { sendEmail } from "@/lib/email";
+
 
 export type ReservationStatus = 'Pending' | 'Confirmed' | 'Waiting' | 'Rejected';
 
@@ -118,22 +118,6 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
       console.error('Error adding reservation:', insertError);
       throw new Error('Failed to create reservation');
     }
-
-    // Send confirmation email (non-blocking)
-    const siteUrl = window.location.origin;
-    sendEmail({
-      type: "reservation_confirmation",
-      data: {
-        reservationId,
-        fullName: data.fullName,
-        email: data.email,
-        date: data.date,
-        time: data.time,
-        guests: data.guests,
-        specialRequest: data.specialRequest,
-        statusLink: `${siteUrl}/reservation-status`,
-      },
-    }).catch(() => {});
 
     return reservationId;
   };
