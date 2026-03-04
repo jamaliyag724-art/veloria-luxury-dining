@@ -164,25 +164,50 @@
     font-family: 'Nunito Sans', sans-serif;
   }
 
-    /* ⭐ Admin Premium Card */
+ /* ===== ADMIN LUXURY UI ===== */
 
-  .admin-card {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: 22px;
+.admin-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 22px;
+  padding: 28px;
 
-    box-shadow:
-      0 6px 20px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow:
+    0 6px 20px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.04);
 
-    transition: all 0.3s ease;
-  }
+  transition: all 0.3s ease;
+}
 
-  .admin-card:hover {
-    border-color: hsl(var(--primary) / 0.4);
-    transform: translateY(-2px);
-    box-shadow:
-      0 10px 30px rgba(0,0,0,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.05);
-  }
+.admin-card:hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--primary) / 0.4);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* premium navbar */
+
+.admin-navbar {
+  backdrop-filter: blur(14px);
+  background: hsl(var(--background) / 0.7);
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+/* premium filter buttons */
+
+.admin-filter {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+}
+
+.admin-filter-active {
+  background: hsl(var(--primary));
+  color: white;
+}
 }
