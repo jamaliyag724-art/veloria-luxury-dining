@@ -7,7 +7,24 @@ import OrderStatusChart from "./OrderStatusChart";
 import PeakHoursChart from "./PeakHoursChart";
 import ReservationChart from "./ReservationChart";
 import ReservationHeatmap from "./ReservationHeatmap";
+import ReservationCalendar from "./ReservationCalendar"
+import DemandPrediction from "./DemandPrediction"
+import DishProfitability from "./DishProfitability"
+import RevenueForecast from "./RevenueForecast"
 
+<div className="grid lg:grid-cols-2 gap-8">
+
+<DishProfitability/>
+<RevenueForecast/>
+
+</div>
+
+<div className="grid lg:grid-cols-2 gap-8">
+
+<DemandPrediction/>
+<ReservationCalendar/>
+
+</div>
 const AnalyticsSection = () => {
 
   const { orders } = useOrders();
