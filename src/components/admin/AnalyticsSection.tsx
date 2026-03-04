@@ -1,7 +1,7 @@
 import React from "react";
-import TopItemsChart from "../TopItemsChart";
-import OrderStatusChart from "../OrderStatusChart";
-import PeakHoursChart from "../PeakHoursChart";
+import TopItemsChart from "./TopItemsChart";
+import OrderStatusChart from "./OrderStatusChart";
+import PeakHoursChart from "./PeakHoursChart";
 
 const AnalyticsSection = () => {
 
