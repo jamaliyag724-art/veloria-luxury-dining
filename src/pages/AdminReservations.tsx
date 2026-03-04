@@ -57,7 +57,7 @@ const AdminReservations: React.FC = () => {
   return (
     <div className="min-h-screen bg-ivory">
       {/* HEADER */}
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-50">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
