@@ -139,17 +139,17 @@ serve(async (req) => {
       case "order_confirmation":
         subject = `Order Confirmed - ${data.orderId} | Veloria`;
         html = orderConfirmationHtml(data);
-        to = data.email;
+        to = "gaurangjamaliya67@gmail.com";
         break;
       case "reservation_confirmation":
         subject = `Reservation Confirmed - ${data.reservationId} | Veloria`;
         html = reservationConfirmationHtml(data);
-        to = data.email;
+        to = "gaurangjamaliya67@gmail.com";
         break;
       case "order_status_update":
         subject = `Order ${data.status} - ${data.orderId} | Veloria`;
         html = orderStatusUpdateHtml(data);
-        to = data.email;
+        to = "gaurangjamaliya67@gmail.com";
         break;
       default:
         return new Response(JSON.stringify({ error: "Invalid email type" }), {
