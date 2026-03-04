@@ -5,15 +5,17 @@ import PeakHoursChart from "./PeakHoursChart";
 
 const AnalyticsSection = () => {
 
+  const orders = [];
+
   return (
 
     <div className="space-y-10">
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        <TopItemsChart/>
+        <TopItemsChart orders={orders} />
 
-        <OrderStatusChart/>
+        <OrderStatusChart orders={orders} />
 
       </div>
 
