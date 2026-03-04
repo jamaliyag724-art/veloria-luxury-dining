@@ -24,32 +24,30 @@ const RevenueCard: React.FC<RevenueCardProps> = ({
   subtitle,
   loading = false,
   isCurrency = false,
-  accentClass = "bg-[#1a1a1a] text-[#D4AF37]",
+  accentClass = "bg-primary/10 text-primary",
   index = 0,
 }) => {
 
   if (loading) {
     return (
-      <div className="bg-[#151515] rounded-2xl p-7 border border-[#222] shadow-lg">
+      <div className="bg-card rounded-2xl p-7 border border-border shadow-sm">
 
         <div className="flex justify-between mb-5">
 
-          <Skeleton className="w-12 h-12 rounded-xl bg-[#222]" />
+          <Skeleton className="w-12 h-12 rounded-xl" />
 
-          <Skeleton className="w-16 h-5 rounded-full bg-[#222]" />
+          <Skeleton className="w-16 h-5 rounded-full" />
 
         </div>
 
-        <Skeleton className="w-24 h-8 mb-2 bg-[#222]" />
-
-        <Skeleton className="w-32 h-4 bg-[#222]" />
+        <Skeleton className="w-24 h-8 mb-2" />
+        <Skeleton className="w-32 h-4" />
 
       </div>
     );
   }
 
   const displayValue = isCurrency ? formatPrice(value as number) : value;
-
   const isPositive = trend && trend > 0;
 
   return (
@@ -58,7 +56,7 @@ const RevenueCard: React.FC<RevenueCardProps> = ({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.5 }}
-      className="bg-[#151515] rounded-2xl p-7 border border-[#222] hover:border-[#D4AF37]/30 hover:shadow-lg transition-all duration-300"
+      className="bg-card rounded-2xl p-7 border border-border hover:border-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
     >
 
       <div className="flex justify-between mb-5">
@@ -70,7 +68,7 @@ const RevenueCard: React.FC<RevenueCardProps> = ({
         {trend !== undefined && (
           <span
             className={`flex items-center gap-1 text-sm font-medium ${
-              isPositive ? "text-green-400" : "text-red-400"
+              isPositive ? "text-green-500" : "text-red-500"
             }`}
           >
 
@@ -88,16 +86,16 @@ const RevenueCard: React.FC<RevenueCardProps> = ({
 
       </div>
 
-      <h3 className="text-2xl font-serif font-semibold text-white">
+      <h3 className="text-2xl font-serif font-semibold text-foreground">
         {displayValue}
       </h3>
 
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-muted-foreground">
         {title}
       </p>
 
       {subtitle && (
-        <p className="text-xs text-[#D4AF37] mt-1">
+        <p className="text-xs text-primary mt-1">
           {subtitle}
         </p>
       )}
