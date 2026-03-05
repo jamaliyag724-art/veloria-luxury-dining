@@ -9,6 +9,9 @@ import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { useReservations } from "@/context/ReservationContext";
 
+/* ADDED */
+import { supabase } from "@/integrations/supabase/client";
+
 const Reservations = () => {
   const navigate = useNavigate();
   const { addReservation } = useReservations();
@@ -37,6 +40,7 @@ const Reservations = () => {
 
     try {
       setSubmitting(true);
+
       const reservationId = await addReservation({
         fullName: formData.name,
         email: formData.email,
@@ -47,8 +51,25 @@ const Reservations = () => {
         specialRequest: formData.message || undefined,
       });
 
+      /* ADDED EMAIL TRIGGER */
+      await supabase.functions.invoke("send-email", {
+        body: {
+          type: "reservation_confirmation",
+          data: {
+            fullName: formData.name,
+            email: formData.email,
+            reservationId: reservationId,
+            date: formData.date,
+            time: formData.time,
+            guests: formData.guests,
+            specialRequest: formData.message
+          }
+        }
+      });
+
       toast.success("Reservation submitted successfully!");
       navigate(`/reservation-success/${reservationId}`);
+
     } catch (err) {
       console.error("Reservation error:", err);
       toast.error("Failed to submit reservation. Please try again.");
@@ -88,7 +109,6 @@ const Reservations = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            {/* Name + Email */}
             <div className="grid md:grid-cols-2 gap-6">
               <input
                 name="name"
@@ -109,7 +129,6 @@ const Reservations = () => {
               />
             </div>
 
-            {/* Mobile + Guests */}
             <div className="grid md:grid-cols-2 gap-6">
               <input
                 name="mobile"
@@ -135,7 +154,6 @@ const Reservations = () => {
               </div>
             </div>
 
-            {/* Date */}
             <div className="relative">
               <CalendarDays className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
               <input
@@ -149,7 +167,6 @@ const Reservations = () => {
               />
             </div>
 
-            {/* Time */}
             <div className="relative">
               <Clock className="absolute left-4 top-4 text-yellow-400 w-4 h-4 opacity-70" />
               <select
@@ -170,7 +187,6 @@ const Reservations = () => {
               </select>
             </div>
 
-            {/* Message */}
             <textarea
               name="message"
               placeholder="Special requests (optional)"
