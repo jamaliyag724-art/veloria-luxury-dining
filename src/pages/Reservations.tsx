@@ -8,6 +8,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { useReservations } from "@/context/ReservationContext";
+
+/* ADDED */
 import { supabase } from "@/integrations/supabase/client";
 
 const Reservations = () => {
@@ -49,9 +51,10 @@ const Reservations = () => {
         specialRequest: formData.message || undefined,
       });
 
+      /* ADDED EMAIL TRIGGER */
       await supabase.functions.invoke("send-email", {
         body: {
-          type: "reservation_received",   // ✅ CHANGED HERE
+          type: "reservation_confirmation",
           data: {
             fullName: formData.name,
             email: formData.email,
@@ -78,6 +81,7 @@ const Reservations = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
 
+      {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url(/main.webp)" }}
