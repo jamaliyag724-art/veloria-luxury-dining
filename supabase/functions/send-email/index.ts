@@ -154,17 +154,6 @@ serve(async (req) => {
         to = data.email;
         break;
 
-      case "reservation_received":
-        subject = `Reservation Request Received - ${data.reservationId} | Veloria`;
-        html = baseTemplate(
-          "Reservation Request Received",
-          `<p>Dear <strong>${data.fullName}</strong>,</p>
-          <p>Your reservation request has been received and is currently <strong style="color:${goldColor};">pending approval</strong>.</p>
-          <p>You will receive another email once it is approved or rejected.</p>`
-        );
-        to = data.email;
-        break;
-
       case "reservation_confirmation":
         subject = `Reservation Confirmed - ${data.reservationId} | Veloria`;
         html = reservationConfirmationHtml(data);
