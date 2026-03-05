@@ -37,16 +37,16 @@ const AnalyticsSection = () => {
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        <ReservationChart reservations={reservations} />
+        <ReservationChart />
 
-        <PeakHoursChart orders={orders} />
+        <PeakHoursChart />
 
       </div>
 
 
       {/* Reservation Heatmap */}
 
-      <ReservationHeatmap reservations={reservations} />
+      <ReservationHeatmap />
 
 
       {/* Business Analytics */}
