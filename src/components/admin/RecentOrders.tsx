@@ -44,10 +44,10 @@ const RecentOrders: React.FC<Props> = ({ orders }) => {
 
             {recent.map(order => (
 
-              <tr key={order.id} className="border-t border-border">
+              <tr key={order.orderId} className="border-t border-border">
 
                 <td className="py-3">
-                  {order.customerName}
+                  {order.fullName}
                 </td>
 
                 <td>

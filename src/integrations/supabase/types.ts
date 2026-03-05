@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      inventory: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          last_restocked_at: string | null
+          name: string
+          reorder_level: number
+          stock_level: number
+          unit: string
+          usage_rate_per_day: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_restocked_at?: string | null
+          name: string
+          reorder_level?: number
+          stock_level?: number
+          unit?: string
+          usage_rate_per_day?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_restocked_at?: string | null
+          name?: string
+          reorder_level?: number
+          stock_level?: number
+          unit?: string
+          usage_rate_per_day?: number
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           address: string
@@ -107,6 +143,75 @@ export type Database = {
           special_request?: string | null
           status?: string
           time?: string
+        }
+        Relationships: []
+      }
+      restaurant_tables: {
+        Row: {
+          capacity: number
+          created_at: string
+          customer_name: string | null
+          guests: number | null
+          id: string
+          position_x: number
+          position_y: number
+          reservation_time: string | null
+          status: string
+          table_number: number
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string
+          customer_name?: string | null
+          guests?: number | null
+          id?: string
+          position_x?: number
+          position_y?: number
+          reservation_time?: string | null
+          status?: string
+          table_number: number
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          customer_name?: string | null
+          guests?: number | null
+          id?: string
+          position_x?: number
+          position_y?: number
+          reservation_time?: string | null
+          status?: string
+          table_number?: number
+        }
+        Relationships: []
+      }
+      staff: {
+        Row: {
+          contact: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          role: string
+          shift: string
+        }
+        Insert: {
+          contact?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          role?: string
+          shift?: string
+        }
+        Update: {
+          contact?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          role?: string
+          shift?: string
         }
         Relationships: []
       }

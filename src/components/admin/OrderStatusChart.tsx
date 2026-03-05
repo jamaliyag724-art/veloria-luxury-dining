@@ -24,8 +24,8 @@ const OrderStatusChart: React.FC<Props> = ({ orders }) => {
   const safeOrders = orders ?? [];
 
   const paid = safeOrders.filter(o => o.paymentStatus === "Paid").length;
-  const pending = safeOrders.filter(o => o.paymentStatus === "Pending").length;
-  const cancelled = safeOrders.filter(o => o.paymentStatus === "Cancelled").length;
+  const pending = safeOrders.filter(o => o.paymentStatus === "Unpaid").length;
+  const cancelled = safeOrders.filter(o => o.paymentStatus === "Refunded").length;
 
   const data = [
     { name: "Paid", value: paid },

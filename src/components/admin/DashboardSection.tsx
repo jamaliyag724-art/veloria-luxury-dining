@@ -3,6 +3,7 @@ import React from "react"
 import RevenueCard from "./RevenueCard"
 import RevenueChart from "./RevenueChart"
 import OrdersChart from "./OrdersChart"
+import { useOrders } from "@/context/OrderContext"
 
 import {
 DollarSign,
@@ -12,6 +13,7 @@ BarChart3
 } from "lucide-react"
 
 const DashboardSection=()=>{
+const { orders } = useOrders()
 
 return(
 
@@ -53,7 +55,7 @@ icon={Users}
 
 <RevenueChart/>
 
-<OrdersChart/>
+<OrdersChart orders={orders} dateRange="30days" />
 
 </div>
 
