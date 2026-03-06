@@ -17,6 +17,7 @@ import {
   useReservations,
   ReservationStatus as ResStatus,
 } from "@/context/ReservationContext";
+import FeedbackModal from "@/components/feedback/FeedbackModal";
 
 const ReservationStatus = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const ReservationStatus = () => {
   const [reservationId, setReservationId] = useState("");
   const [searched, setSearched] = useState(false);
   const [reservation, setReservation] = useState<any | null>(null);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     const idFromUrl = searchParams.get("id");
@@ -157,6 +159,7 @@ const ReservationStatus = () => {
           {reservation && (() => {
             const cfg = getStatusConfig(reservation.status);
             const Icon = cfg.icon;
+            const showFeedback = reservation.status === "Confirmed" || reservation.status === "Rejected";
 
             return (
               <div className="space-y-6">
@@ -169,11 +172,26 @@ const ReservationStatus = () => {
                     {cfg.description}
                   </p>
                 </div>
+                {showFeedback && (
+                  <button onClick={() => setFeedbackOpen(true)} className="btn-gold w-full py-2.5 text-sm">
+                    Share Your Feedback
+                  </button>
+                )}
               </div>
             );
           })()}
         </motion.div>
       </main>
+
+      {reservation && (reservation.status === "Confirmed" || reservation.status === "Rejected") && (
+        <FeedbackModal
+          isOpen={feedbackOpen}
+          onClose={() => setFeedbackOpen(false)}
+          type="reservation"
+          referenceId={reservation.reservationId}
+          status={reservation.status === "Confirmed" ? "success" : "rejected"}
+        />
+      )}
 
       <Footer />
     </div>

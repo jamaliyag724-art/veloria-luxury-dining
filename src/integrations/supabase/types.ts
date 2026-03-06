@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      feedback: {
+        Row: {
+          ambience_rating: number | null
+          comment: string | null
+          created_at: string
+          food_rating: number | null
+          id: string
+          reason: string | null
+          reference_id: string
+          service_rating: number | null
+          type: string
+        }
+        Insert: {
+          ambience_rating?: number | null
+          comment?: string | null
+          created_at?: string
+          food_rating?: number | null
+          id?: string
+          reason?: string | null
+          reference_id: string
+          service_rating?: number | null
+          type?: string
+        }
+        Update: {
+          ambience_rating?: number | null
+          comment?: string | null
+          created_at?: string
+          food_rating?: number | null
+          id?: string
+          reason?: string | null
+          reference_id?: string
+          service_rating?: number | null
+          type?: string
+        }
+        Relationships: []
+      }
       inventory: {
         Row: {
           category: string
