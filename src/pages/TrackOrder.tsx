@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { formatINR } from "@/lib/currency";
+import FeedbackModal from "@/components/feedback/FeedbackModal";
 
 type OrderStatus = "Pending" | "Preparing" | "Completed" | "Cancelled";
 
@@ -35,6 +36,7 @@ const TrackOrder: React.FC = () => {
   const [searched, setSearched] = useState(false);
   const [order, setOrder] = useState<TrackedOrder | null>(null);
   const [loading, setLoading] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const fetchOrder = async (id: string) => {
     setLoading(true);
@@ -185,63 +187,75 @@ const TrackOrder: React.FC = () => {
 
                   {/* Status Progress */}
                   {order.orderStatus === "Cancelled" ? (
-                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-destructive/10 border border-destructive/20">
-                      <XCircle className="w-6 h-6 text-destructive" />
-                      <span className="text-destructive font-medium">Order Cancelled</span>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 p-4 rounded-2xl bg-destructive/10 border border-destructive/20">
+                        <XCircle className="w-6 h-6 text-destructive" />
+                        <span className="text-destructive font-medium">Order Cancelled</span>
+                      </div>
+                      <button onClick={() => setFeedbackOpen(true)} className="btn-gold w-full py-2.5 text-sm">
+                        Share Feedback
+                      </button>
                     </div>
                   ) : (
-                    <div className="relative">
-                      <h3 className="text-muted-foreground text-xs uppercase tracking-wider mb-4">
-                        Live Status
-                      </h3>
-                      <div className="flex items-center justify-between relative">
-                        <div className="absolute top-5 left-[10%] right-[10%] h-0.5 bg-muted">
-                          <motion.div
-                            className="h-full bg-primary"
-                            initial={{ width: "0%" }}
-                            animate={{
-                              width: `${(currentStep / (STATUS_STEPS.length - 1)) * 100}%`,
-                            }}
-                            transition={{ duration: 0.8, ease: "easeInOut" }}
-                          />
+                    <>
+                      <div className="relative">
+                        <h3 className="text-muted-foreground text-xs uppercase tracking-wider mb-4">
+                          Live Status
+                        </h3>
+                        <div className="flex items-center justify-between relative">
+                          <div className="absolute top-5 left-[10%] right-[10%] h-0.5 bg-muted">
+                            <motion.div
+                              className="h-full bg-primary"
+                              initial={{ width: "0%" }}
+                              animate={{
+                                width: `${(currentStep / (STATUS_STEPS.length - 1)) * 100}%`,
+                              }}
+                              transition={{ duration: 0.8, ease: "easeInOut" }}
+                            />
+                          </div>
+
+                          {STATUS_STEPS.map((step, i) => {
+                            const isActive = i <= currentStep;
+                            const isCurrent = i === currentStep;
+                            const StepIcon = step.icon;
+
+                            return (
+                              <div key={step.status} className="relative z-10 flex flex-col items-center gap-2">
+                                <motion.div
+                                  className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                                    isActive
+                                      ? "bg-primary border-primary"
+                                      : "bg-muted border-border"
+                                  }`}
+                                  animate={
+                                    isCurrent
+                                      ? { scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(212,175,55,0)", "0 0 0 8px rgba(212,175,55,0.2)", "0 0 0 0 rgba(212,175,55,0)"] }
+                                      : {}
+                                  }
+                                  transition={isCurrent ? { duration: 2, repeat: Infinity } : {}}
+                                >
+                                  <StepIcon
+                                    className={`w-4 h-4 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
+                                  />
+                                </motion.div>
+                                <span
+                                  className={`text-xs font-medium ${
+                                    isActive ? "text-primary" : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {step.label}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
-
-                        {STATUS_STEPS.map((step, i) => {
-                          const isActive = i <= currentStep;
-                          const isCurrent = i === currentStep;
-                          const StepIcon = step.icon;
-
-                          return (
-                            <div key={step.status} className="relative z-10 flex flex-col items-center gap-2">
-                              <motion.div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
-                                  isActive
-                                    ? "bg-primary border-primary"
-                                    : "bg-muted border-border"
-                                }`}
-                                animate={
-                                  isCurrent
-                                    ? { scale: [1, 1.15, 1], boxShadow: ["0 0 0 0 rgba(212,175,55,0)", "0 0 0 8px rgba(212,175,55,0.2)", "0 0 0 0 rgba(212,175,55,0)"] }
-                                    : {}
-                                }
-                                transition={isCurrent ? { duration: 2, repeat: Infinity } : {}}
-                              >
-                                <StepIcon
-                                  className={`w-4 h-4 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
-                                />
-                              </motion.div>
-                              <span
-                                className={`text-xs font-medium ${
-                                  isActive ? "text-primary" : "text-muted-foreground"
-                                }`}
-                              >
-                                {step.label}
-                              </span>
-                            </div>
-                          );
-                        })}
                       </div>
-                    </div>
+                      {order.orderStatus === "Completed" && (
+                        <button onClick={() => setFeedbackOpen(true)} className="btn-gold w-full py-2.5 text-sm mt-4">
+                          Share Your Feedback
+                        </button>
+                      )}
+                    </>
                   )}
 
                   {/* Items */}
@@ -264,6 +278,16 @@ const TrackOrder: React.FC = () => {
           </div>
         </motion.div>
       </main>
+
+      {order && (order.orderStatus === "Completed" || order.orderStatus === "Cancelled") && (
+        <FeedbackModal
+          isOpen={feedbackOpen}
+          onClose={() => setFeedbackOpen(false)}
+          type="order"
+          referenceId={order.orderId}
+          status={order.orderStatus === "Completed" ? "success" : "rejected"}
+        />
+      )}
 
       <Footer />
     </div>
