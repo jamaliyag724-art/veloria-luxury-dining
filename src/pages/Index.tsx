@@ -45,6 +45,7 @@ const Index: React.FC = () => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       />
+      <SpinWheel />
     </div>
   );
 };
