@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Gift, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const SEGMENTS = [
   { label: "10% Off", color: "hsl(43, 76%, 52%)", textColor: "#1a1a1a" },
@@ -217,7 +218,15 @@ const SpinWheel: React.FC = () => {
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button
                       className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6"
-                      onClick={() => setOpen(false)}
+                      onClick={() => {
+                        localStorage.setItem("veloria-claimed-reward", result || "");
+                        localStorage.setItem("veloria-coupon-code", `VELORIA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
+                        toast.success("Reward successfully claimed!");
+                        setOpen(false);
+                        setTimeout(() => {
+                          document.getElementById("reservation-cta")?.scrollIntoView({ behavior: "smooth" });
+                        }, 300);
+                      }}
                     >
                       Claim Reward
                     </Button>
