@@ -13,6 +13,7 @@ import CartModal from "@/components/cart/CartModal";
 import FloatingCart from "@/components/cart/FloatingCart";
 import RecommendedDishes from "@/components/home/RecommendedDishes";
 import WelcomePopup from "@/components/home/WelcomePopup";
+import SpinWheel from "@/components/home/SpinWheel";
 
 const Index: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
