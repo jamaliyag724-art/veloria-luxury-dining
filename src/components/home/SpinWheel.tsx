@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Gift, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const SEGMENTS = [
   { label: "10% Off", color: "hsl(43, 76%, 52%)", textColor: "#1a1a1a" },
