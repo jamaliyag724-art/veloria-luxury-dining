@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          expense_date: string
+          id: string
+          notes: string | null
+          payment_method: string | null
+          receipt_url: string | null
+          updated_at: string
+          vendor: string | null
+        }
+        Insert: {
+          amount?: number
+          category: string
+          created_at?: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          receipt_url?: string | null
+          updated_at?: string
+          vendor?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          receipt_url?: string | null
+          updated_at?: string
+          vendor?: string | null
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           ambience_rating: number | null
@@ -140,6 +179,57 @@ export type Database = {
         }
         Relationships: []
       }
+      payroll: {
+        Row: {
+          advance: number
+          base_salary: number
+          bonus: number
+          created_at: string
+          deductions: number
+          id: string
+          net_pay: number
+          overtime: number
+          paid_at: string | null
+          period: string
+          staff_id: string | null
+          staff_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          advance?: number
+          base_salary?: number
+          bonus?: number
+          created_at?: string
+          deductions?: number
+          id?: string
+          net_pay?: number
+          overtime?: number
+          paid_at?: string | null
+          period: string
+          staff_id?: string | null
+          staff_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          advance?: number
+          base_salary?: number
+          bonus?: number
+          created_at?: string
+          deductions?: number
+          id?: string
+          net_pay?: number
+          overtime?: number
+          paid_at?: string | null
+          period?: string
+          staff_id?: string | null
+          staff_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reservations: {
         Row: {
           created_at: string
@@ -248,6 +338,81 @@ export type Database = {
           name?: string
           role?: string
           shift?: string
+        }
+        Relationships: []
+      }
+      utility_bills: {
+        Row: {
+          amount: number
+          bill_type: string
+          created_at: string
+          due_date: string
+          id: string
+          notes: string | null
+          payment_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          bill_type: string
+          created_at?: string
+          due_date: string
+          id?: string
+          notes?: string | null
+          payment_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bill_type?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          notes?: string | null
+          payment_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vendors: {
+        Row: {
+          contact: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          outstanding_balance: number
+          products_supplied: string | null
+          total_purchases: number
+          updated_at: string
+        }
+        Insert: {
+          contact?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          outstanding_balance?: number
+          products_supplied?: string | null
+          total_purchases?: number
+          updated_at?: string
+        }
+        Update: {
+          contact?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          outstanding_balance?: number
+          products_supplied?: string | null
+          total_purchases?: number
+          updated_at?: string
         }
         Relationships: []
       }
