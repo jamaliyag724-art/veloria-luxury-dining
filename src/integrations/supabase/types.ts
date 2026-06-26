@@ -14,44 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      expenses: {
-        Row: {
-          amount: number
-          category: string
-          created_at: string
-          expense_date: string
-          id: string
-          notes: string | null
-          payment_method: string | null
-          receipt_url: string | null
-          updated_at: string
-          vendor: string | null
-        }
-        Insert: {
-          amount?: number
-          category: string
-          created_at?: string
-          expense_date?: string
-          id?: string
-          notes?: string | null
-          payment_method?: string | null
-          receipt_url?: string | null
-          updated_at?: string
-          vendor?: string | null
-        }
-        Update: {
-          amount?: number
-          category?: string
-          created_at?: string
-          expense_date?: string
-          id?: string
-          notes?: string | null
-          payment_method?: string | null
-          receipt_url?: string | null
-          updated_at?: string
-          vendor?: string | null
-        }
-        Relationships: []
+expenses: {
+  Row: {
+    id: string
+    category: string
+    vendor: string | null
+    amount: number
+
+    gst_percent: number | null
+    gst_amount: number | null
+    total_amount: number | null
+
+    expense_date: string
+
+    payment_method: string | null
+    status: string | null
+
+    invoice_number: string | null
+    reference_number: string | null
+
+    description: string | null
+    notes: string | null
+    receipt_url: string | null
+
+    created_by: string | null
+    is_recurring: boolean | null
+
+    created_at: string
+    updated_at: string
+  }
+
+  Insert: {
+    id?: string
+    category: string
+    vendor?: string | null
+    amount: number
+
+    gst_percent?: number | null
+    gst_amount?: number | null
+    total_amount?: number | null
+
+    expense_date: string
+
+    payment_method?: string | null
+    status?: string | null
+
+    invoice_number?: string | null
+    reference_number?: string | null
+
+    description?: string | null
+    notes?: string | null
+    receipt_url?: string | null
+
+    created_by?: string | null
+    is_recurring?: boolean | null
+
+    created_at?: string
+    updated_at?: string
+  }
+
+  Update: {
+    id?: string
+    category?: string
+    vendor?: string | null
+    amount?: number
+
+    gst_percent?: number | null
+    gst_amount?: number |null
+    total_amount?: number | null
+
+    expense_date?: string
+
+    payment_method?: string | null
+    status?: string | null
+
+    invoice_number?: string | null
+    reference_number?: string | null
+
+    description?: string | null
+    notes?: string | null
+    receipt_url?: string | null
+
+    created_by?: string | null
+    is_recurring?: boolean | null
+
+    created_at?: string
+    updated_at?: string
+  }
+
+  Relationships: []
+}
       }
       feedback: {
         Row: {
