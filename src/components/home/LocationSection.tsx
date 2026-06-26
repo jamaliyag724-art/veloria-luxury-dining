@@ -18,7 +18,7 @@ const LocationSection: React.FC = () => {
           >
              <div className="glass-card overflow-hidden h-[420px] w-full">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.198765552834!2d72.58717017527744!3d22.94290581929658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e8f74f93d9c77%3A0xf94ed8d1e20ffd54!2sPLATINUM%20BLUE%20SKY!5e0!3m2!1sen!2sin!4v1769183628515"
+                  src="https://www.google.com/maps/place/The+Leela+Gandhinagar/@23.2343263,72.6286891,17z/data=!3m1!4b1!4m9!3m8!1s0x395c2b70dc34918b:0x95f044b6110e17cb!5m2!4m1!1i2!8m2!3d23.2343263!4d72.6286891!16s%2Fg%2F11fhn89pb9?entry=ttu&g_ep=EgoyMDI2MDYyMy4wIKXMDSoASAFQAw%3D%3D"
                   width="100%"
                   height="100%"
                   loading="lazy"
