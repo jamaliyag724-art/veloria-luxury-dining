@@ -14,7 +14,7 @@ interface StaffMember {
 }
 
 const ROLES = ["Manager", "Chef", "Waiter", "Host", "Kitchen Staff"];
-const SHIFTS = ["Morning", "Afternoon", "Evening", "Night"];
+const SHIFTS = ["All Day"];
 
 const StaffSection = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
