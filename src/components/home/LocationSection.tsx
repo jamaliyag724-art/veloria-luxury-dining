@@ -17,12 +17,18 @@ const LocationSection: React.FC = () => {
             className="relative h-[400px] rounded-2xl overflow-hidden shadow-medium"
           >
              <div className="glass-card overflow-hidden h-[420px] w-full"
-               <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3666.240707598994!2d72.6261141753202!3d23.234326279025904!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2b70dc34918b%3A0x95f044b6110e17cb!2sThe%20Leela%20Gandhinagar!5e0!3m2!1sen!2sin!4v1782473301094!5m2!1sen!2sin" 
-                  width="100%"
-                  height="100%"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
+               <iframe
+        title="Veloria Location"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3666.240707598994!2d72.6261141753202!3d23.234326279025904!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2b70dc34918b%3A0x95f044b6110e17cb!2sThe%20Leela%20Gandhinagar!5e0!3m2!1sen!2sin!4v1782473301094!5m2!1sen!2sin"
+        width="100%"
+        height="100%"
+        style={{
+          border: 0,
+        }}
+        loading="lazy"
+        allowFullScreen
+        referrerPolicy="strict-origin-when-cross-origin"
+      />
               </div>
 
             {/* Overlay */}
