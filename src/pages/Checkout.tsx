@@ -31,7 +31,7 @@ const checkoutSchema = z.object({
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-const TAX_RATE = 0.1;
+const TAX_RATE = 0.18;
 
 const Checkout: React.FC = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -243,10 +243,31 @@ const Checkout: React.FC = () => {
                   <p className="mt-4 text-sm text-destructive text-center">{paymentError}</p>
                 )}
 
+                <div className="mt-6 p-4 rounded-xl border border-border bg-background/40 space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{formatINR(subtotal)}</span>
+                  </div>
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between text-emerald-500">
+                      <span>Discount</span>
+                      <span>− {formatINR(couponDiscount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">GST (18%)</span>
+                    <span>{formatINR(taxAmount)}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-border font-serif text-base">
+                    <span>Grand Total</span>
+                    <span className="text-primary">{formatINR(totalAmount)}</span>
+                  </div>
+                </div>
+
                 <button
                   disabled={!isFormValid}
                   onClick={handlePayment}
-                  className="w-full mt-8 py-4 rounded-xl font-medium bg-primary text-primary-foreground shadow-lg hover:opacity-90 transition disabled:opacity-50"
+                  className="w-full mt-6 py-4 rounded-xl font-medium bg-primary text-primary-foreground shadow-lg hover:opacity-90 transition disabled:opacity-50"
                 >
                   Pay {formatINR(totalAmount)}
                 </button>

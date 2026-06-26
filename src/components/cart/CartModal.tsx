@@ -15,7 +15,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     useCart();
   const navigate = useNavigate();
 
-  const tax = totalPrice * 0.1;
+  const tax = Math.round(totalPrice * 0.18);
   const grandTotal = totalPrice + tax;
 
   const handleCheckout = () => {
@@ -150,7 +150,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                     <span>{formatINR(totalPrice)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax (10%)</span>
+                    <span className="text-muted-foreground">GST (18%)</span>
                     <span>{formatINR(tax)}</span>
                   </div>
                   <div className="flex justify-between font-serif text-lg font-semibold pt-2 border-t">
