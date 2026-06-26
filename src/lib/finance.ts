@@ -12,9 +12,9 @@ export const UTILITY_TYPES = ["Electricity", "Water", "Internet", "Gas"] as cons
 /* ───────── BRAND / RESTAURANT META ───────── */
 export const RESTAURANT = {
   name: "Veloria Luxury Dining",
-  address: "12 Marine Drive, Mumbai, Maharashtra 400020, India",
-  gstin: "27AABCV1234F1Z5",
-  owner: "Gaurang",
+  address: "The Leela Gandhinagar, Airspace Above Gandhinagar Railway Station, Sector 14, Gandhinagar, Gujarat 382014",
+  gstin: "24AABCV1234F1Z5",
+  owner: "Gaurang J",
   phone: "+91 9537248835",
   email: "owner@veloria.com",
   website: "veloria.com",

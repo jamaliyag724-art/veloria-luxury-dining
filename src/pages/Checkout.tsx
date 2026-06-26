@@ -31,7 +31,7 @@ const checkoutSchema = z.object({
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-const TAX_RATE = 0.1;
+const TAX_RATE = 0.18;
 
 const Checkout: React.FC = () => {
   const { items, totalPrice, clearCart } = useCart();

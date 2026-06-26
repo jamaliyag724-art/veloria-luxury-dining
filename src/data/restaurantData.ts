@@ -80,8 +80,8 @@ export const faqs = [
 export const restaurantInfo = {
   tagline: "Where Every Dish Becomes a Timeless Story",
 
-  address: "Platinum Blue Sky, Near Khajuri Bus Stop",
-  city: "Ahmedabad, Gujarat 382405",
+  address: "The Leela Gandhinagar, Airspace Above Gandhinagar Railway Station, Sector 14",
+  city: "Gandhinagar, Gujarat 382014",
 
   phone: "+91 9537248835",
 
