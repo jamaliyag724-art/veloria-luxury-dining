@@ -608,7 +608,9 @@ const ExpensesSection = () => {
         if (error) throw error;
         toast({ title: "Expense updated" });
       } else {
-        const { error } = await supabase.from("expenses").insert([{ ...payload, created_by: currentUserLabel }]);
+       const { error } = await supabase
+  .from("expenses")
+  .insert([payload]);
         if (error) throw error;
         toast({ title: "Expense added" });
       }
