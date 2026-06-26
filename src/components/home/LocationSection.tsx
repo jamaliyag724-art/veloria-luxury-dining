@@ -18,7 +18,7 @@ const LocationSection: React.FC = () => {
           >
              <div className="glass-card overflow-hidden h-[420px] w-full">
                 <iframe
-                  src="https://www.google.com/maps/place/The+Leela+Gandhinagar/@23.2343263,72.6286891,17z/data=!3m1!4b1!4m9!3m8!1s0x395c2b70dc34918b:0x95f044b6110e17cb!5m2!4m1!1i2!8m2!3d23.2343263!4d72.6286891!16s%2Fg%2F11fhn89pb9?entry=ttu&g_ep=EgoyMDI2MDYyMy4wIKXMDSoASAFQAw%3D%3D"
+                  src="https://maps.app.goo.gl/x8LWX77PZCPQ7rdf7"
                   width="100%"
                   height="100%"
                   loading="lazy"
