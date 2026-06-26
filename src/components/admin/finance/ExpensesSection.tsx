@@ -611,7 +611,7 @@ const ExpensesSection = () => {
         const { data, error } = await supabase.from("expenses").insert([payload]).select();
         if (error) throw error;
         if (!data || data.length === 0) {
-          throw new Error("Insert returned no data. Check that Row Level Security (RLS) is disabled on the expenses table in Supabase.");
+          throw new Error("Insert returned no data — verify that RLS is disabled on the expenses table in Supabase.");
         }
         toast({ title: "Expense added" });
       }
