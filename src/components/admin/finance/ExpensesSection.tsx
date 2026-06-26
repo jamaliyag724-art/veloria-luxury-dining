@@ -604,17 +604,19 @@ const ExpensesSection = () => {
     };
     try {
       if (editingId) {
-        const { error } = await supabase.from("expenses").update(payload).eq("id", editingId);
+        const { error } = await supabase.from("expenses").update(payload).eq("id", editingId).select();
         if (error) throw error;
         toast({ title: "Expense updated" });
       } else {
-       const { error } = await supabase
-  .from("expenses")
-  .insert([payload]);
+        const { data, error } = await supabase.from("expenses").insert([payload]).select();
         if (error) throw error;
+        if (!data || data.length === 0) {
+          throw new Error("Insert returned no data. Check that Row Level Security (RLS) is disabled on the expenses table in Supabase.");
+        }
         toast({ title: "Expense added" });
       }
       window.dispatchEvent(new CustomEvent("expenses:updated"));
+      await load();
       resetForm();
       setShowForm(false);
     } catch (e: any) {
