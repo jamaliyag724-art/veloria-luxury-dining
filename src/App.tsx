@@ -30,6 +30,7 @@ import Contact from "./pages/Contact";
 import TrackOrder from "./pages/TrackOrder";
 import NotFound from "./pages/NotFound";
 import ReservationSummary from "./pages/ReservationSummary";
+import ReservationPayment from "./pages/ReservationPayment";
 /* Lazy loaded */
 import { lazy } from "react";
 const TableLayout = lazy(() => import("./pages/TableLayout"));
@@ -90,7 +91,8 @@ const AppContent = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/track-order" element={<TrackOrder />} />
           <Route path="/table-layout" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><div className="w-12 h-12 border-2 border-primary/20 border-t-primary rounded-full animate-spin" /></div>}><TableLayout /></Suspense>} />
-
+          <Route path="/reservation-summary" element={<ReservationSummary />} />
+          <Route path="/reservation-payment" element={<ReservationPayment />} />
           {/* ADMIN */}
           <Route path="/admin/login" element={<AdminLogin />} />
 
@@ -129,11 +131,6 @@ const AppContent = () => {
               </ProtectedAdminRoute>
             }
           />
-           <Route
-  path="/reservation-summary"
-  element={<ReservationSummary />}
-/>
-
           {/* FALLBACK */}
           <Route path="*" element={<NotFound />} />
         </Routes>
