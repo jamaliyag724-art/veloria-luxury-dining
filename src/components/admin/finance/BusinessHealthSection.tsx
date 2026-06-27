@@ -1,11 +1,14 @@
+// BusinessHealthSection.tsx
 import React, { useEffect, useState } from "react";
 import { Wallet, TrendingUp, TrendingDown, Users, Clock, AlertTriangle, DollarSign, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOrders } from "@/context/OrderContext";
+import { useReservations } from "@/context/ReservationContext";
 import { fmtINR } from "@/lib/finance";
 
 const BusinessHealthSection = () => {
   const { orders } = useOrders();
+  const { reservations } = useReservations();
   const [expenses, setExpenses] = useState<any[]>([]);
   const [payroll, setPayroll] = useState<any[]>([]);
   const [vendors, setVendors] = useState<any[]>([]);
@@ -35,11 +38,19 @@ const BusinessHealthSection = () => {
   const now = new Date();
   const isThisMonth = (d: Date) => d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
 
-  const todayRev = orders.filter((o:any)=>(new Date(o.createdAt||o.created_at).toISOString().slice(0,10))===today).reduce((s,o:any)=>s+(o.totalAmount||0),0);
+  const todayOrderRev = orders.filter((o:any)=>(new Date(o.createdAt||o.created_at).toISOString().slice(0,10))===today).reduce((s,o:any)=>s+(o.totalAmount||0),0);
+  const todayReservationRev = reservations.filter((r:any)=>(new Date(r.createdAt||r.created_at).toISOString().slice(0,10))===today).reduce((s,r:any)=>s+(r.reservationAmount||0),0);
+  const todayRev = todayOrderRev + todayReservationRev;
   const todayExp = expenses.filter(e=>e.expense_date===today).reduce((s,e)=>s+Number(e.amount),0);
-  const monthRev = orders.filter((o:any)=>isThisMonth(new Date(o.createdAt||o.created_at))).reduce((s,o:any)=>s+(o.totalAmount||0),0);
+
+  const monthOrderRev = orders.filter((o:any)=>isThisMonth(new Date(o.createdAt||o.created_at))).reduce((s,o:any)=>s+(o.totalAmount||0),0);
+  const monthReservationRev = reservations.filter((r:any)=>isThisMonth(new Date(r.createdAt||r.created_at))).reduce((s,r:any)=>s+(r.reservationAmount||0),0);
+  const monthRev = monthOrderRev + monthReservationRev;
   const monthExp = expenses.filter(e=>isThisMonth(new Date(e.expense_date))).reduce((s,e)=>s+Number(e.amount),0);
-  const totalRev = orders.reduce((s,o:any)=>s+(o.totalAmount||0),0);
+
+  const totalOrderRev = orders.reduce((s,o:any)=>s+(o.totalAmount||0),0);
+  const totalReservationRev = reservations.reduce((s,r:any)=>s+(r.reservationAmount||0),0);
+  const totalRev = totalOrderRev + totalReservationRev;
   const totalExp = expenses.reduce((s,e)=>s+Number(e.amount),0);
   const cashInHand = totalRev - totalExp;
   const pendingSalaries = payroll.filter(p=>p.status==="pending").reduce((s,p)=>s+Number(p.net_pay),0);
