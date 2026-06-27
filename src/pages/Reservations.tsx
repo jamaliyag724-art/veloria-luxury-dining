@@ -2,21 +2,15 @@ import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Users, Sparkles, MapPin, Hash, X } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
-import { useReservations } from "@/context/ReservationContext";
 import { fmtINR } from "@/lib/finance";
-
-/* ADDED */
-import { supabase } from "@/integrations/supabase/client";
 
 const Reservations = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { addReservation } = useReservations();
   const [cartOpen, setCartOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -55,53 +49,30 @@ const Reservations = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     if (submitting) return;
 
-    try {
-      setSubmitting(true);
+    setSubmitting(true);
 
-      const tableNote = selectedTable
-        ? `Table ${selectedTable.tableNumber} (${selectedTable.category}, ${selectedTable.area}, Min spend ${fmtINR(selectedTable.minSpend)})`
-        : "";
-      const composedRequest = [tableNote, formData.message].filter(Boolean).join(" | ");
+    const reservation = {
+      fullName: formData.name,
+      email: formData.email,
+      mobile: formData.mobile,
+      guests: parseInt(formData.guests),
+      date: formData.date,
+      time: formData.time,
+      specialRequest: formData.message,
+    };
 
-      const reservationId = await addReservation({
-        fullName: formData.name,
-        email: formData.email,
-        mobile: formData.mobile,
-        guests: parseInt(formData.guests),
-        date: formData.date,
-        time: formData.time,
-        specialRequest: composedRequest || undefined,
-      });
+    navigate("/reservation-summary", {
+      state: {
+        reservation,
+        selectedTable,
+      },
+    });
 
-      /* ADDED EMAIL TRIGGER */
-      await supabase.functions.invoke("send-email", {
-        body: {
-          type: "reservation_confirmation",
-          data: {
-            fullName: formData.name,
-            email: formData.email,
-            reservationId: reservationId,
-            date: formData.date,
-            time: formData.time,
-            guests: formData.guests,
-            specialRequest: formData.message
-          }
-        }
-      });
-
-      toast.success("Reservation submitted successfully!");
-      navigate(`/reservation-success/${reservationId}`);
-
-    } catch (err) {
-      console.error("Reservation error:", err);
-      toast.error("Failed to submit reservation. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    setSubmitting(false);
   };
 
   return (
