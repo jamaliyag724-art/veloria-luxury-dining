@@ -129,9 +129,43 @@ const Reservations = () => {
                      p-12 
                      shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
         >
-          <h1 className="font-serif text-4xl text-white text-center mb-10">
+          <h1 className="font-serif text-4xl text-white text-center mb-6">
             Make a Reservation
           </h1>
+
+          {selectedTable && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 rounded-2xl border border-yellow-400/40 bg-yellow-400/5 p-5 relative"
+            >
+              <button
+                type="button"
+                onClick={clearTable}
+                className="absolute top-3 right-3 p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10"
+              >
+                <X size={14} />
+              </button>
+              <p className="text-yellow-400 text-[10px] tracking-[0.3em] uppercase flex items-center gap-1.5">
+                <Sparkles size={11} /> Selected Table
+              </p>
+              <div className="mt-2 flex flex-wrap items-end gap-4 text-white">
+                <span className="font-serif text-3xl flex items-center gap-2"><Hash size={20} className="text-yellow-400" />{selectedTable.tableNumber}</span>
+                <span className="text-sm opacity-90">{selectedTable.category}</span>
+                <span className="text-xs opacity-70 flex items-center gap-1"><MapPin size={12} />{selectedTable.area}</span>
+                <span className="text-xs opacity-70 flex items-center gap-1"><Users size={12} />{selectedTable.seats} seats</span>
+                <span className="ml-auto text-yellow-400 font-semibold">Min spend {fmtINR(selectedTable.minSpend)}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate("/tables")}
+                className="mt-3 text-[11px] text-yellow-400/80 hover:text-yellow-400 underline underline-offset-2"
+              >
+                Change table in 3D view
+              </button>
+            </motion.div>
+          )}
+
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
