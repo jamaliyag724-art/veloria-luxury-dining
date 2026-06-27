@@ -1,34 +1,55 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CalendarDays, Clock, Users, Sparkles, MapPin, Hash, X } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { useReservations } from "@/context/ReservationContext";
+import { fmtINR } from "@/lib/finance";
 
 /* ADDED */
 import { supabase } from "@/integrations/supabase/client";
 
 const Reservations = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { addReservation } = useReservations();
   const [cartOpen, setCartOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
 
+  const selectedTable = useMemo(() => {
+    const tableNumber = searchParams.get("table");
+    if (!tableNumber) return null;
+    return {
+      tableNumber,
+      category: searchParams.get("category") || "",
+      seats: Number(searchParams.get("seats") || 0),
+      minSpend: Number(searchParams.get("minSpend") || 0),
+      area: searchParams.get("area") || "",
+    };
+  }, [searchParams]);
+
+  const clearTable = () => {
+    const sp = new URLSearchParams(searchParams);
+    ["table", "category", "seats", "minSpend", "area"].forEach((k) => sp.delete(k));
+    setSearchParams(sp, { replace: true });
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobile: "",
-    guests: "1",
+    guests: selectedTable ? String(selectedTable.seats || 2) : "1",
     date: "",
     time: "",
     message: "",
   });
+
 
   const handleChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,6 +62,11 @@ const Reservations = () => {
     try {
       setSubmitting(true);
 
+      const tableNote = selectedTable
+        ? `Table ${selectedTable.tableNumber} (${selectedTable.category}, ${selectedTable.area}, Min spend ${fmtINR(selectedTable.minSpend)})`
+        : "";
+      const composedRequest = [tableNote, formData.message].filter(Boolean).join(" | ");
+
       const reservationId = await addReservation({
         fullName: formData.name,
         email: formData.email,
@@ -48,7 +74,7 @@ const Reservations = () => {
         guests: parseInt(formData.guests),
         date: formData.date,
         time: formData.time,
-        specialRequest: formData.message || undefined,
+        specialRequest: composedRequest || undefined,
       });
 
       /* ADDED EMAIL TRIGGER */
@@ -103,9 +129,43 @@ const Reservations = () => {
                      p-12 
                      shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
         >
-          <h1 className="font-serif text-4xl text-white text-center mb-10">
+          <h1 className="font-serif text-4xl text-white text-center mb-6">
             Make a Reservation
           </h1>
+
+          {selectedTable && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 rounded-2xl border border-yellow-400/40 bg-yellow-400/5 p-5 relative"
+            >
+              <button
+                type="button"
+                onClick={clearTable}
+                className="absolute top-3 right-3 p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10"
+              >
+                <X size={14} />
+              </button>
+              <p className="text-yellow-400 text-[10px] tracking-[0.3em] uppercase flex items-center gap-1.5">
+                <Sparkles size={11} /> Selected Table
+              </p>
+              <div className="mt-2 flex flex-wrap items-end gap-4 text-white">
+                <span className="font-serif text-3xl flex items-center gap-2"><Hash size={20} className="text-yellow-400" />{selectedTable.tableNumber}</span>
+                <span className="text-sm opacity-90">{selectedTable.category}</span>
+                <span className="text-xs opacity-70 flex items-center gap-1"><MapPin size={12} />{selectedTable.area}</span>
+                <span className="text-xs opacity-70 flex items-center gap-1"><Users size={12} />{selectedTable.seats} seats</span>
+                <span className="ml-auto text-yellow-400 font-semibold">Min spend {fmtINR(selectedTable.minSpend)}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate("/table-layout")}
+                className="mt-3 text-[11px] text-yellow-400/80 hover:text-yellow-400 underline underline-offset-2"
+              >
+                Change table in 3D view
+              </button>
+            </motion.div>
+          )}
+
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
