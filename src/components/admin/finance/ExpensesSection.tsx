@@ -666,7 +666,7 @@ const ExpensesSection = () => {
 
   const bulkUpdateStatus = async (status: string) => {
     const ids = Array.from(selectedIds);
-    const { error } = await supabase.from("expenses").update({ status }).in("id", ids);
+    const { error } = await supabase.from("expenses").update({ status } as any).in("id", ids);
     if (error) toast({ title: "Bulk update failed", variant: "destructive" });
     else {
       toast({ title: `Status updated for ${ids.length} expense(s)` });

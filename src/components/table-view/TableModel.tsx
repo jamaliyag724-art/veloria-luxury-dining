@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import type { TableData, TableStatus } from "@/hooks/useTableLayout";
-import { formatINR } from "@/lib/finance";
+import { fmtINR } from "@/lib/finance";
 
 interface TableModelProps {
   table: TableData;
