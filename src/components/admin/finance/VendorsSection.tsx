@@ -32,6 +32,30 @@ const VendorsSection = () => {
     toast({ title: "Saved" });
   };
 
+  const deleteVendor = async (id: string) => {
+  const { error } = await supabase
+    .from("vendors")
+    .delete()
+    .eq("id", id);
+
+  console.log(error);
+
+  if (error) {
+    toast({
+      title: "Delete Failed",
+      description: error.message,
+      variant: "destructive",
+    });
+    return;
+  }
+
+  toast({
+    title: "Vendor deleted",
+  });
+
+  load();
+};
+
   const totalOut = items.reduce((s,v)=>s+Number(v.outstanding_balance||0),0);
 
   return (
