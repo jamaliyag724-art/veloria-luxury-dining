@@ -13,6 +13,7 @@ export interface ReservationData {
   date: string;
   time: string;
   specialRequest?: string;
+  reservationAmount: number;
   status: ReservationStatus;
   createdAt: string;
 }
@@ -63,6 +64,7 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
         date: row.date,
         time: row.time,
         specialRequest: row.special_request || undefined,
+        reservationAmount: Number(row.reservation_amount || 0),
         status: row.status as ReservationStatus,
         createdAt: row.created_at,
       }));
@@ -111,6 +113,7 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
         date: data.date,
         time: data.time,
         special_request: data.specialRequest || null,
+        reservation_amount: data.reservationAmount,
         status: 'Pending',
       });
 
