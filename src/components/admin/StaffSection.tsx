@@ -20,7 +20,7 @@ const StaffSection = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ name: "", role: "Waiter", shift: "Morning", contact: "" });
+  const [form, setForm] = useState({ name: "", role: "Waiter", shift: "All Day", contact: "" });
   const { toast } = useToast();
 
   const fetch_ = useCallback(async () => {
@@ -38,7 +38,7 @@ const StaffSection = () => {
   const addStaff = async () => {
     if (!form.name.trim()) return;
     await supabase.from("staff").insert([form]);
-    setForm({ name: "", role: "Waiter", shift: "Morning", contact: "" });
+    setForm({ name: "", role: "Waiter", shift: "All Day", contact: "" });
     setShowAdd(false);
     toast({ title: "Staff member added" });
   };
