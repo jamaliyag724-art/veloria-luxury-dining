@@ -29,7 +29,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import TrackOrder from "./pages/TrackOrder";
 import NotFound from "./pages/NotFound";
-
+import ReservationSummary from "./pages/ReservationSummary";
 /* Lazy loaded */
 import { lazy } from "react";
 const TableLayout = lazy(() => import("./pages/TableLayout"));
@@ -129,6 +129,10 @@ const AppContent = () => {
               </ProtectedAdminRoute>
             }
           />
+           <Route
+  path="/reservation-summary"
+  element={<ReservationSummary />}
+/>
 
           {/* FALLBACK */}
           <Route path="*" element={<NotFound />} />
