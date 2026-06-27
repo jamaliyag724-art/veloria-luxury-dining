@@ -165,7 +165,7 @@ const CameraRig: React.FC<{ preset: keyof typeof cameraPresets }> = ({ preset })
     animRef.current.toTarget.set(...p.target);
   }, [preset, camera, controls]);
 
-  useThree(({ }) => null);
+  
 
   React.useEffect(() => {
     let raf = 0;
