@@ -1,3 +1,4 @@
+// DashboardSection.tsx
 import React from "react";
 
 import RevenueCard from "./RevenueCard";
@@ -5,6 +6,7 @@ import RevenueChart from "./RevenueChart";
 import OrdersChart from "./OrdersChart";
 
 import { useOrders } from "@/context/OrderContext";
+import { useReservations } from "@/context/ReservationContext";
 
 import {
   DollarSign,
@@ -21,19 +23,30 @@ const DashboardSection = () => {
     getTotalRevenue,
   } = useOrders();
 
-  const stats = getOrderStats();
-  const revenue = getTotalRevenue();
+  const { reservations, loading: reservationsLoading } = useReservations();
 
-  const avgOrder =
-    stats.total > 0
-      ? Math.round(revenue / stats.total)
+  const stats = getOrderStats();
+  const orderRevenue = getTotalRevenue();
+  const reservationRevenue = reservations.reduce(
+    (sum, r) => sum + (r.reservationAmount || 0),
+    0
+  );
+  const totalRevenue = orderRevenue + reservationRevenue;
+
+  const totalOrders = stats.total;
+  const totalReservations = reservations.length;
+
+  const avgRevenue =
+    totalOrders + totalReservations > 0
+      ? Math.round(totalRevenue / (totalOrders + totalReservations))
       : 0;
 
-  const customers = new Set(
-    orders.map((order) => order.email)
-  ).size;
+  const customers = new Set([
+    ...orders.map((order) => order.email),
+    ...reservations.map((r) => r.email),
+  ]).size;
 
-  if (loading) {
+  if (loading || reservationsLoading) {
     return (
       <div className="flex justify-center items-center h-[400px]">
         <p className="text-muted-foreground">
@@ -52,7 +65,7 @@ const DashboardSection = () => {
       <div className="grid md:grid-cols-4 gap-6">
         <RevenueCard
           title="Revenue"
-          value={`₹${revenue.toLocaleString("en-IN")}`}
+          value={`₹${totalRevenue.toLocaleString("en-IN")}`}
           icon={DollarSign}
         />
 
@@ -64,7 +77,7 @@ const DashboardSection = () => {
 
         <RevenueCard
           title="Avg Order"
-          value={`₹${avgOrder.toLocaleString("en-IN")}`}
+          value={`₹${avgRevenue.toLocaleString("en-IN")}`}
           icon={BarChart3}
         />
 
