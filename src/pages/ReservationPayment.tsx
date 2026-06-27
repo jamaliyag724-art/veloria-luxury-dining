@@ -30,6 +30,7 @@ import { formatINR } from "@/lib/currency";
 import { useReservations } from "@/context/ReservationContext";
 import { supabase } from "@/integrations/supabase/client";
 
+/* ---------------- TYPES ---------------- */
 interface ReservationData {
   fullName: string;
   email: string;
@@ -66,6 +67,7 @@ const PAYMENT_METHODS: { id: PaymentMethodId; label: string; icon: React.Element
   { id: "netbanking", label: "Net Banking", icon: Landmark },
 ];
 
+/* ---------------- COMPONENT ---------------- */
 const ReservationPayment: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -80,6 +82,7 @@ const ReservationPayment: React.FC = () => {
   const selectedTable = location.state?.selectedTable as SelectedTableData | undefined;
   const paymentSummary = location.state?.paymentSummary as PaymentSummary | undefined;
 
+  /* ---------------- GUARD: MISSING DATA ---------------- */
   if (!reservation || !selectedTable || !paymentSummary) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -143,6 +146,7 @@ const ReservationPayment: React.FC = () => {
         date: reservation.date,
         time: reservation.time,
         specialRequest: composedRequest || undefined,
+        reservationAmount: selectedTable.minSpend,
       });
 
       try {
@@ -173,6 +177,7 @@ const ReservationPayment: React.FC = () => {
     }
   };
 
+  /* ---------------- PROCESSING SCREEN ---------------- */
   if (stage === "processing") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
@@ -193,6 +198,7 @@ const ReservationPayment: React.FC = () => {
     );
   }
 
+  /* ---------------- SUCCESS SCREEN (brief, before redirect) ---------------- */
   if (stage === "success") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
@@ -216,6 +222,7 @@ const ReservationPayment: React.FC = () => {
     );
   }
 
+  /* ---------------- MAIN UI ---------------- */
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar onCartClick={() => setCartOpen(true)} />
@@ -239,6 +246,7 @@ const ReservationPayment: React.FC = () => {
           </motion.h1>
 
           <div className="grid lg:grid-cols-3 gap-10 items-start">
+            {/* ===================== LEFT CARD — RESERVATION SUMMARY ===================== */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -299,6 +307,7 @@ const ReservationPayment: React.FC = () => {
               </div>
             </motion.div>
 
+            {/* ===================== RIGHT CARD — PAYMENT ===================== */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -399,6 +408,7 @@ const ReservationPayment: React.FC = () => {
   );
 };
 
+/* ---------------- SUB-COMPONENTS ---------------- */
 interface SummaryRowProps {
   icon: React.ElementType;
   label: string;
@@ -420,6 +430,7 @@ const SummaryRow: React.FC<SummaryRowProps> = ({ icon: Icon, label, value, highl
   </div>
 );
 
+/* ---------------- HELPERS ---------------- */
 function formatDate(dateStr: string): string {
   if (!dateStr) return "—";
   const d = new Date(dateStr);
