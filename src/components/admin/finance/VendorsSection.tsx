@@ -32,25 +32,26 @@ const VendorsSection = () => {
     toast({ title: "Saved" });
   };
 
-  const deleteVendor = async (id: string) => {
+const deleteVendor = async (id: string) => {
   const { error } = await supabase
     .from("vendors")
     .delete()
     .eq("id", id);
 
-  console.log(error);
-
   if (error) {
+    console.error(error);
+
     toast({
       title: "Delete Failed",
       description: error.message,
       variant: "destructive",
     });
+
     return;
   }
 
   toast({
-    title: "Vendor deleted",
+    title: "Vendor deleted successfully",
   });
 
   load();
@@ -58,7 +59,7 @@ const VendorsSection = () => {
   
 <button
   onClick={() => deleteVendor(v.id)}
-  className="text-muted-foreground hover:text-red-400"
+  className="text-muted-foreground hover:text-red-400 transition"
 >
   <Trash2 size={14} />
 </button>
