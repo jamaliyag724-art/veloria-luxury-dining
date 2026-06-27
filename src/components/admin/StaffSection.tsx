@@ -35,13 +35,39 @@ const StaffSection = () => {
     return () => { supabase.removeChannel(ch); };
   }, [fetch_]);
 
-  const addStaff = async () => {
-    if (!form.name.trim()) return;
-    await supabase.from("staff").insert([form]);
-    setForm({ name: "", role: "Waiter", shift: "All Day", contact: "" });
-    setShowAdd(false);
-    toast({ title: "Staff member added" });
-  };
+ const addStaff = async () => {
+  if (!form.name.trim()) return;
+
+  const { data, error } = await supabase
+    .from("staff")
+    .insert([form])
+    .select();
+
+  console.log("Inserted:", data);
+  console.log("Error:", error);
+
+  if (error) {
+    toast({
+      title: "Insert Failed",
+      description: error.message,
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setForm({
+    name: "",
+    role: "Waiter",
+    shift: "All Day",
+    contact: "",
+  });
+
+  setShowAdd(false);
+
+  toast({
+    title: "Staff member added",
+  });
+};
 
   const toggleActive = async (id: string, current: boolean) => {
     await supabase.from("staff").update({ is_active: !current }).eq("id", id);
