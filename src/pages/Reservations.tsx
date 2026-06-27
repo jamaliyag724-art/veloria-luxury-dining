@@ -158,7 +158,7 @@ const Reservations = () => {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/tables")}
+                onClick={() => navigate("/table-layout")}
                 className="mt-3 text-[11px] text-yellow-400/80 hover:text-yellow-400 underline underline-offset-2"
               >
                 Change table in 3D view
