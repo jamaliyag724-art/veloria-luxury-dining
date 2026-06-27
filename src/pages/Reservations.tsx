@@ -62,6 +62,11 @@ const Reservations = () => {
     try {
       setSubmitting(true);
 
+      const tableNote = selectedTable
+        ? `Table ${selectedTable.tableNumber} (${selectedTable.category}, ${selectedTable.area}, Min spend ${fmtINR(selectedTable.minSpend)})`
+        : "";
+      const composedRequest = [tableNote, formData.message].filter(Boolean).join(" | ");
+
       const reservationId = await addReservation({
         fullName: formData.name,
         email: formData.email,
@@ -69,7 +74,7 @@ const Reservations = () => {
         guests: parseInt(formData.guests),
         date: formData.date,
         time: formData.time,
-        specialRequest: formData.message || undefined,
+        specialRequest: composedRequest || undefined,
       });
 
       /* ADDED EMAIL TRIGGER */
