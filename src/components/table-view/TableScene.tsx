@@ -1,11 +1,11 @@
 import React, { Suspense, useEffect, useRef } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, ContactShadows } from "@react-three/drei";
+import { OrbitControls, ContactShadows, Html } from "@react-three/drei";
 import * as THREE from "three";
 import TableModel from "./TableModel";
 import { useTableLayout, TableData, cameraPresets } from "@/hooks/useTableLayout";
 import { useTheme } from "@/context/ThemeContext";
-import { Html } from "@react-three/drei";
+
 
 interface TableSceneProps {
   onSelectTable: (table: TableData | null) => void;
