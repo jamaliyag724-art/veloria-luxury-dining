@@ -55,7 +55,13 @@ const VendorsSection = () => {
 
   load();
 };
-
+  
+<button
+  onClick={() => deleteVendor(v.id)}
+  className="text-muted-foreground hover:text-red-400"
+>
+  <Trash2 size={14} />
+</button>
   const totalOut = items.reduce((s,v)=>s+Number(v.outstanding_balance||0),0);
 
   return (
