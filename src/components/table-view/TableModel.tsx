@@ -131,7 +131,7 @@ const TableModel: React.FC<TableModelProps> = ({ table, onSelect, isSelected, th
           <div className="px-3 py-2 rounded-xl text-[10px] whitespace-nowrap shadow-2xl border border-primary/40 bg-black/80 text-white backdrop-blur-md min-w-[140px]">
             <div className="font-serif text-primary text-sm leading-tight">{table.tableNumber} · {table.category}</div>
             <div className="opacity-80 mt-0.5">{table.capacity} seats · {table.area}</div>
-            <div className="text-primary font-semibold mt-0.5">Min spend {formatINR(table.minSpend)}</div>
+            <div className="text-primary font-semibold mt-0.5">Min spend {fmtINR(table.minSpend)}</div>
             <div className="capitalize mt-0.5" style={{ color: STATUS_COLOR[table.status] }}>● {table.status}</div>
           </div>
         </Html>
