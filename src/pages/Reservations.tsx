@@ -1,34 +1,55 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CalendarDays, Clock, Users, Sparkles, MapPin, Hash, X } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { useReservations } from "@/context/ReservationContext";
+import { fmtINR } from "@/lib/finance";
 
 /* ADDED */
 import { supabase } from "@/integrations/supabase/client";
 
 const Reservations = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { addReservation } = useReservations();
   const [cartOpen, setCartOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
 
+  const selectedTable = useMemo(() => {
+    const tableNumber = searchParams.get("table");
+    if (!tableNumber) return null;
+    return {
+      tableNumber,
+      category: searchParams.get("category") || "",
+      seats: Number(searchParams.get("seats") || 0),
+      minSpend: Number(searchParams.get("minSpend") || 0),
+      area: searchParams.get("area") || "",
+    };
+  }, [searchParams]);
+
+  const clearTable = () => {
+    const sp = new URLSearchParams(searchParams);
+    ["table", "category", "seats", "minSpend", "area"].forEach((k) => sp.delete(k));
+    setSearchParams(sp, { replace: true });
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobile: "",
-    guests: "1",
+    guests: selectedTable ? String(selectedTable.seats || 2) : "1",
     date: "",
     time: "",
     message: "",
   });
+
 
   const handleChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
