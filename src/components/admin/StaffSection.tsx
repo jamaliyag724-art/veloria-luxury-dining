@@ -13,7 +13,7 @@ interface StaffMember {
   is_active: boolean;
 }
 
-const ROLES = ["Manager", "Chef", "Waiter", "Host", "Kitchen Staff"];
+const ROLES = ["Manager", "Chef", "Waiter", "Host", "Kitchen Staff", "Financial Analyst"];
 const SHIFTS = ["All Day"];
 
 const StaffSection = () => {
