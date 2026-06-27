@@ -1,4 +1,5 @@
-import React from "react"
+// RevenueChart.tsx
+import React, { useMemo } from "react"
 import {
 AreaChart,
 Area,
@@ -9,17 +10,43 @@ ResponsiveContainer,
 CartesianGrid
 } from "recharts"
 
-const data=[
-{day:"Mon", revenue:1200},
-{day:"Tue", revenue:1800},
-{day:"Wed", revenue:900},
-{day:"Thu", revenue:2200},
-{day:"Fri", revenue:3000},
-{day:"Sat", revenue:4200},
-{day:"Sun", revenue:3600}
-]
+import { useOrders } from "@/context/OrderContext"
+import { useReservations } from "@/context/ReservationContext"
+
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 const RevenueChart=()=>{
+
+const { orders } = useOrders()
+const { reservations } = useReservations()
+
+const data = useMemo(() => {
+  const revenueByDate = new Map<string, number>()
+
+  orders.forEach((order) => {
+    const createdAt = order.createdAt
+    if (!createdAt) return
+    const key = new Date(createdAt).toISOString().slice(0, 10)
+    revenueByDate.set(key, (revenueByDate.get(key) || 0) + (order.totalAmount || 0))
+  })
+
+  reservations.forEach((reservation) => {
+    const createdAt = reservation.createdAt
+    if (!createdAt) return
+    const key = new Date(createdAt).toISOString().slice(0, 10)
+    revenueByDate.set(key, (revenueByDate.get(key) || 0) + (reservation.reservationAmount || 0))
+  })
+
+  return Array.from(revenueByDate.entries())
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([dateKey, revenue]) => ({
+      day: DAY_LABELS[new Date(dateKey).getDay()],
+      dateKey,
+      revenue,
+    }))
+}, [orders, reservations])
+
+const hasData = data.length > 0 && data.some((d) => d.revenue > 0)
 
 return(
 
@@ -34,6 +61,8 @@ shadow-[0_0_40px_rgba(0,0,0,0.5)]
 <h2 className="mb-6 text-lg text-gray-200">
 Revenue Trend
 </h2>
+
+{hasData ? (
 
 <ResponsiveContainer width="100%" height={300}>
 
@@ -73,6 +102,14 @@ fill="url(#gold)"
 </AreaChart>
 
 </ResponsiveContainer>
+
+) : (
+
+<div className="flex items-center justify-center h-[300px]">
+<p className="text-gray-500 text-sm">No revenue available</p>
+</div>
+
+)}
 
 </div>
 
