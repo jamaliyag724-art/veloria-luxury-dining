@@ -25,20 +25,23 @@ import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
 import { formatINR } from "@/lib/currency";
 
-/* ---------------- TYPES ---------------- */
 interface ReservationData {
-  tableNumber: string | number;
-  category: string;
-  area: string;
-  capacity: number | string;
-  minSpend: number;
   fullName: string;
   email: string;
   mobile: string;
+  guests: number | string;
   date: string;
   time: string;
-  guests: number | string;
   specialRequest?: string;
+}
+
+interface SelectedTableData {
+  tableNumber: string | number;
+  category: string;
+  area: string;
+  seats: number | string;
+  minSpend: number;
+  status?: string;
 }
 
 interface PaymentSummary {
@@ -60,7 +63,6 @@ const PAYMENT_METHODS: { id: PaymentMethodId; label: string; icon: React.Element
 const GST_RATE = 0.18;
 const PLATFORM_FEE = 99;
 
-/* ---------------- COMPONENT ---------------- */
 const ReservationSummary: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -68,17 +70,17 @@ const ReservationSummary: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("card");
 
   const reservation = location.state?.reservation as ReservationData | undefined;
+  const selectedTable = location.state?.selectedTable as SelectedTableData | undefined;
 
   const paymentSummary: PaymentSummary = useMemo(() => {
-    const subtotal = Number(reservation?.minSpend || 0);
+    const subtotal = Number(selectedTable?.minSpend || 0);
     const gst = Math.round(subtotal * GST_RATE);
     const platformFee = PLATFORM_FEE;
     const grandTotal = subtotal + gst + platformFee;
     return { subtotal, gst, platformFee, grandTotal };
-  }, [reservation]);
+  }, [selectedTable]);
 
-  /* ---------------- GUARD: NO RESERVATION DATA ---------------- */
-  if (!reservation) {
+  if (!reservation || !selectedTable) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar onCartClick={() => setCartOpen(true)} />
@@ -113,9 +115,14 @@ const ReservationSummary: React.FC = () => {
     navigate("/reservation-payment", {
       state: {
         reservation,
+        selectedTable,
         paymentSummary,
       },
     });
+  };
+
+  const handleBack = () => {
+    navigate("/reservations");
   };
 
   return (
@@ -126,7 +133,7 @@ const ReservationSummary: React.FC = () => {
       <main className="pt-32 pb-32">
         <div className="max-w-6xl mx-auto px-6">
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleBack}
             className="flex items-center gap-2 mb-10 text-muted-foreground hover:text-primary transition"
           >
             <ArrowLeft size={16} /> Back
@@ -141,7 +148,6 @@ const ReservationSummary: React.FC = () => {
           </motion.h1>
 
           <div className="grid lg:grid-cols-3 gap-10 items-start">
-            {/* ===================== LEFT CARD — RESERVATION SUMMARY ===================== */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -154,7 +160,7 @@ const ReservationSummary: React.FC = () => {
                 <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
                   <h2 className="font-serif text-2xl">Table & Guest Details</h2>
                   <span className="text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/30">
-                    {reservation.category}
+                    {selectedTable.category}
                   </span>
                 </div>
 
@@ -162,19 +168,19 @@ const ReservationSummary: React.FC = () => {
                   <SummaryRow
                     icon={Hash}
                     label="Table Number"
-                    value={String(reservation.tableNumber)}
+                    value={String(selectedTable.tableNumber)}
                     highlight
                   />
-                  <SummaryRow icon={Tag} label="Category" value={reservation.category} />
-                  <SummaryRow icon={MapPin} label="Restaurant Area" value={reservation.area} />
+                  <SummaryRow icon={Tag} label="Category" value={selectedTable.category} />
+                  <SummaryRow icon={MapPin} label="Restaurant Area" value={selectedTable.area} />
                   <SummaryRow
                     icon={Users}
                     label="Seats"
-                    value={`${reservation.capacity} seats`}
+                    value={`${selectedTable.seats} seats`}
                   />
                   <SummaryRow
                     icon={Users}
-                    label="Guest Count"
+                    label="Guests"
                     value={`${reservation.guests} guest${Number(reservation.guests) > 1 ? "s" : ""}`}
                   />
                   <SummaryRow
@@ -184,8 +190,8 @@ const ReservationSummary: React.FC = () => {
                   />
                   <SummaryRow icon={Clock} label="Time" value={reservation.time} />
                   <SummaryRow icon={User} label="Customer Name" value={reservation.fullName} />
-                  <SummaryRow icon={Phone} label="Mobile" value={reservation.mobile} />
                   <SummaryRow icon={Mail} label="Email" value={reservation.email} />
+                  <SummaryRow icon={Phone} label="Mobile" value={reservation.mobile} />
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-border">
@@ -206,7 +212,6 @@ const ReservationSummary: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* ===================== RIGHT CARD — PAYMENT SUMMARY ===================== */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -276,7 +281,7 @@ const ReservationSummary: React.FC = () => {
                     Proceed to Payment
                   </motion.button>
                   <button
-                    onClick={() => navigate(-1)}
+                    onClick={handleBack}
                     className="w-full py-3 rounded-xl border border-border text-muted-foreground hover:text-primary hover:border-primary/40 transition"
                   >
                     Back
@@ -293,7 +298,6 @@ const ReservationSummary: React.FC = () => {
   );
 };
 
-/* ---------------- SUB-COMPONENTS ---------------- */
 interface SummaryRowProps {
   icon: React.ElementType;
   label: string;
@@ -315,7 +319,6 @@ const SummaryRow: React.FC<SummaryRowProps> = ({ icon: Icon, label, value, highl
   </div>
 );
 
-/* ---------------- HELPERS ---------------- */
 function formatDate(dateStr: string): string {
   if (!dateStr) return "—";
   const d = new Date(dateStr);
