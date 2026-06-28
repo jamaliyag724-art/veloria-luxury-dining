@@ -55,20 +55,32 @@ const Reservations = () => {
 
     setSubmitting(true);
 
+    const guests = parseInt(formData.guests) || 1;
+
     const reservation = {
       fullName: formData.name,
       email: formData.email,
       mobile: formData.mobile,
-      guests: parseInt(formData.guests),
+      guests,
       date: formData.date,
       time: formData.time,
       specialRequest: formData.message,
     };
 
+    // If no table was chosen from the 3D layout, build a sensible default
+    // so the Reservation Summary always renders correctly.
+    const tableForSummary = selectedTable ?? {
+      tableNumber: "Auto-Assign",
+      category: guests <= 2 ? "Couple Dining" : guests <= 4 ? "Indoor Dining" : "Family Dining",
+      seats: Math.max(guests, 2),
+      minSpend: guests * 1500,
+      area: "Indoor Dining",
+    };
+
     navigate("/reservation-summary", {
       state: {
         reservation,
-        selectedTable,
+        selectedTable: tableForSummary,
       },
     });
 
