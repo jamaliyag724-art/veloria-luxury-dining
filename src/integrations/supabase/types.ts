@@ -179,6 +179,39 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          meta: Json | null
+          payment_method: string
+          reservation_id: string | null
+          status: string
+          transaction_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          payment_method?: string
+          reservation_id?: string | null
+          status?: string
+          transaction_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          payment_method?: string
+          reservation_id?: string | null
+          status?: string
+          transaction_id?: string
+        }
+        Relationships: []
+      }
       payroll: {
         Row: {
           advance: number
@@ -239,6 +272,7 @@ export type Database = {
           guests: number
           id: string
           mobile: string
+          reservation_amount: number
           reservation_id: string
           special_request: string | null
           status: string
@@ -252,6 +286,7 @@ export type Database = {
           guests?: number
           id?: string
           mobile: string
+          reservation_amount?: number
           reservation_id: string
           special_request?: string | null
           status?: string
@@ -265,6 +300,7 @@ export type Database = {
           guests?: number
           id?: string
           mobile?: string
+          reservation_amount?: number
           reservation_id?: string
           special_request?: string | null
           status?: string
