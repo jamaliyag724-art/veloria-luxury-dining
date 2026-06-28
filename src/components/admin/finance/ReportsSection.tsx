@@ -407,7 +407,7 @@ const ReportsSection = () => {
       const aov = D.o.length ? gst.gross / D.o.length : 0;
       const prevGross = D.oPrev.reduce((s:number,x:any)=>s+Number(x.totalAmount||0),0);
       const revGrowth = prevGross>0 ? ((gst.gross-prevGross)/prevGross)*100 : 0;
-      const inventoryValue = D.inv.reduce((s:number,i:any)=>s+(Number(i.quantity||0)*Number(i.unit_cost||i.cost_per_unit||0)),0);
+      const inventoryValue = D.inv.reduce((s:number,i:any)=>s+(Number(i.stock_level||0)*Number(i.unit_cost||0)),0);
 
       const wb = XLSX.utils.book_new();
       const inr = '"₹"#,##0';
@@ -507,8 +507,8 @@ const ReportsSection = () => {
       const invRows: any[][] = [
         ["Item","Category","Qty","Unit","Unit Cost (₹)","Value (₹)","Reorder Level","Status"],
         ...D.inv.map((i:any)=>{
-          const qty=Number(i.quantity||0); const rl=Number(i.reorder_level||i.min_stock||0); const uc=Number(i.unit_cost||i.cost_per_unit||0);
-          return [i.name||i.item_name, i.category||"-", qty, i.unit||"-", uc, qty*uc, rl, qty<=rl?"LOW":"OK"];
+          const qty=Number(i.stock_level||0); const rl=Number(i.reorder_level||0); const uc=Number(i.unit_cost||0);
+          return [i.name, i.category, qty, i.unit, uc, qty*uc, rl, qty<=rl?"LOW":"OK"];
         }),
       ];
       XLSX.utils.book_append_sheet(wb, makeSheet(invRows, { cols:[24,16,8,10,14,16,12,10], freeze:1 }), "Inventory");
@@ -518,7 +518,7 @@ const ReportsSection = () => {
         ["Employee","Role","Month","Basic (₹)","Bonus (₹)","Deductions (₹)","Net Pay (₹)","Status"],
         ...D.payroll.map((p:any)=>{
           const emp = D.staff.find((s:any)=>s.id===p.staff_id);
-          return [emp?.name||p.employee_name||"-", emp?.role||"-", p.pay_period||p.month||"-", Number(p.gross_pay||p.basic_salary||0), Number(p.bonus||0), Number(p.deductions||0), Number(p.net_pay||0), p.status||"Processed"];
+          return [p.staff_name, emp?.role||"Not specified", p.period, Number(p.base_salary||0), Number(p.bonus||0), Number(p.deductions||0), Number(p.net_pay||0), p.status];
         }),
       ];
       XLSX.utils.book_append_sheet(wb, makeSheet(payRows, { cols:[22,16,14,14,12,14,14,12], freeze:1 }), "Payroll");
