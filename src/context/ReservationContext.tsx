@@ -101,7 +101,7 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   const addReservation = async (data: Omit<ReservationData, 'reservationId' | 'status' | 'createdAt'>): Promise<string> => {
     const reservationId = generateReservationId();
-    
+
     const { error: insertError } = await supabase
       .from('reservations')
       .insert({
@@ -113,13 +113,13 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
         date: data.date,
         time: data.time,
         special_request: data.specialRequest || null,
-        reservation_amount: data.reservationAmount,
+        reservation_amount: data.reservationAmount ?? 0,
         status: 'Pending',
-      });
+      } as any);
 
     if (insertError) {
       console.error('Error adding reservation:', insertError);
-      throw new Error('Failed to create reservation');
+      throw new Error(insertError.message || 'Failed to create reservation');
     }
 
     return reservationId;
