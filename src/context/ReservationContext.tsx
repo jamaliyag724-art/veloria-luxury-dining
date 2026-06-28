@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 export type ReservationStatus = 'Pending' | 'Confirmed' | 'Waiting' | 'Rejected';
 
 export interface ReservationData {
+  id: string;
   reservationId: string;
   fullName: string;
   email: string;
@@ -18,13 +19,20 @@ export interface ReservationData {
   createdAt: string;
 }
 
+export interface CreatedReservation {
+  id: string;
+  reservationId: string;
+}
+
 interface ReservationContextType {
   reservations: ReservationData[];
   loading: boolean;
   error: string | null;
-  addReservation: (data: Omit<ReservationData, 'reservationId' | 'status' | 'createdAt'>) => Promise<string>;
+  addReservation: (data: Omit<ReservationData, 'id' | 'reservationId' | 'status' | 'createdAt'>) => Promise<CreatedReservation>;
   updateReservationStatus: (reservationId: string, status: ReservationStatus) => Promise<void>;
   getReservationById: (reservationId: string) => ReservationData | undefined;
+  getReservationByUuid: (id: string) => ReservationData | undefined;
+  fetchReservationByUuid: (id: string) => Promise<ReservationData | null>;
   getReservationsCount: () => { total: number; pending: number; confirmed: number; waiting: number; rejected: number };
   refetchReservations: () => Promise<void>;
 }
@@ -56,6 +64,7 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
       if (fetchError) throw fetchError;
 
       const mappedReservations: ReservationData[] = (data || []).map((row) => ({
+        id: row.id,
         reservationId: row.reservation_id,
         fullName: row.full_name,
         email: row.email,
@@ -64,7 +73,7 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
         date: row.date,
         time: row.time,
         specialRequest: row.special_request || undefined,
-        reservationAmount: Number((row as any).reservation_amount || 0),
+        reservationAmount: Number(row.reservation_amount || 0),
         status: row.status as ReservationStatus,
         createdAt: row.created_at,
       }));
@@ -99,10 +108,10 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
     };
   }, [fetchReservations]);
 
-  const addReservation = async (data: Omit<ReservationData, 'reservationId' | 'status' | 'createdAt'>): Promise<string> => {
+  const addReservation = async (data: Omit<ReservationData, 'id' | 'reservationId' | 'status' | 'createdAt'>): Promise<CreatedReservation> => {
     const reservationId = generateReservationId();
 
-    const { error: insertError } = await supabase
+    const { data: insertedRow, error: insertError } = await supabase
       .from('reservations')
       .insert({
         reservation_id: reservationId,
@@ -115,14 +124,19 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
         special_request: data.specialRequest || null,
         reservation_amount: data.reservationAmount ?? 0,
         status: 'Pending',
-      } as any);
+      })
+      .select()
+      .single();
 
-    if (insertError) {
+    if (insertError || !insertedRow) {
       console.error('Error adding reservation:', insertError);
-      throw new Error(insertError.message || 'Failed to create reservation');
+      throw new Error(insertError?.message || 'Failed to create reservation');
     }
 
-    return reservationId;
+    return {
+      id: insertedRow.id,
+      reservationId: insertedRow.reservation_id,
+    };
   };
 
   const updateReservationStatus = async (reservationId: string, status: ReservationStatus) => {
@@ -139,6 +153,38 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   const getReservationById = (reservationId: string): ReservationData | undefined => {
     return reservations.find(res => res.reservationId === reservationId);
+  };
+
+  const getReservationByUuid = (id: string): ReservationData | undefined => {
+    return reservations.find(res => res.id === id);
+  };
+
+  const fetchReservationByUuid = async (id: string): Promise<ReservationData | null> => {
+    const { data, error: fetchError } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (fetchError || !data) {
+      if (fetchError) console.error('Error fetching reservation by id:', fetchError);
+      return null;
+    }
+
+    return {
+      id: data.id,
+      reservationId: data.reservation_id,
+      fullName: data.full_name,
+      email: data.email,
+      mobile: data.mobile,
+      guests: data.guests,
+      date: data.date,
+      time: data.time,
+      specialRequest: data.special_request || undefined,
+      reservationAmount: Number(data.reservation_amount || 0),
+      status: data.status as ReservationStatus,
+      createdAt: data.created_at,
+    };
   };
 
   const getReservationsCount = () => {
@@ -159,6 +205,8 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
       addReservation,
       updateReservationStatus,
       getReservationById,
+      getReservationByUuid,
+      fetchReservationByUuid,
       getReservationsCount,
       refetchReservations: fetchReservations,
     }}>
