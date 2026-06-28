@@ -128,6 +128,9 @@ const ReservationPayment: React.FC = () => {
     setErrorMessage(null);
 
     try {
+      // Simulated processing delay for the demo flow
+      await new Promise((r) => setTimeout(r, 900));
+
       const tableNote = `Table ${selectedTable.tableNumber} (${selectedTable.category}, ${selectedTable.area}, Min spend ${formatINR(
         selectedTable.minSpend
       )}) | Payment: ${formatINR(paymentSummary.grandTotal)} via ${paymentMethod.toUpperCase()}`;
@@ -146,11 +149,38 @@ const ReservationPayment: React.FC = () => {
         date: reservation.date,
         time: reservation.time,
         specialRequest: composedRequest || undefined,
-        reservationAmount: selectedTable.minSpend,
+        reservationAmount: paymentSummary.grandTotal,
       });
 
-      try {
-        await supabase.functions.invoke("send-email", {
+      // Record the simulated payment / transaction
+      const transactionId = `TXN-${Date.now().toString(36).toUpperCase()}-${Math.random()
+        .toString(36)
+        .slice(2, 7)
+        .toUpperCase()}`;
+
+      const { error: payErr } = await supabase.from("payments" as any).insert({
+        reservation_id: reservationId,
+        transaction_id: transactionId,
+        amount: paymentSummary.grandTotal,
+        payment_method: paymentMethod,
+        status: "success",
+        meta: {
+          subtotal: paymentSummary.subtotal,
+          gst: paymentSummary.gst,
+          platform_fee: paymentSummary.platformFee,
+          table: selectedTable.tableNumber,
+          area: selectedTable.area,
+        },
+      });
+
+      if (payErr) {
+        // Reservation succeeded but payment record didn't — surface the real error.
+        throw new Error(payErr.message || "Could not save payment record");
+      }
+
+      // Fire-and-forget confirmation email (must not block success)
+      supabase.functions
+        .invoke("send-email", {
           body: {
             type: "reservation_confirmation",
             data: {
@@ -163,16 +193,14 @@ const ReservationPayment: React.FC = () => {
               specialRequest: reservation.specialRequest,
             },
           },
-        });
-      } catch (emailErr) {
-        console.error("Reservation confirmation email failed:", emailErr);
-      }
+        })
+        .catch((emailErr) => console.error("Confirmation email failed:", emailErr));
 
       setStage("success");
-      navigate(`/reservation-success/${reservationId}`);
-    } catch (err) {
+      setTimeout(() => navigate(`/reservation-success/${reservationId}`), 600);
+    } catch (err: any) {
       console.error("Reservation payment error:", err);
-      setErrorMessage("Payment failed. Please try again.");
+      setErrorMessage(err?.message || "Something went wrong. Please try again.");
       setStage("error");
     }
   };
