@@ -99,6 +99,7 @@ export type Database = {
           reorder_level: number
           stock_level: number
           unit: string
+          unit_cost: number
           usage_rate_per_day: number
         }
         Insert: {
@@ -110,6 +111,7 @@ export type Database = {
           reorder_level?: number
           stock_level?: number
           unit?: string
+          unit_cost?: number
           usage_rate_per_day?: number
         }
         Update: {
@@ -121,6 +123,7 @@ export type Database = {
           reorder_level?: number
           stock_level?: number
           unit?: string
+          unit_cost?: number
           usage_rate_per_day?: number
         }
         Relationships: []
