@@ -1,3 +1,4 @@
+// src/pages/ReservationPayment.tsx
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -152,18 +153,22 @@ const ReservationPayment: React.FC = () => {
         reservationAmount: paymentSummary.grandTotal,
       });
 
-      // Record the simulated payment / transaction
+      // Record the payment / transaction
       const transactionId = `TXN-${Date.now().toString(36).toUpperCase()}-${Math.random()
         .toString(36)
         .slice(2, 7)
         .toUpperCase()}`;
 
+      const paymentMethodLabel =
+        PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || paymentMethod;
+
       const { error: payErr } = await supabase.from("payments").insert({
         reservation_id: reservationUuid,
         transaction_id: transactionId,
         amount: paymentSummary.grandTotal,
-        payment_method: paymentMethod,
-        status: "success",
+        method: paymentMethodLabel,
+        payment_method: paymentMethodLabel,
+        status: "paid",
         meta: {
           subtotal: paymentSummary.subtotal,
           gst: paymentSummary.gst,
