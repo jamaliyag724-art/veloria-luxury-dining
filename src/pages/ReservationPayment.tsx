@@ -138,7 +138,7 @@ const ReservationPayment: React.FC = () => {
         .filter(Boolean)
         .join(" | ");
 
-      const reservationId = await addReservation({
+      const { id: reservationUuid, reservationId } = await addReservation({
         fullName: reservation.fullName,
         email: reservation.email,
         mobile: reservation.mobile,
@@ -158,8 +158,8 @@ const ReservationPayment: React.FC = () => {
         .slice(2, 7)
         .toUpperCase()}`;
 
-      const { error: payErr } = await supabase.from("payments" as any).insert({
-        reservation_id: reservationId,
+      const { error: payErr } = await supabase.from("payments").insert({
+        reservation_id: reservationUuid,
         transaction_id: transactionId,
         amount: paymentSummary.grandTotal,
         payment_method: paymentMethod,
@@ -197,7 +197,7 @@ const ReservationPayment: React.FC = () => {
         .catch((emailErr) => console.error("Confirmation email failed:", emailErr));
 
       setStage("success");
-      setTimeout(() => navigate(`/reservation-success/${reservationId}`), 600);
+      setTimeout(() => navigate(`/reservation-success/${reservationUuid}`), 600);
     } catch (err: any) {
       console.error("Reservation payment error:", err);
       setErrorMessage(err?.message || "Something went wrong. Please try again.");
