@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Copy } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -7,15 +7,53 @@ import { toast } from "sonner";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartModal from "@/components/cart/CartModal";
+import { useReservations, ReservationData } from "@/context/ReservationContext";
 
 const ReservationSuccess = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getReservationByUuid, fetchReservationByUuid } = useReservations();
   const [cartOpen, setCartOpen] = useState(false);
+  const [reservation, setReservation] = useState<ReservationData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const resolveReservation = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
+      const cached = getReservationByUuid(id);
+      if (cached) {
+        if (active) {
+          setReservation(cached);
+          setLoading(false);
+        }
+        return;
+      }
+
+      const fetched = await fetchReservationByUuid(id);
+      if (active) {
+        setReservation(fetched);
+        setLoading(false);
+      }
+    };
+
+    resolveReservation();
+
+    return () => {
+      active = false;
+    };
+  }, [id, getReservationByUuid, fetchReservationByUuid]);
+
+  const displayId = reservation?.reservationId;
 
   const copyId = () => {
-    if (!id) return;
-    navigator.clipboard.writeText(id);
+    if (!displayId) return;
+    navigator.clipboard.writeText(displayId);
     toast.success("Reservation ID copied");
   };
 
@@ -68,7 +106,7 @@ const ReservationSuccess = () => {
             </p>
 
             <p className="font-serif text-2xl text-primary font-bold tracking-wide">
-              {id}
+              {loading ? "Loading…" : displayId || "Not found"}
             </p>
 
             <button
