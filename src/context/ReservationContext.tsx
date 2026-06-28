@@ -64,7 +64,7 @@ export const ReservationProvider: React.FC<{ children: ReactNode }> = ({ childre
         date: row.date,
         time: row.time,
         specialRequest: row.special_request || undefined,
-        reservationAmount: Number(row.reservation_amount || 0),
+        reservationAmount: Number((row as any).reservation_amount || 0),
         status: row.status as ReservationStatus,
         createdAt: row.created_at,
       }));
